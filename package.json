@@ -1,0 +1,10 @@
+{
+  "name": "mulembe18-workspace",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "npm --prefix mulembe18-site run dev",
+    "build": "npm --prefix mulembe18-site run build",
+    "start": "npm --prefix mulembe18-site run start"
+  }
+}

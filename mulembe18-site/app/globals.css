@@ -1,0 +1,285 @@
+@import "tailwindcss";
+
+/* ============================================================
+   MULEMBE COASTAL PULSE — DESIGN SYSTEM
+   ============================================================ */
+
+@theme {
+  /* PRIMARY — Forest Green */
+  --color-brand-green:        #0D6E38;
+  --color-brand-green-dark:   #082f1a;
+  --color-brand-green-mid:    #0a4d29;
+  --color-brand-green-light:  #15803d;
+
+  /* SECONDARY — Savanna Gold */
+  --color-brand-gold:         #DDA71D;
+  --color-brand-gold-light:   #F5C842;
+
+  /* TERTIARY — Indian Ocean */
+  --color-brand-ocean:        #0077B6;
+  --color-brand-ocean-light:  #E6F4FB;
+
+  /* M-PESA GREEN */
+  --color-brand-mpesa:        #00A859;
+
+  /* SURFACE — Coastal Sand */
+  --color-brand-sand:         #FBF8F2;
+  --color-brand-border:       #E6E0D5;
+  --color-brand-ebony:        #18221B;
+
+  /* FONTS */
+  --font-sans:  "Plus Jakarta Sans", sans-serif;
+  --font-heading: "Outfit", "Plus Jakarta Sans", sans-serif;
+  --font-script: "Caveat", cursive;
+}
+
+/* ====== BASE ====== */
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--font-sans);
+  background-color: #FBF8F2;
+  color: #18221B;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+/* ====== KITENGE TRIBAL STRIPE ====== */
+.kitenge-stripe {
+  height: 8px;
+  background: repeating-linear-gradient(
+    90deg,
+    #0D6E38 0%, #0D6E38 20%,
+    #DDA71D 20%, #DDA71D 40%,
+    #0077B6 40%, #0077B6 60%,
+    #DDA71D 60%, #DDA71D 80%,
+    #0D6E38 80%, #0D6E38 100%
+  );
+  background-size: 60px 100%;
+}
+
+.kitenge-watermark {
+  background-color: #082f1a;
+  background-image:
+    repeating-linear-gradient(45deg, #DDA71D 0, #DDA71D 8px, transparent 0, transparent 24px),
+    repeating-linear-gradient(-45deg, #0D6E38 0, #0D6E38 8px, transparent 0, transparent 24px);
+  background-size: 28px 28px;
+  opacity: 0.06;
+}
+
+/* ====== CLAN PILLS ====== */
+.pill-clan {
+  border-radius: 9999px;
+  padding: 2px 10px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  background: #FEF8E7;
+  color: #9A720C;
+  border: 1px solid rgba(245, 200, 66, 0.25);
+  display: inline-flex;
+  align-items: center;
+}
+.pill-ocean {
+  border-radius: 9999px;
+  padding: 2px 10px;
+  font-size: 11px;
+  font-weight: 700;
+  background: #E6F4FB;
+  color: #0077B6;
+  display: inline-flex;
+  align-items: center;
+}
+.pill-green {
+  border-radius: 9999px;
+  padding: 2px 10px;
+  font-size: 11px;
+  font-weight: 700;
+  background: #E8F5EE;
+  color: #0D6E38;
+  display: inline-flex;
+  align-items: center;
+}
+
+/* ====== CARD ====== */
+.card {
+  background: #fff;
+  border: 1px solid #E6E0D5;
+  border-radius: 1rem;
+  box-shadow: 0 4px 12px -2px rgba(13,110,56,0.05), 0 2px 6px -1px rgba(0,0,0,0.03);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px -4px rgba(13,110,56,0.12), 0 4px 10px -2px rgba(0,0,0,0.05);
+  border-color: rgba(13,110,56,0.25);
+}
+
+/* ====== SCROLL REVEAL ====== */
+.reveal {
+  opacity: 1;
+  transform: none;
+}
+
+/* ====== ACTIVE NAV ====== */
+.nav-link.active { color: #DDA71D; font-weight: 700; }
+
+/* ====== ANIMATIONS ====== */
+@keyframes fill-bar  { from { width: 0; } }
+@keyframes pulse-dot { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.5;transform:scale(1.4)} }
+@keyframes fade-in   { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:none} }
+@keyframes slide-down { from{opacity:0;transform:translateY(-8px)} to{opacity:1;transform:none} }
+
+.progress-fill { animation: fill-bar 1.6s ease forwards; }
+.live-dot      { animation: pulse-dot 1.8s ease-in-out infinite; }
+.fade-in       { animation: fade-in 0.4s ease both; }
+.slide-down    { animation: slide-down 0.35s ease both; }
+
+/* ====== HERO WAVE ====== */
+.hero-wave {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  overflow: hidden;
+  line-height: 0;
+}
+
+/* ====== MOBILE MENU ====== */
+.mobile-menu-enter  { max-height: 0; overflow: hidden; }
+.mobile-menu-open   { max-height: 600px; transition: max-height 0.35s ease; }
+
+/* ====== M-PESA AMOUNT BUTTON ====== */
+.amount-btn         { transition: all 0.15s ease; }
+.amount-btn.active  { background: #0D6E38 !important; color: #fff !important; border-color: #0D6E38 !important; }
+
+/* ============================================================
+   MAGIC UI ANIMATIONS & GLASSMORPHISM
+   ============================================================ */
+
+/* Glassmorphism primitives */
+.glass-card {
+  background: rgba(255, 255, 255, 0.78);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.75);
+  box-shadow: 0 8px 32px 0 rgba(13, 110, 56, 0.08), 0 2px 8px 0 rgba(0, 0, 0, 0.02);
+}
+
+.glass-card:hover {
+  background: rgba(255, 255, 255, 0.9);
+  border-color: rgba(13, 110, 56, 0.3);
+  box-shadow: 0 16px 40px -4px rgba(13, 110, 56, 0.14), 0 4px 12px 0 rgba(0, 0, 0, 0.03);
+}
+
+.glass-card-dark {
+  background: rgba(8, 47, 26, 0.82);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(221, 167, 29, 0.28);
+  box-shadow: 0 16px 48px -8px rgba(0, 0, 0, 0.4), 0 0 24px -4px rgba(221, 167, 29, 0.15);
+}
+
+.glass-nav {
+  background: rgba(251, 248, 242, 0.85);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(230, 224, 213, 0.75);
+}
+
+.glass-gold {
+  background: rgba(221, 167, 29, 0.12);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(221, 167, 29, 0.35);
+}
+
+.glass-emerald {
+  background: rgba(13, 110, 56, 0.12);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(13, 110, 56, 0.3);
+}
+
+/* Marquee Keyframes */
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(calc(-100% - var(--gap, 1rem))); }
+}
+
+@keyframes marquee-reverse {
+  from { transform: translateX(calc(-100% - var(--gap, 1rem))); }
+  to { transform: translateX(0); }
+}
+
+.animate-marquee {
+  display: flex;
+  min-width: 100%;
+  flex-shrink: 0;
+  gap: var(--gap, 1rem);
+  animation: marquee var(--duration, 35s) linear infinite;
+}
+
+.animate-marquee-reverse {
+  display: flex;
+  min-width: 100%;
+  flex-shrink: 0;
+  gap: var(--gap, 1rem);
+  animation: marquee-reverse var(--duration, 35s) linear infinite;
+}
+
+.marquee-container:hover .animate-marquee,
+.marquee-container:hover .animate-marquee-reverse {
+  animation-play-state: paused;
+}
+
+/* Animated Gradient Text */
+@keyframes gradient-x {
+  0%, 100% {
+    background-size: 200% 200%;
+    background-position: left center;
+  }
+  50% {
+    background-size: 200% 200%;
+    background-position: right center;
+  }
+}
+
+.animate-gradient-text {
+  background: linear-gradient(90deg, #0D6E38, #DDA71D, #0077B6, #DDA71D, #0D6E38);
+  background-size: 300% auto;
+  color: transparent;
+  -webkit-background-clip: text;
+  background-clip: text;
+  animation: gradient-x 6s ease infinite;
+}
+
+/* Border Beam */
+@keyframes border-beam {
+  100% {
+    offset-distance: 100%;
+  }
+}
+
+/* Shimmer Button */
+@keyframes shimmer-slide {
+  to {
+    transform: translate(calc(100cqw - 100%), 0);
+  }
+}
+
+@keyframes spin-around {
+  0% {
+    transform: translateZ(0) rotate(0);
+  }
+  15%, 35% {
+    transform: translateZ(0) rotate(90deg);
+  }
+  65%, 85% {
+    transform: translateZ(0) rotate(270deg);
+  }
+  100% {
+    transform: translateZ(0) rotate(360deg);
+  }
+}
+
