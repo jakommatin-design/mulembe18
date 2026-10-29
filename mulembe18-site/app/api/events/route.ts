@@ -5,6 +5,10 @@ export async function GET(req: Request) {
   try {
     const { searchParams } = new URL(req.url);
     const category = searchParams.get("category");
+    const scope = searchParams.get("scope");
+    const clan = searchParams.get("clan");
+    const county = searchParams.get("county");
+    const ward = searchParams.get("ward");
 
     await initDatabaseSchema();
 
@@ -14,6 +18,26 @@ export async function GET(req: Request) {
     if (category && category !== "All") {
       sql += " AND category = ?";
       params.push(category);
+    }
+
+    if (scope && scope !== "All") {
+      sql += " AND scope = ?";
+      params.push(scope);
+    }
+
+    if (clan && clan !== "All") {
+      sql += " AND (target_clan = ? OR target_clan = 'All')";
+      params.push(clan);
+    }
+
+    if (county && county !== "All") {
+      sql += " AND (county_code = ? OR scope = 'National')";
+      params.push(county);
+    }
+
+    if (ward) {
+      sql += " AND (ward_estate LIKE ? OR ward_estate IS NULL)";
+      params.push(`%${ward}%`);
     }
 
     sql += " ORDER BY is_featured DESC, created_at DESC LIMIT 50";
@@ -45,6 +69,13 @@ export async function POST(req: Request) {
       description,
       imageUrl,
       isFeatured,
+      scope,
+      targetClan,
+      targetGroup,
+      countyCode,
+      subCounty,
+      wardEstate,
+      clanGroupId,
     } = body;
 
     if (!title || !venue || !category) {
@@ -57,8 +88,9 @@ export async function POST(req: Request) {
     await initDatabaseSchema();
 
     const result = await query(
-      `INSERT INTO events (title, event_date, day, dow, month, time, venue, category, entry_fee, description, image_url, is_featured)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      `INSERT INTO events 
+        (title, event_date, day, dow, month, time, venue, category, entryFee, description, image_url, is_featured, scope, target_clan, target_group, county_code, sub_county, ward_estate, clan_group_id)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [
         title,
         eventDate || `${month || "APR"} ${day || "26"}`,
@@ -72,6 +104,13 @@ export async function POST(req: Request) {
         description || "",
         imageUrl || "/images/events-cultural.png",
         isFeatured ? 1 : 0,
+        scope || "County",
+        targetClan || "All",
+        targetGroup || "All",
+        countyCode || "001",
+        subCounty || null,
+        wardEstate || null,
+        clanGroupId || null,
       ]
     );
 

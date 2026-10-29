@@ -9,10 +9,12 @@
   },
   "dependencies": {
     "@clerk/nextjs": "^7.9.18",
+    "@tailwindcss/postcss": "^4.3.3",
     "clsx": "^2.1.1",
     "lucide-react": "^1.60.0",
     "mysql2": "^3.24.6",
-    "next": "16.4.2",
+    "next": "15.3.4",
+    "postcss": "^8.5.32",
     "react": "19.3.0",
     "react-dom": "19.3.0",
     "tailwind-merge": "^3.7.0"

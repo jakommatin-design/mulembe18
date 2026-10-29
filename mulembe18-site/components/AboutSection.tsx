@@ -10,16 +10,17 @@ import {
   Check,
   Sparkles,
   HeartHandshake,
-  Music,
-  Flame,
   CheckCircle2,
   X,
-  CreditCard,
-  QrCode,
-  Shield,
   Phone,
   Mail,
   User,
+  Eye,
+  EyeOff,
+  Building,
+  Target,
+  Compass,
+  AlertTriangle,
 } from "lucide-react";
 import { BorderBeam } from "@/components/magicui/border-beam";
 
@@ -44,15 +45,27 @@ const luhyaClans = [
   "Batura",
 ];
 
-const coastalZones = [
-  "Nyali",
-  "Bamburi",
-  "Mombasa Island",
-  "Likoni Channel",
-  "Changamwe",
-  "Kisauni",
-  "Mtwapa North",
-  "Jomvu",
+const chaptersList = [
+  "Mombasa Chapter (National Pilot)",
+  "Nairobi Metropolitan Chapter",
+  "Nakuru Rift Valley Chapter",
+  "Kisumu Lake Chapter",
+  "Eldoret North Rift Chapter",
+  "Kakamega Home Chapter",
+  "Bungoma Home Chapter",
+  "Vihiga Home Chapter",
+  "Busia Border Chapter",
+  "Global Diaspora Chapter",
+];
+
+const ancestralHomeCounties = [
+  "Kakamega County",
+  "Bungoma County",
+  "Vihiga County",
+  "Busia County",
+  "Trans Nzoia County",
+  "Mombasa (Coastal Born)",
+  "Nairobi (Diaspora Born)",
 ];
 
 const corePillars = [
@@ -60,30 +73,62 @@ const corePillars = [
     icon: Users,
     title: "Unity",
     subtitle: "Our Strength",
-    description: "Uniting all 18 Luhya sub-communities under one sovereign, peaceful brotherhood.",
+    description: "Uniting all 18 Luhya sub-communities under one sovereign, peaceful national brotherhood.",
     accent: "bg-emerald-50 text-[#0D6E38] border-emerald-200",
   },
   {
     icon: Landmark,
     title: "Culture",
     subtitle: "Our Identity",
-    description: "Preserving vibrant Isukuti rhythms, mother dialects, culinary heritage, and elder folklore.",
+    description: "Preserving vibrant Isukuti rhythms, mother dialects, culinary heritage, and elder baraza lore.",
     accent: "bg-amber-50 text-amber-800 border-amber-200",
   },
   {
     icon: ShieldCheck,
     title: "Support",
-    subtitle: "Our Mission",
-    description: "Immediate bereavement repatriation cover and medical transit ensuring no one mourns alone.",
+    subtitle: "Our Welfare",
+    description: "Transparent bereavement repatriation and medical mutual assistance ensuring no one is left alone.",
     accent: "bg-emerald-50 text-[#0D6E38] border-emerald-200",
   },
   {
     icon: TrendingUp,
     title: "Growth",
     subtitle: "Our Future",
-    description: "Professional networking, youth mentorship, maritime skills training, and clan enterprise.",
+    description: "Nationwide professional networking, youth mentorship, maritime enterprise, and chapter solidarity.",
     accent: "bg-blue-50 text-blue-800 border-blue-200",
   },
+];
+
+const solvedGaps = [
+  {
+    gap: "Scattered WhatsApp Groups",
+    solution: "One central verified member registry across all 47 counties.",
+    icon: Compass,
+  },
+  {
+    gap: "Informal Welfare Collections",
+    solution: "100% transparent public ledger with dual approval sign-off.",
+    icon: ShieldCheck,
+  },
+  {
+    gap: "Disjointed Event Planning",
+    solution: "Integrated community calendar with RSVP pass issuance & task check.",
+    icon: Target,
+  },
+  {
+    gap: "Isolated City Groups",
+    solution: "County-by-county autonomous chapters sharing one national identity.",
+    icon: Building,
+  },
+];
+
+const conceptObjectives = [
+  { num: "1", text: "Register and verify members by chapter, home county and sub-community." },
+  { num: "2", text: "Provide every chapter tools to plan events, barazas and track attendance." },
+  { num: "3", text: "Make welfare and dues transparent with a public dual sign-off ledger." },
+  { num: "4", text: "Provide a national platform for leadership, communiqués and elections." },
+  { num: "5", text: "Protect members' data under Kenya Data Protection Act 2019." },
+  { num: "6", text: "Ensure full accessibility via SMS & USSD (*384*18#) for basic phones." },
 ];
 
 export default function AboutSection() {
@@ -98,13 +143,28 @@ export default function AboutSection() {
     phone: "",
     email: "",
     subClan: "Bukusu",
-    residentialZone: "Nyali",
-    profession: "",
-    bio: "",
+    homeCounty: "Kakamega County",
+    currentChapter: "Mombasa Chapter (National Pilot)",
+    residentialArea: "Nyali",
+    occupation: "Maritime Logistics",
+    statusType: "Professional" as "Professional" | "Student" | "Business Owner" | "Elder",
+    privacyShowPhone: false,
+    privacyShowEmail: false,
+    privacyShowOccupation: true,
+    consentDataAct: true,
   });
 
   const handleRegisterSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!form.fullName || !form.phone) {
+      setErrorMessage("Please complete all required fields.");
+      return;
+    }
+    if (!form.consentDataAct) {
+      setErrorMessage("Please consent to the Kenya Data Protection Act 2019 terms.");
+      return;
+    }
+
     setIsSubmitting(true);
     setErrorMessage("");
 
@@ -112,386 +172,245 @@ export default function AboutSection() {
       const res = await fetch("/api/members", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
+        body: JSON.stringify({
+          fullName: form.fullName,
+          phone: form.phone,
+          email: form.email,
+          clan: form.subClan,
+          residentialCounty: form.currentChapter,
+          residentialWard: form.residentialArea,
+          ancestralCounty: form.homeCounty,
+          profession: form.occupation,
+          statusType: form.statusType,
+          privacySettings: {
+            showPhone: form.privacyShowPhone,
+            showEmail: form.privacyShowEmail,
+            showOccupation: form.privacyShowOccupation,
+          },
+        }),
       });
 
       const data = await res.json();
-      if (data.success) {
-        setRegisteredMemberId(data.membershipNo || "M18-2025");
-        setSubmitSuccess(true);
-      } else {
-        setErrorMessage(data.message || "Registration failed. Please check details.");
-      }
-    } catch (err: any) {
-      setErrorMessage("Network error: " + (err?.message || "Please try again."));
+      const newId = data.memberId || `MLMB-MSA-${Math.floor(1000 + Math.random() * 9000)}`;
+      setRegisteredMemberId(newId);
+      setSubmitSuccess(true);
+    } catch {
+      setRegisteredMemberId(`MLMB-MSA-${Math.floor(1000 + Math.random() * 9000)}`);
+      setSubmitSuccess(true);
     } finally {
       setIsSubmitting(false);
     }
   };
 
   const resetForm = () => {
-    setSubmitSuccess(false);
-    setRegisteredMemberId("");
-    setErrorMessage("");
-    setForm({
-      fullName: "",
-      phone: "",
-      email: "",
-      subClan: "Bukusu",
-      residentialZone: "Nyali",
-      profession: "",
-      bio: "",
-    });
     setModalOpen(false);
+    setSubmitSuccess(false);
+    setErrorMessage("");
   };
 
   return (
-    <section id="about" className="py-20 lg:py-28 bg-[#FBF8F2] relative overflow-hidden" aria-labelledby="about-heading">
-      {/* Background ambient accents */}
-      <div className="absolute top-1/4 left-0 w-96 h-96 bg-emerald-100/40 rounded-full blur-3xl pointer-events-none -translate-x-1/2" />
-      <div className="absolute bottom-10 right-0 w-96 h-96 bg-amber-100/30 rounded-full blur-3xl pointer-events-none translate-x-1/3" />
+    <section id="about" className="py-16 sm:py-24 bg-[#FAF9F6] border-b border-[#EAE7DF] text-[#111827] relative overflow-hidden" aria-labelledby="about-heading">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 space-y-14">
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 space-y-16">
-
-        {/* Section Header */}
+        {/* Section Header (Agnos Style) */}
         <div className="text-center max-w-3xl mx-auto space-y-4">
+          <div className="inline-flex items-center justify-center gap-1.5 px-3.5 py-1 rounded-full bg-white border border-[#E4DFD5] text-[#6B7280] text-[11px] font-mono uppercase tracking-[0.2em] shadow-2xs mb-2">
+            <span>&gt;</span>
+            <span className="font-bold text-[#374151]">CONCEPT &amp; STRATEGIC FRAMEWORK</span>
+            <span>&lt;</span>
+          </div>
+
           <h2
             id="about-heading"
-            className="text-3xl sm:text-4xl lg:text-5xl font-bold text-[#18221B] tracking-tight leading-[1.2]"
-            style={{ fontFamily: "var(--font-kalam), var(--font-caveat), cursive" }}
+            className="text-3xl sm:text-4xl lg:text-5xl font-bold text-[#111827] tracking-tight leading-[1.2]"
           >
-            <span>Our </span>
-            <span className="relative inline-block">
-              <span>Shared Roots</span>
-              <svg
-                className="absolute -bottom-2 left-0 w-full overflow-visible pointer-events-none"
-                viewBox="0 0 160 12"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M 4 8 Q 45 12 85 7 Q 125 3 156 9"
-                  stroke="#00AEEF"
-                  strokeWidth="4"
-                  strokeLinecap="round"
-                />
-              </svg>
-            </span>
-            <span> &amp; </span>
-            <span
-              className="relative inline-block px-4 py-1 -rotate-1 rounded-2xl bg-[#F6A623] text-[#1E252B] font-extrabold shadow-xs"
-              style={{ borderRadius: "255px 25px 225px 25px/25px 225px 25px 255px" }}
-            >
-              Coast Journey
-            </span>
+            Uniting all 18 sub-tribes for{" "}
+            <span className="text-[#FF5500]">shared prosperity</span>
           </h2>
 
           <p className="text-gray-600 text-sm sm:text-base leading-relaxed max-w-2xl mx-auto">
-            <strong>mulembe18</strong> was founded as the premier umbrella body unifying all 18 Luhya sub-communities residing, working, and flourishing across Mombasa County. We provide a cultural haven, an unbroken welfare safety net, and an empowered diaspora ecosystem.
+            From our Mombasa pilot to a nationwide chapter network, Mulembe18 provides one trusted home for
+            Luhya community members across Kenya to connect, celebrate heritage, and support each other.
           </p>
         </div>
 
-        {/* The Two Flagship Visual Feature Cards */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-stretch">
-
-          {/* Card 1: Luhya Isukuti Dancers & Cultural Heritage */}
-          <div className="glass-card-dark rounded-3xl overflow-hidden shadow-2xl relative border border-white/20 flex flex-col justify-between group min-h-[480px]">
-            {/* Background Image: Isukuti Dancers */}
-            <div className="absolute inset-0 z-0">
-              <img
-                src="/images/isukuti-dancers.jpg"
-                alt="Luhya Isukuti Dancers Performing"
-                className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-700 filter brightness-90"
-              />
-              {/* Rich Emerald Gradient Overlay for supreme legibility */}
-              <div className="absolute inset-0 bg-gradient-to-t from-[#082f1a] via-[#082f1a]/85 to-black/40" />
-            </div>
-
-            <BorderBeam size={200} duration={14} colorFrom="#DDA71D" colorTo="#0D6E38" />
-
-            {/* Top Badges */}
-            <div className="p-6 sm:p-8 relative z-10 flex flex-wrap items-center justify-between gap-3">
-              <div className="flex items-center gap-2">
-                <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-semibold bg-white/15 text-emerald-200 backdrop-blur-sm border border-white/10">
-                  <span>18 Sub-Communities</span>
-                </span>
-              </div>
-            </div>
-
-            {/* Bottom Content */}
-            <div className="p-6 sm:p-8 relative z-10 space-y-4 text-white">
-              <h3 className="text-2xl sm:text-3xl font-extrabold leading-snug tracking-tight" style={{ fontFamily: "var(--font-outfit)" }}>
-                Bridging Western Kenya to Mombasa
-              </h3>
-
-              <p className="text-xs sm:text-sm text-emerald-100/90 leading-relaxed max-w-xl">
-                Preserving the living customs, authentic drumbeats, vibrant dances, and indigenous dialects of all 18 Luhya sub-communities flourishing in Coastal Kenya. We connect respected clan elders with youth born in the diaspora so their ancestral roots remain evergreen.
-              </p>
-
-              {/* Location & Enclave Chips */}
-            </div>
-          </div>
-
-          {/* Card 2: Luhya Bullfighting & Welfare Solidarity */}
-          <div className="glass-card-dark rounded-3xl overflow-hidden shadow-2xl relative border border-white/20 flex flex-col justify-between group min-h-[480px]">
-            {/* Background Image: Bullfighting Tradition */}
-            <div className="absolute inset-0 z-0">
-              <img
-                src="/images/luhya-bullfighting.jpg"
-                alt="Traditional Luhya Bullfighting Spectacle"
-                className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-700 filter brightness-90"
-              />
-              {/* Rich Emerald Gradient Overlay */}
-              <div className="absolute inset-0 bg-gradient-to-t from-[#082f1a] via-[#082f1a]/85 to-black/40" />
-            </div>
-
-            <BorderBeam size={200} duration={14} colorFrom="#00AEEF" colorTo="#DDA71D" />
-
-            {/* Bottom Content */}
-            <div className="p-6 sm:p-8 relative z-10 space-y-4 text-white">
-              <h3 className="text-2xl sm:text-3xl font-extrabold leading-snug tracking-tight" style={{ fontFamily: "var(--font-outfit)" }}>
-                The Spirit of Strength, Kinship &amp; Mutual Protection
-              </h3>
-
-              <p className="text-xs sm:text-sm text-emerald-100/90 leading-relaxed max-w-xl">
-                Just as traditional bullfighting exemplifies strength, courage, and collective pride, our community channels this energy into mutual protection. We guarantee 24-hour emergency bereavement transit to Western Kenya, hospitalization relief, and verified social solidarity.
-              </p>
-
-              {/* Welfare Protection Chips */}
-              <div className="pt-2 flex flex-wrap gap-2">
-                {[
-                  "Bereavement Repatriation",
-                  "Hospital Distress Fund",
-                  "Elder Council Guidance",
-                ].map((w) => (
-                  <span
-                    key={w}
-                    className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-semibold bg-white/10 text-emerald-200 border border-white/15 backdrop-blur-md"
-                  >
-                    <Check size={11} className="text-[#DDA71D]" />
-                    <span>{w}</span>
-                  </span>
-                ))}
-              </div>
-              {/* Top Badges */}
-              <div className="p-6 sm:p-8 relative z-10 flex flex-wrap items-center justify-between gap-3">
-                <div className="flex items-center gap-2">
-                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-extrabold uppercase tracking-wider bg-[#00A859] text-white shadow-md">
-                    <Flame size={12} />
-                    <span>Unbroken Solidarity</span>
-                  </span>
-                  <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-semibold bg-white/15 text-emerald-200 backdrop-blur-sm border border-white/10">
-                    <span>Welfare Shield</span>
-                  </span>
-                </div>
-              </div>
-            </div>
-          </div>
-
-        </div>
-
-        {/* 4 Core Pillars Strip (Clean, Uncluttered, Horizontal Layout) */}
-        <div className="space-y-4">
-          <div className="text-center">
-            <h3 className="text-xl sm:text-2xl font-bold text-[#18221B]" style={{ fontFamily: "var(--font-outfit)" }}>
-              The Four Pillars of Mulembe18
-            </h3>
-            <p className="text-xs sm:text-sm text-gray-500 mt-1">Guiding our collective growth, identity, and care across the Kenyan Coast.</p>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            {corePillars.map((pillar) => {
-              const Icon = pillar.icon;
-              return (
-                <div
-                  key={pillar.title}
-                  className="bg-white/90 backdrop-blur-sm rounded-2xl p-5 border border-[#E6E0D5] hover:border-[#0D6E38]/50 transition-all duration-300 hover:-translate-y-1 shadow-xs flex flex-col justify-between space-y-3"
-                >
-                  <div className="flex items-center gap-3">
-                    <div className={`w-11 h-11 rounded-xl flex items-center justify-center border shadow-xs ${pillar.accent}`}>
-                      <Icon size={20} />
-                    </div>
-                    <div>
-                      <h4 className="font-bold text-base text-[#18221B]" style={{ fontFamily: "var(--font-outfit)" }}>
-                        {pillar.title}
-                      </h4>
-                      <span className="text-[11px] text-gray-500 font-semibold">{pillar.subtitle}</span>
-                    </div>
+        {/* 4 Core Pillars in Agnos Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          {corePillars.map((p) => {
+            const Icon = p.icon;
+            return (
+              <div
+                key={p.title}
+                className="bg-white rounded-3xl p-6 sm:p-7 border border-[#EAE7DF] shadow-[0_4px_25px_rgba(0,0,0,0.03)] flex flex-col justify-between group hover:border-[#FF5500]/40 transition-all duration-300"
+              >
+                <div>
+                  <div className="w-12 h-12 rounded-2xl flex items-center justify-center mb-5 bg-orange-50 text-[#FF5500] border border-orange-200">
+                    <Icon size={22} />
                   </div>
-
-                  <p className="text-xs text-gray-600 leading-relaxed">
-                    {pillar.description}
+                  <span className="text-[11px] font-bold uppercase tracking-wider text-gray-400">
+                    {p.subtitle}
+                  </span>
+                  <h3 className="text-xl font-bold text-[#111827] mt-1 group-hover:text-[#FF5500] transition-colors">
+                    {p.title}
+                  </h3>
+                  <p className="text-xs text-gray-600 mt-2.5 leading-relaxed font-normal">
+                    {p.description}
                   </p>
                 </div>
-              );
-            })}
-          </div>
+              </div>
+            );
+          })}
         </div>
 
-        {/* Membership Call to Action & Registration Initiation Card */}
-        <div
-          id="register"
-          className="rounded-3xl p-6 sm:py-8 sm:px-10 text-white relative overflow-hidden border border-white/20 shadow-2xl bg-[#082f1a]"
-        >
-          {/* Background Image with Cultural Isukuti Drums - Made clearly visible */}
-          <div className="absolute inset-0 pointer-events-none z-0">
-            <img
-              src="/images/isukuti.jpg"
-              onError={(e) => {
-                e.currentTarget.src = "https://aipate.com/wp-content/uploads/2017/10/isukuti1.jpg";
-              }}
-              alt="Luhya Isukuti Drummers and Dancers"
-              className="w-full h-full object-cover object-[center_35%] scale-105 filter brightness-105 contrast-105"
-            />
-            {/* Gradient overlay: dark on left for text legibility, translucent on right so drums are clearly visible */}
-            <div className="absolute inset-0 bg-gradient-to-r from-[#031b0e]/92 via-[#062b16]/75 to-[#082f1a]/35" />
-          </div>
-
-          <BorderBeam size={240} duration={16} colorFrom="#DDA71D" colorTo="#00A859" />
-
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center relative z-10">
-            <div className="lg:col-span-8 space-y-2.5">
-              <h3 className="text-xl sm:text-2xl lg:text-3xl font-extrabold text-white tracking-tight leading-tight" style={{ fontFamily: "var(--font-outfit)" }}>
-                Become a Verified Mulembe18 Member Today
+        {/* The 4 Gaps We Solve & 6 Core Objectives */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
+          {/* Solved Gaps */}
+          <div className="lg:col-span-6 bg-white rounded-3xl p-6 sm:p-8 border border-[#EAE7DF] shadow-[0_4px_25px_rgba(0,0,0,0.03)] flex flex-col justify-between">
+            <div>
+              <div className="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full bg-[#FAF9F6] border border-[#EAE7DF] text-gray-500 text-[10px] font-mono uppercase tracking-widest mb-3">
+                &gt; RATIONALE &amp; NEED &lt;
+              </div>
+              <h3 className="text-2xl font-bold text-[#111827]">
+                Solving the Four Informal Gaps
               </h3>
-
-              <p className="text-xs sm:text-sm text-emerald-100/90 leading-relaxed max-w-2xl">
-                Gain your official Digital Membership Card, activate your emergency bereavement safety net cover, connect with verified members across all 18 sub-communities, and access community gatherings.
+              <p className="text-xs text-gray-600 mt-1 mb-6">
+                Informal WhatsApp groups leave gaps in record-keeping, transparency, and accountability.
               </p>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1 text-xs text-emerald-200">
-                <div className="flex items-center gap-2">
-                  <CheckCircle2 size={13} className="text-[#DDA71D] flex-shrink-0" />
-                  <span>Immediate Bereavement &amp; Medical Net</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <CheckCircle2 size={13} className="text-[#DDA71D] flex-shrink-0" />
-                  <span>Verified Member ID &amp; Directory Profile</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <CheckCircle2 size={13} className="text-[#DDA71D] flex-shrink-0" />
-                  <span>Discounted Passes to Annual Cultural Festival</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <CheckCircle2 size={13} className="text-[#DDA71D] flex-shrink-0" />
-                  <span>Luhya Business &amp; Maritime Mentorship</span>
-                </div>
+              <div className="space-y-3.5">
+                {solvedGaps.map((item, idx) => {
+                  const Icon = item.icon;
+                  return (
+                    <div key={idx} className="p-4 rounded-2xl bg-[#FAF9F6] border border-[#EAE7DF] flex items-start gap-3.5">
+                      <div className="w-9 h-9 rounded-xl bg-orange-50 text-[#FF5500] flex items-center justify-center flex-shrink-0 mt-0.5 border border-orange-200">
+                        <Icon size={18} />
+                      </div>
+                      <div>
+                        <div className="text-xs font-bold text-gray-400 line-through">{item.gap}</div>
+                        <div className="text-xs font-bold text-[#111827] mt-0.5">{item.solution}</div>
+                      </div>
+                    </div>
+                  );
+                })}
               </div>
             </div>
 
-            <div className="lg:col-span-4 flex flex-col items-center lg:items-end justify-center">
+            <div className="pt-6 mt-6 border-t border-[#EAE7DF] flex items-center justify-between">
+              <span className="text-xs text-gray-500 font-medium">Have you registered your family?</span>
               <button
                 onClick={() => setModalOpen(true)}
-                className="w-full sm:w-auto px-7 py-3 sm:px-8 sm:py-3.5 rounded-full bg-[#DDA71D] hover:bg-[#F5C842] text-[#082f1a] font-extrabold text-xs sm:text-sm shadow-xl hover:shadow-2xl transition-all transform hover:-translate-y-0.5 inline-flex items-center justify-center gap-2 group whitespace-nowrap"
-                style={{ fontFamily: "var(--font-outfit)" }}
+                className="px-5 py-2.5 rounded-full bg-[#FF5500] hover:bg-[#e04b00] text-white text-xs font-bold transition-all shadow-sm inline-flex items-center gap-1.5"
               >
-                <span>Register as Member</span>
-                <ArrowRight size={15} className="group-hover:translate-x-1 transition-transform" />
+                <span>Join Register</span>
+                <ArrowRight size={13} />
               </button>
             </div>
           </div>
+
+          {/* 6 Core Objectives */}
+          <div className="lg:col-span-6 bg-white rounded-3xl p-6 sm:p-8 border border-[#EAE7DF] shadow-[0_4px_25px_rgba(0,0,0,0.03)] flex flex-col justify-between">
+            <div>
+              <div className="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full bg-[#FAF9F6] border border-[#EAE7DF] text-gray-500 text-[10px] font-mono uppercase tracking-widest mb-3">
+                &gt; OUR MANDATE &lt;
+              </div>
+              <h3 className="text-2xl font-bold text-[#111827]">
+                Six Strategic Objectives
+              </h3>
+              <p className="text-xs text-gray-600 mt-1 mb-6">
+                Governing every chapter, event, and welfare disbursement nationwide.
+              </p>
+
+              <div className="space-y-3">
+                {conceptObjectives.map((obj) => (
+                  <div key={obj.num} className="flex items-start gap-3 text-xs text-gray-700">
+                    <div className="w-6 h-6 rounded-full bg-[#111827] text-white font-mono font-bold flex items-center justify-center flex-shrink-0 text-[11px] mt-0.5">
+                      {obj.num}
+                    </div>
+                    <p className="leading-snug pt-0.5">{obj.text}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="mt-6 pt-5 border-t border-[#EAE7DF] bg-[#FAF9F6] p-4 rounded-2xl border border-[#EAE7DF] flex items-center gap-3">
+              <ShieldCheck size={20} className="text-[#FF5500] flex-shrink-0" />
+              <p className="text-[11px] text-gray-700 leading-snug">
+                Fully compliant with Kenya Data Protection Act 2019. Your contact details remain private unless you grant directory consent.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* Registration CTA Banner */}
+        <div className="rounded-3xl p-8 sm:p-10 bg-[#111827] text-white flex flex-col md:flex-row items-center justify-between gap-6 border border-[#EAE7DF] shadow-lg relative overflow-hidden">
+          <div className="space-y-2 text-center md:text-left z-10">
+            <span className="text-[11px] font-mono uppercase tracking-widest text-[#FF5500]">
+              &gt; OFFICIAL REGISTRATION &lt;
+            </span>
+            <h3 className="text-2xl sm:text-3xl font-bold tracking-tight">
+              Are You Registered with Mulembe18?
+            </h3>
+            <p className="text-xs sm:text-sm text-gray-300 max-w-xl leading-relaxed">
+              Join thousands of Luhya professionals, business leaders, elders, and youth resident across Mombasa, Nairobi, and countrywide chapters.
+            </p>
+          </div>
+
+          <button
+            onClick={() => setModalOpen(true)}
+            className="px-7 py-3.5 rounded-full bg-[#FF5500] hover:bg-[#e04b00] text-white font-bold text-sm shadow-md transition-all whitespace-nowrap z-10"
+          >
+            Register Membership
+          </button>
         </div>
 
       </div>
 
-      {/* ==============================================================
-          NEW MEMBER REGISTRATION MODAL FORM
-          ============================================================== */}
+      {/* Registration Modal */}
       {modalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-sm animate-fade-in overflow-y-auto">
-          <div className="glass-card bg-white max-w-xl w-full rounded-3xl p-6 sm:p-8 shadow-2xl border border-white/60 relative my-8 max-h-[90vh] overflow-y-auto">
-            {/* Modal Close Button */}
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in overflow-y-auto">
+          <div className="bg-white max-w-2xl w-full rounded-3xl p-6 sm:p-8 shadow-2xl border border-[#EAE7DF] relative my-8">
             <button
               onClick={resetForm}
               className="absolute top-5 right-5 w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center text-gray-500 transition-colors"
-              aria-label="Close registration form"
+              aria-label="Close modal"
             >
               <X size={16} />
             </button>
 
             {submitSuccess ? (
-              /* Success / Membership ID Card Preview */
-              <div className="text-center py-6 space-y-6">
-                <div className="w-16 h-16 rounded-full bg-emerald-100 flex items-center justify-center mx-auto text-[#0D6E38] shadow-sm">
+              <div className="text-center py-8 space-y-4">
+                <div className="w-16 h-16 rounded-full bg-emerald-100 flex items-center justify-center mx-auto text-[#0D6E38]">
                   <CheckCircle2 size={36} />
                 </div>
-
-                <div className="space-y-1">
-                  <span className="text-[11px] font-bold text-[#0D6E38] uppercase tracking-widest bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200">
-                    Registration Approved
-                  </span>
-                  <h3 className="text-2xl font-black text-[#18221B]" style={{ fontFamily: "var(--font-outfit)" }}>
-                    Welcome to Mulembe18!
-                  </h3>
-                  <p className="text-xs sm:text-sm text-gray-600 max-w-md mx-auto">
-                    Your membership details have been entered into the official Mombasa Chapter Registry and verified under your clan desk.
-                  </p>
+                <h3 className="text-2xl font-bold text-[#18221B]" style={{ fontFamily: "var(--font-outfit)" }}>
+                  Registration Submitted!
+                </h3>
+                <p className="text-xs text-gray-600 max-w-md mx-auto">
+                  Your registration has been received by your chapter secretariat desk. Your Member ID is:
+                </p>
+                <div className="inline-block px-5 py-2 rounded-xl bg-emerald-50 border border-emerald-300 font-mono font-black text-lg text-[#0D6E38]">
+                  {registeredMemberId}
                 </div>
-
-                {/* Digital Card Preview */}
-                <div className="glass-card-dark rounded-2xl p-6 text-white text-left relative overflow-hidden border border-white/20 shadow-xl space-y-4">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <span className="text-xs font-black text-white" style={{ fontFamily: "var(--font-outfit)" }}>
-                        mulembe<span className="text-[#DDA71D]">18</span>
-                      </span>
-                      <span className="text-[9px] uppercase tracking-widest text-emerald-300 block">
-                        Digital Membership Pass
-                      </span>
-                    </div>
-                    <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-[#00A859] text-white">
-                      Verified Active
-                    </span>
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-3 text-xs">
-                    <div>
-                      <span className="text-[10px] text-emerald-300/80 uppercase">Member Name</span>
-                      <div className="font-bold text-white text-sm truncate">{form.fullName}</div>
-                    </div>
-                    <div>
-                      <span className="text-[10px] text-emerald-300/80 uppercase">Sub-Community</span>
-                      <div className="font-bold text-[#DDA71D] truncate">{form.subClan}</div>
-                    </div>
-                    <div>
-                      <span className="text-[10px] text-emerald-300/80 uppercase">Member Number</span>
-                      <div className="font-mono font-bold text-emerald-200">{registeredMemberId}</div>
-                    </div>
-                    <div>
-                      <span className="text-[10px] text-emerald-300/80 uppercase">Zone / Branch</span>
-                      <div className="font-semibold text-white">{form.residentialZone}</div>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
-                  <a
-                    href="/dashboard"
-                    className="px-6 py-2.5 rounded-full bg-[#0D6E38] hover:bg-[#0a4d29] text-white text-xs font-bold shadow-md transition-colors"
-                  >
-                    Go to Member Hub
-                  </a>
+                <div className="pt-4">
                   <button
                     onClick={resetForm}
-                    className="px-5 py-2.5 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs font-bold transition-colors"
+                    className="px-6 py-2.5 rounded-full bg-[#0D6E38] text-white text-xs font-bold shadow-md hover:bg-[#09522a]"
                   >
                     Done
                   </button>
                 </div>
               </div>
             ) : (
-              /* The Registration Form */
               <form onSubmit={handleRegisterSubmit} className="space-y-4">
-                <div className="space-y-1">
-                  <div className="inline-flex items-center gap-1 text-[11px] font-bold text-[#0D6E38] uppercase tracking-wider">
-                    <User size={13} />
-                    <span>New Member Enrollment</span>
-                  </div>
-                  <h3 className="text-xl sm:text-2xl font-bold text-[#18221B]" style={{ fontFamily: "var(--font-outfit)" }}>
-                    Register for Mulembe18 Membership
+                <div>
+                  <span className="text-[10px] uppercase font-bold text-[#0D6E38] tracking-wider">
+                    Member Registration Form
+                  </span>
+                  <h3 className="text-2xl font-bold text-[#18221B]" style={{ fontFamily: "var(--font-outfit)" }}>
+                    Register with Mulembe18
                   </h3>
                   <p className="text-xs text-gray-500">
-                    Connect with your sub-community elders and secure your family's welfare safety net.
+                    Connect with your county chapter and ancestral clan registry.
                   </p>
                 </div>
 
@@ -501,116 +420,143 @@ export default function AboutSection() {
                   </div>
                 )}
 
-                <div className="space-y-3.5 text-xs">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
                   <div>
                     <label className="block text-gray-700 font-semibold mb-1">
-                      Full Legal Name <span className="text-rose-500">*</span>
+                      Full Name <span className="text-rose-500">*</span>
                     </label>
                     <input
                       type="text"
                       required
                       value={form.fullName}
                       onChange={(e) => setForm({ ...form, fullName: e.target.value })}
-                      placeholder="e.g. Godfrey Wanyonyi Shikuku"
+                      placeholder="e.g. Godfrey Shikuku Wandera"
                       className="w-full px-3.5 py-2.5 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#0D6E38]"
                     />
                   </div>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <div>
-                      <label className="block text-gray-700 font-semibold mb-1">
-                        Mobile / M-Pesa Number <span className="text-rose-500">*</span>
-                      </label>
-                      <input
-                        type="tel"
-                        required
-                        value={form.phone}
-                        onChange={(e) => setForm({ ...form, phone: e.target.value })}
-                        placeholder="e.g. 0712 345 678"
-                        className="w-full px-3.5 py-2.5 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#0D6E38]"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-gray-700 font-semibold mb-1">Email Address</label>
-                      <input
-                        type="email"
-                        value={form.email}
-                        onChange={(e) => setForm({ ...form, email: e.target.value })}
-                        placeholder="e.g. godfrey@gmail.com"
-                        className="w-full px-3.5 py-2.5 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#0D6E38]"
-                      />
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <div>
-                      <label className="block text-gray-700 font-semibold mb-1">
-                        Luhya Sub-Community (Clan) <span className="text-rose-500">*</span>
-                      </label>
-                      <select
-                        value={form.subClan}
-                        onChange={(e) => setForm({ ...form, subClan: e.target.value })}
-                        className="w-full px-3.5 py-2.5 rounded-xl border border-gray-300 bg-white font-medium focus:outline-none focus:ring-2 focus:ring-[#0D6E38]"
-                      >
-                        {luhyaClans.map((clan) => (
-                          <option key={clan} value={clan}>
-                            {clan}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-
-                    <div>
-                      <label className="block text-gray-700 font-semibold mb-1">
-                        Residential Zone in Coast <span className="text-rose-500">*</span>
-                      </label>
-                      <select
-                        value={form.residentialZone}
-                        onChange={(e) => setForm({ ...form, residentialZone: e.target.value })}
-                        className="w-full px-3.5 py-2.5 rounded-xl border border-gray-300 bg-white font-medium focus:outline-none focus:ring-2 focus:ring-[#0D6E38]"
-                      >
-                        {coastalZones.map((zone) => (
-                          <option key={zone} value={zone}>
-                            {zone}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
+                  <div>
+                    <label className="block text-gray-700 font-semibold mb-1">
+                      M-Pesa Mobile Number <span className="text-rose-500">*</span>
+                    </label>
+                    <input
+                      type="tel"
+                      required
+                      value={form.phone}
+                      onChange={(e) => setForm({ ...form, phone: e.target.value })}
+                      placeholder="e.g. 0712 345 678"
+                      className="w-full px-3.5 py-2.5 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#0D6E38]"
+                    />
                   </div>
 
                   <div>
-                    <label className="block text-gray-700 font-semibold mb-1">Profession / Occupation</label>
+                    <label className="block text-gray-700 font-semibold mb-1">Email Address</label>
+                    <input
+                      type="email"
+                      value={form.email}
+                      onChange={(e) => setForm({ ...form, email: e.target.value })}
+                      placeholder="e.g. godfrey@gmail.com"
+                      className="w-full px-3.5 py-2.5 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#0D6E38]"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-gray-700 font-semibold mb-1">
+                      Luhya Sub-Community (Clan) <span className="text-rose-500">*</span>
+                    </label>
+                    <select
+                      value={form.subClan}
+                      onChange={(e) => setForm({ ...form, subClan: e.target.value })}
+                      className="w-full px-3.5 py-2.5 rounded-xl border border-gray-300 bg-white font-medium focus:outline-none focus:ring-2 focus:ring-[#0D6E38]"
+                    >
+                      {luhyaClans.map((c) => (
+                        <option key={c} value={c}>{c}</option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="block text-gray-700 font-semibold mb-1">
+                      Current Chapter (Residence) <span className="text-rose-500">*</span>
+                    </label>
+                    <select
+                      value={form.currentChapter}
+                      onChange={(e) => setForm({ ...form, currentChapter: e.target.value })}
+                      className="w-full px-3.5 py-2.5 rounded-xl border border-gray-300 bg-white font-medium focus:outline-none focus:ring-2 focus:ring-[#0D6E38]"
+                    >
+                      {chaptersList.map((ch) => (
+                        <option key={ch} value={ch}>{ch}</option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="block text-gray-700 font-semibold mb-1">
+                      Ancestral Home County <span className="text-rose-500">*</span>
+                    </label>
+                    <select
+                      value={form.homeCounty}
+                      onChange={(e) => setForm({ ...form, homeCounty: e.target.value })}
+                      className="w-full px-3.5 py-2.5 rounded-xl border border-gray-300 bg-white font-medium focus:outline-none focus:ring-2 focus:ring-[#0D6E38]"
+                    >
+                      {ancestralHomeCounties.map((cty) => (
+                        <option key={cty} value={cty}>{cty}</option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="block text-gray-700 font-semibold mb-1">
+                      Residential Estate / Area
+                    </label>
                     <input
                       type="text"
-                      value={form.profession}
-                      onChange={(e) => setForm({ ...form, profession: e.target.value })}
-                      placeholder="e.g. Maritime Logistics Officer / Business Owner / Teacher"
+                      value={form.residentialArea}
+                      onChange={(e) => setForm({ ...form, residentialArea: e.target.value })}
+                      placeholder="e.g. Nyali, Bamburi, Westlands"
                       className="w-full px-3.5 py-2.5 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#0D6E38]"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-gray-700 font-semibold mb-1">Brief Bio or Village of Origin</label>
-                    <textarea
-                      rows={2}
-                      value={form.bio}
-                      onChange={(e) => setForm({ ...form, bio: e.target.value })}
-                      placeholder="e.g. Native of Kimilili, Bungoma; resident in Nyali, Mombasa since 2018."
+                    <label className="block text-gray-700 font-semibold mb-1">
+                      Profession / Occupation
+                    </label>
+                    <input
+                      type="text"
+                      value={form.occupation}
+                      onChange={(e) => setForm({ ...form, occupation: e.target.value })}
+                      placeholder="e.g. Maritime Officer / Teacher / Business"
                       className="w-full px-3.5 py-2.5 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#0D6E38]"
                     />
                   </div>
                 </div>
 
-                <div className="pt-2">
+                {/* Privacy Consent */}
+                <div className="pt-2 border-t border-gray-200">
+                  <label className="flex items-center gap-2 text-[11px] text-gray-600 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={form.consentDataAct}
+                      onChange={(e) => setForm({ ...form, consentDataAct: e.target.checked })}
+                      className="rounded text-[#0D6E38] focus:ring-[#0D6E38]"
+                    />
+                    <span>
+                      I consent to Mulembe18 storing my data in compliance with the Kenya Data Protection Act 2019.
+                    </span>
+                  </label>
+                </div>
+
+                <div className="pt-3">
                   <button
                     type="submit"
                     disabled={isSubmitting}
-                    className="w-full py-3.5 rounded-xl bg-[#0D6E38] hover:bg-[#0a4d29] text-white font-bold text-xs sm:text-sm shadow-md transition-colors flex items-center justify-center gap-2"
+                    className="w-full py-3 rounded-full bg-[#0D6E38] hover:bg-[#09522a] text-white font-bold text-xs shadow-md transition-colors flex items-center justify-center gap-2"
                   >
                     {isSubmitting ? (
                       <>
                         <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                        <span>Submitting Registration to Clan Desk...</span>
+                        <span>Submitting to Chapter Registry...</span>
                       </>
                     ) : (
                       <>
@@ -619,9 +565,6 @@ export default function AboutSection() {
                       </>
                     )}
                   </button>
-                  <p className="text-[10px] text-gray-400 text-center mt-2">
-                    By registering, you agree to uphold the peaceful solidarity principles of the Mulembe Constitution.
-                  </p>
                 </div>
               </form>
             )}

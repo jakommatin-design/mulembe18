@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
-import { Search, ChevronRight, X, Phone, Mail, MapPin, ShieldCheck, Users, UserPlus } from "lucide-react";
+import { Search, ChevronRight, X, Phone, Mail, MapPin, ShieldCheck, Users, UserPlus, Home, ArrowRight } from "lucide-react";
 import Link from "next/link";
 
 interface Member {
@@ -18,6 +18,8 @@ interface Member {
   bio?: string;
   bg?: string;
   text?: string;
+  birth_county?: string;
+  current_county?: string;
 }
 
 const clansList = [
@@ -75,9 +77,11 @@ export default function DirectorySection() {
                 status: m.status || "Verified",
                 phone: m.phone,
                 email: m.email,
-                bio: m.bio || "Active registered member of the Mulembe18 Coastal Chapter.",
+                bio: m.bio || "Active registered member of the Mulembe18 Nationwide Network.",
                 bg: "bg-emerald-100/90 border-[#DDA71D]",
                 text: "text-emerald-800",
+                birth_county: m.birth_county_name || m.birth_county || m.home_county || "Western Kenya",
+                current_county: m.residential_county_name || m.current_county || m.county || m.area || "Mombasa",
               };
             });
             setMembers(mapped);
@@ -101,47 +105,48 @@ export default function DirectorySection() {
   });
 
   return (
-    <section id="directory" className="py-16 bg-white relative overflow-hidden" aria-labelledby="directory-heading">
-      {/* Decorative background grid */}
-      <div className="absolute inset-0 bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:16px_16px] opacity-40 pointer-events-none" />
-
+    <section id="directory" className="py-16 sm:py-24 bg-[#FAF9F6] border-b border-[#EAE7DF] text-[#111827] relative overflow-hidden" aria-labelledby="directory-heading">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        {/* Section Header */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 pb-4 border-b border-[#E6E0D5]">
-          <div>
-            <span className="text-xs font-bold uppercase tracking-wider text-[#0D6E38] bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200">
-              Community Registry
-            </span>
-            <h2
-              id="directory-heading"
-              className="text-3xl sm:text-4xl font-extrabold text-[#18221B] mt-2 tracking-tight"
-              style={{ fontFamily: "var(--font-outfit)" }}
-            >
-              Member Directory
-            </h2>
-            <p className="text-sm text-gray-600 mt-1">
-              Registered and verified Luhya members residing across Mombasa County.
-            </p>
+        {/* Section Header (Agnos Style) */}
+        <div className="text-center max-w-3xl mx-auto mb-10 sm:mb-12">
+          <div className="inline-flex items-center justify-center gap-1.5 px-3.5 py-1 rounded-full bg-white border border-[#E4DFD5] text-[#6B7280] text-[11px] font-mono uppercase tracking-[0.2em] shadow-2xs mb-4">
+            <span>&gt;</span>
+            <span className="font-bold text-[#374151]">VERIFIED MEMBER DIRECTORY</span>
+            <span>&lt;</span>
           </div>
-          <div className="mt-4 md:mt-0 flex items-center gap-3">
-            <span className="px-3.5 py-1.5 rounded-full bg-emerald-50 border border-emerald-200 text-[#0D6E38] text-xs font-bold">
-              {loading ? "Checking database..." : `${members.length} Registered Members`}
+
+          <h2
+            id="directory-heading"
+            className="text-3xl sm:text-4xl lg:text-5xl font-bold text-[#111827] tracking-tight leading-[1.2]"
+          >
+            Search members across{" "}
+            <span className="text-[#FF5500]">47 counties</span>
+          </h2>
+
+          <p className="text-gray-600 text-sm sm:text-base mt-3 max-w-2xl mx-auto leading-relaxed">
+            Verified Luhya members across Kenya and the diaspora — searchable by clan, homeland county,
+            professional trade, and current residence.
+          </p>
+
+          <div className="mt-4 flex items-center justify-center gap-2">
+            <span className="px-3.5 py-1 rounded-full bg-white border border-[#EAE7DF] text-[#111827] text-xs font-bold shadow-2xs">
+              {loading ? "Checking database..." : `${members.length} Registered &amp; Verified Members`}
             </span>
           </div>
         </div>
 
         {/* Filter & Search Bar */}
-        <div className="glass-card p-4 sm:p-5 rounded-2xl mb-8 border border-gray-200 shadow-sm">
+        <div className="bg-white p-4 sm:p-5 rounded-3xl mb-10 border border-[#EAE7DF] shadow-[0_4px_25px_rgba(0,0,0,0.03)]">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-3 items-center">
             {/* Search Input */}
             <div className="relative lg:col-span-5">
-              <Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" />
+              <Search size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
               <input
                 type="text"
                 placeholder="Search by name, profession, clan, or area..."
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
-                className="w-full pl-10 pr-4 py-2.5 bg-white/90 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-[#0D6E38] focus:border-[#0D6E38] outline-none transition"
+                className="w-full pl-11 pr-4 py-2.5 bg-[#FAF9F6] border border-[#EAE7DF] rounded-full text-sm text-[#111827] placeholder-gray-400 focus:outline-none focus:border-[#FF5500] transition"
               />
             </div>
 
@@ -151,10 +156,10 @@ export default function DirectorySection() {
                 <button
                   key={c}
                   onClick={() => setSelectedClan(c)}
-                  className={`px-3 py-1.5 rounded-full text-xs font-bold transition-all whitespace-nowrap ${
+                  className={`px-3.5 py-1.5 rounded-full text-xs font-bold transition-all whitespace-nowrap ${
                     selectedClan === c
-                      ? "bg-[#0D6E38] text-white shadow-sm"
-                      : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                      ? "bg-[#111827] text-white shadow-sm"
+                      : "bg-[#FAF9F6] text-gray-700 border border-[#EAE7DF] hover:border-gray-400"
                   }`}
                 >
                   {c}
@@ -168,8 +173,8 @@ export default function DirectorySection() {
         {loading && (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {[1, 2, 3].map((i) => (
-              <div key={i} className="p-5 rounded-2xl border border-gray-200 bg-gray-50/60 animate-pulse space-y-3">
-                <div className="w-12 h-12 bg-gray-200 rounded-xl" />
+              <div key={i} className="p-6 rounded-3xl border border-[#EAE7DF] bg-white animate-pulse space-y-4">
+                <div className="w-12 h-12 bg-gray-200 rounded-2xl" />
                 <div className="h-4 bg-gray-200 rounded w-1/2" />
                 <div className="h-3 bg-gray-200 rounded w-3/4" />
               </div>
@@ -183,61 +188,69 @@ export default function DirectorySection() {
             {filtered.map((m) => (
               <div
                 key={m.id || m.name}
-                className="glass-card rounded-2xl p-5 flex flex-col justify-between transition-all duration-300 hover:-translate-y-1 hover:shadow-xl border border-gray-200"
+                className="bg-white rounded-3xl p-6 flex flex-col justify-between border border-[#EAE7DF] shadow-[0_4px_25px_rgba(0,0,0,0.03)] hover:shadow-md hover:border-[#FF5500]/40 transition-all duration-300"
               >
                 <div>
                   <div className="flex items-start justify-between">
-                    <div
-                      className={`w-12 h-12 rounded-2xl border-2 flex items-center justify-center text-base font-extrabold shadow-sm ${m.bg} ${m.text}`}
-                      style={{ fontFamily: "var(--font-outfit)" }}
-                    >
+                    <div className="w-12 h-12 rounded-2xl bg-[#111827] text-white flex items-center justify-center text-sm font-black shadow-xs">
                       {m.initials}
                     </div>
-                    <span className="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-emerald-100 text-[#0D6E38]">
-                      {m.status}
+                    <span className="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-orange-50 text-[#FF5500] border border-orange-200 inline-flex items-center gap-1">
+                      <ShieldCheck size={12} />
+                      <span>{m.status}</span>
                     </span>
                   </div>
 
-                  <h3 className="font-bold text-[#18221B] text-base mt-3" style={{ fontFamily: "var(--font-outfit)" }}>
+                  <h3 className="font-bold text-[#111827] text-base mt-4">
                     {m.name}
                   </h3>
 
-                  <div className="text-xs font-semibold text-[#0D6E38] flex items-center gap-1.5 mt-1">
-                    <span>Clan: {m.clan}</span>
+                  <div className="text-xs font-medium text-gray-600 flex items-center gap-1.5 mt-1.5 flex-wrap">
+                    <span className="font-bold text-[#111827]">Clan: {m.clan}</span>
                     <span className="text-gray-300">•</span>
-                    <span className="inline-flex items-center gap-1 text-blue-600 bg-blue-50 px-2 py-0.5 rounded-full">
-                      <MapPin size={11} />
-                      <span>{m.area}</span>
+                    <span className="inline-flex items-center gap-1 text-gray-700 bg-[#FAF9F6] border border-[#EAE7DF] px-2 py-0.5 rounded-full">
+                      <MapPin size={11} className="text-[#FF5500]" />
+                      <span>{m.current_county || m.area}</span>
                     </span>
+                    {m.birth_county && (
+                      <>
+                        <span className="text-gray-300">•</span>
+                        <span className="inline-flex items-center gap-1 text-gray-600 bg-[#FAF9F6] border border-[#EAE7DF] px-2 py-0.5 rounded-full text-[10px]">
+                          <Home size={10} className="text-[#FF5500]" />
+                          <span>From: {m.birth_county}</span>
+                        </span>
+                      </>
+                    )}
                   </div>
 
-                  <div className="mt-2.5 text-xs text-gray-600 flex items-center gap-1.5 flex-wrap">
-                    <span className="bg-gray-100 rounded-md px-2 py-0.5 text-gray-800 font-semibold text-[11px]">
+                  <div className="mt-3 text-xs text-gray-600 flex items-center gap-1.5 flex-wrap">
+                    <span className="bg-[#FAF9F6] border border-[#EAE7DF] rounded-md px-2 py-0.5 text-[#111827] font-semibold text-[11px]">
                       {m.field}
                     </span>
-                    <span className="text-gray-400">•</span>
-                    <span className="font-medium text-gray-700">{m.profession}</span>
+                    <span className="text-gray-300">•</span>
+                    <span className="font-medium text-gray-600">{m.profession}</span>
                   </div>
                 </div>
 
-                <div className="mt-5 pt-3.5 border-t border-gray-100 flex items-center justify-between">
+                <div className="mt-6 pt-4 border-t border-[#EAE7DF] flex items-center justify-between">
                   <span className="text-[11px] text-gray-400 font-medium">Joined {m.joined}</span>
                   <button
                     onClick={() => setActiveMember(m)}
-                    className="inline-flex items-center gap-1 text-xs font-bold text-[#0D6E38] hover:text-[#0a4d29] transition-colors"
+                    className="inline-flex items-center gap-1 text-xs font-bold text-[#111827] hover:text-[#FF5500] transition-colors"
                   >
-                    View Details <ChevronRight size={13} />
+                    <span>View Details</span>
+                    <ChevronRight size={13} />
                   </button>
                 </div>
               </div>
             ))}
 
             {filtered.length === 0 && (
-              <div className="col-span-1 sm:col-span-2 lg:col-span-3 text-center py-16 bg-gray-50/80 rounded-2xl border border-dashed border-gray-300 p-6">
-                <div className="w-12 h-12 rounded-2xl bg-emerald-50 text-[#0D6E38] flex items-center justify-center mx-auto mb-3">
+              <div className="col-span-1 sm:col-span-2 lg:col-span-3 text-center py-16 bg-white rounded-3xl border border-[#EAE7DF] p-6 shadow-2xs">
+                <div className="w-12 h-12 rounded-2xl bg-orange-50 text-[#FF5500] flex items-center justify-center mx-auto mb-3">
                   <Users size={24} />
                 </div>
-                <p className="text-base font-bold text-gray-800">
+                <p className="text-base font-bold text-[#111827]">
                   {query || selectedClan !== "All"
                     ? "No members match this specific filter"
                     : "No registered members listed yet"}
@@ -254,14 +267,14 @@ export default function DirectorySection() {
                         setQuery("");
                         setSelectedClan("All");
                       }}
-                      className="px-4 py-2 rounded-full bg-gray-200 hover:bg-gray-300 text-gray-800 text-xs font-bold transition-colors"
+                      className="px-4 py-2 rounded-full bg-white border border-[#EAE7DF] text-gray-800 text-xs font-bold hover:border-gray-400 transition-colors"
                     >
                       Reset Filters
                     </button>
                   )}
                   <Link
                     href="/dashboard"
-                    className="px-4 py-2 rounded-full bg-[#0D6E38] hover:bg-[#0a4d29] text-white text-xs font-bold transition-colors shadow-sm inline-flex items-center gap-1.5"
+                    className="px-5 py-2 rounded-full bg-[#FF5500] hover:bg-[#e04b00] text-white text-xs font-bold transition-colors shadow-sm inline-flex items-center gap-1.5"
                   >
                     <UserPlus size={14} />
                     <span>Open Member Portal</span>
@@ -273,19 +286,19 @@ export default function DirectorySection() {
         )}
 
         {/* Support Banner */}
-        <div className="mt-10 p-5 rounded-2xl bg-amber-50/80 border border-[#DDA71D]/40 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-3 text-center sm:text-left">
-            <div className="w-10 h-10 rounded-2xl bg-[#DDA71D]/20 text-[#DDA71D] flex items-center justify-center font-bold text-lg flex-shrink-0">
-              <Users size={18} />
+        <div className="mt-12 p-6 rounded-3xl bg-white border border-[#EAE7DF] shadow-[0_4px_25px_rgba(0,0,0,0.03)] flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div className="flex items-center gap-4 text-center sm:text-left">
+            <div className="w-12 h-12 rounded-2xl bg-orange-50 text-[#FF5500] flex items-center justify-center font-bold flex-shrink-0">
+              <Users size={20} />
             </div>
             <div>
-              <p className="text-xs font-bold text-[#18221B]">Mulembe Unity — Sub-Community Coordinator</p>
-              <p className="text-xs text-gray-600">Need to update your clan directory record or verify your membership status?</p>
+              <p className="text-sm font-bold text-[#111827]">Mulembe Unity — Sub-Community Coordinator</p>
+              <p className="text-xs text-gray-600 mt-0.5">Need to update your clan directory record or verify your membership status?</p>
             </div>
           </div>
           <a
             href="/#contact"
-            className="px-4 py-2 rounded-full bg-[#0D6E38] hover:bg-[#0a4d29] text-white text-xs font-bold transition-colors whitespace-nowrap shadow-sm"
+            className="px-6 py-2.5 rounded-full bg-[#111827] hover:bg-black text-white text-xs font-bold transition-colors whitespace-nowrap shadow-sm"
           >
             Contact Secretariat
           </a>
@@ -295,53 +308,57 @@ export default function DirectorySection() {
       {/* Member Profile Modal */}
       {activeMember && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in">
-          <div className="glass-card bg-white max-w-md w-full rounded-3xl p-6 shadow-2xl border border-white/50 relative space-y-4">
+          <div className="bg-white max-w-md w-full rounded-3xl p-6 sm:p-7 shadow-2xl border border-[#EAE7DF] relative space-y-4">
             <button
               onClick={() => setActiveMember(null)}
-              className="absolute top-4 right-4 w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center text-gray-500"
+              className="absolute top-5 right-5 w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center text-gray-500 transition-colors"
               aria-label="Close modal"
             >
               <X size={16} />
             </button>
 
             <div className="flex items-center gap-4">
-              <div
-                className={`w-14 h-14 rounded-2xl border-2 flex items-center justify-center text-lg font-extrabold shadow-sm ${activeMember.bg} ${activeMember.text}`}
-              >
+              <div className="w-14 h-14 rounded-2xl bg-[#111827] text-white flex items-center justify-center text-base font-black shadow-sm">
                 {activeMember.initials}
               </div>
               <div>
                 <div className="flex items-center gap-2">
-                  <h3 className="text-lg font-bold text-[#18221B]" style={{ fontFamily: "var(--font-outfit)" }}>
+                  <h3 className="text-lg font-bold text-[#111827]">
                     {activeMember.name}
                   </h3>
-                  <ShieldCheck size={16} className="text-[#0D6E38]" />
+                  <ShieldCheck size={16} className="text-[#FF5500]" />
                 </div>
-                <p className="text-xs text-emerald-800 font-semibold">
-                  Sub-tribe: {activeMember.clan} • {activeMember.area}
+                <p className="text-xs text-gray-600 font-medium">
+                  Sub-tribe: <strong className="text-[#111827]">{activeMember.clan}</strong> • {activeMember.area}
                 </p>
               </div>
             </div>
 
-            <div className="p-3.5 rounded-xl bg-gray-50 text-xs text-gray-700 leading-relaxed">
+            <div className="p-4 rounded-2xl bg-[#FAF9F6] border border-[#EAE7DF] text-xs text-gray-700 leading-relaxed">
               {activeMember.bio}
             </div>
 
-            <div className="space-y-2 text-xs text-gray-600">
+            <div className="space-y-2.5 text-xs text-gray-600">
               <p className="flex items-center gap-2">
-                <MapPin size={13} className="text-[#0D6E38]" />
-                <span>Residence Zone: {activeMember.area}, Mombasa County</span>
+                <MapPin size={14} className="text-[#FF5500]" />
+                <span>Current County: <strong>{activeMember.current_county || activeMember.area}</strong></span>
               </p>
+              {activeMember.birth_county && (
+                <p className="flex items-center gap-2">
+                  <Home size={14} className="text-[#FF5500]" />
+                  <span>Birth / Home County: <strong>{activeMember.birth_county}</strong></span>
+                </p>
+              )}
               {activeMember.phone && (
                 <p className="flex items-center gap-2">
-                  <Phone size={13} className="text-[#0D6E38]" />
-                  <span>Contact: {activeMember.phone}</span>
+                  <Phone size={14} className="text-[#FF5500]" />
+                  <span>Contact: <strong>{activeMember.phone}</strong></span>
                 </p>
               )}
               {activeMember.email && (
                 <p className="flex items-center gap-2">
-                  <Mail size={13} className="text-[#0D6E38]" />
-                  <span>Email: {activeMember.email}</span>
+                  <Mail size={14} className="text-[#FF5500]" />
+                  <span>Email: <strong>{activeMember.email}</strong></span>
                 </p>
               )}
             </div>
@@ -349,7 +366,7 @@ export default function DirectorySection() {
             <div className="pt-2">
               <button
                 onClick={() => setActiveMember(null)}
-                className="w-full py-2.5 rounded-xl bg-[#0D6E38] hover:bg-[#0a4d29] text-white text-xs font-bold shadow-md transition-colors"
+                className="w-full py-3 rounded-full bg-[#111827] hover:bg-black text-white text-xs font-bold shadow-sm transition-colors"
               >
                 Close Profile
               </button>

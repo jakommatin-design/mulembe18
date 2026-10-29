@@ -1,0 +1,235 @@
+--- PAGE 1 ---
+Mulembe18 Community Website Proposal
+Prepared by Elisha Adera (@crackertum) | October 2026 | Version 1.0
+1. Summary
+Mulembe18 is a community website for members who live in Mombasa, Kenya. It has two
+jobs: to keep an accurate, living register of community members, and to make it easy to
+plan and attend events together. The goal is simple: people who share a background and a
+city should know each other, hear about gatherings in time, and show up.
+This document is the plan I will follow. It covers why the site is needed, what it will do, how
+it will be run, how it will be built, and the order in which things will happen. Items marked
+in [square brackets] are decisions or facts I still need to fill in.
+2. Background and the problem
+Community members living in Mombasa are spread across many estates, workplaces,
+colleges and churches. Today, finding each other and organising anything usually depends
+on WhatsApp groups, phone calls and word of mouth. That creates real problems:
+Nobody has a complete list of who lives in Mombasa, so people are missed.
+Announcements get buried in busy group chats.
+New arrivals (students, workers, families) have no obvious way to connect.
+Event organisers cannot tell how many people to expect, and the same few people end
+up doing all the work.
+Contact details are scattered in phones and old spreadsheets, and are lost when
+people change numbers.
+Mulembe18 solves this by giving the community one trusted home online.
+3. Vision, mission and values
+Vision: a connected community in Mombasa where nobody who belongs is left out.
+Mission: register community members living in Mombasa, bring them together, and make
+community events easy to plan and join.
+Mulembe18 Community Website Proposal
+Page 1 of 8
+--- PAGE 2 ---
+Name: "Mulembe" is a greeting of peace, and the name signals welcome and unity.
+[Confirm the meaning of "18" and the exact community the name refers to, so the About
+page and wording are accurate.]
+Values: welcome, trust, respect for privacy, and community ownership.
+4. Objectives
+By the end of the first 12 months, I want to have:
+A working website where members can register themselves and manage their own
+profile.
+A searchable member directory with privacy controls the member decides.
+An events system where any approved member can propose an event and others can
+RSVP.
+A first group of members registered [target number, for example 100] and at least
+[target number, for example 3] events planned through the site.
+A small leadership team that runs the community side of the platform.
+These numbers are placeholders. Set targets you are comfortable being held to.
+5. Who the site is for
+Members: anyone from the community living in Mombasa who wants to be known and
+reachable.
+Newcomers: students, new workers and families who have just arrived and want to
+find their people.
+Organisers and leaders: the people who plan gatherings, collect contributions and
+share news.
+Administrators: a small trusted team that approves members and keeps the platform
+in order.
+6. What the website will do
+6.1 Phase 1 features (the minimum to launch)
+Home page. A clear welcome, what Mulembe18 is, a button to register, and the next
+upcoming events.
+Mulembe18 Community Website Proposal
+Page 2 of 8
+--- PAGE 3 ---
+Member registration. A short form collecting only what is needed:
+Full name
+Phone number (and email if they have one)
+Area or estate in Mombasa
+Occupation or institution (optional)
+How they would like to be contacted
+Consent to be listed, with a choice of what is visible
+Approval. New registrations are reviewed by an admin before they appear publicly, so the
+register stays trustworthy.
+Member directory. Approved members can search by name or area. Contact details are
+only shown to logged-in members, and each person controls what others can see.
+Events. A page listing upcoming and past events with date, time, venue, description and
+an RSVP button. Organisers can create and edit events. Admins can approve them.
+Announcements. A simple notice board for community news, such as bereavements,
+celebrations, meetings and opportunities.
+Admin dashboard. Approve members, manage events and announcements, and export
+the register.
+6.2 Phase 2 features (after launch, once people are using it)
+SMS and email notifications for new events and reminders.
+Event check-in on the day, so attendance is recorded.
+Optional contributions for events and welfare, paid by M-Pesa.
+Interest groups, for example youth, professionals, students, women, and men.
+A photo gallery from past events.
+A simple map or list view of members by area.
+6.3 Later ideas
+A community business directory, so members can support each other's businesses.
+A jobs and opportunities board.
+A mentorship matching tool for students and young professionals.
+Swahili and English language options.
+Mulembe18 Community Website Proposal
+Page 3 of 8
+--- PAGE 4 ---
+7. Membership, roles and governance
+Roles
+Visitor: can see the home page, the About page and public events.
+Member: an approved person who can see the directory, RSVP to events and post to
+the notice board.
+Organiser: a member trusted to create events.
+Admin: approves members, edits content and sees the full register.
+Who runs it. I suggest a small steering group of [3 to 5 people] chosen by the community,
+with a chairperson and a secretary. I build and maintain the platform; the steering group
+owns the community decisions, such as who may join and what events happen. [Decide
+who the first steering group will be.]
+Joining rules. Membership is open to community members who live in Mombasa. [Decide
+whether a referral from an existing member is required, and how people are verified.]
+Conduct. A short code of conduct will be shown at registration: be respectful, no hate
+speech, no political campaigning, no selling to members without permission. Admins can
+remove members who break it.
+8. Privacy and data protection
+The site will hold personal information, so this must be handled properly from the start.
+Follow the Kenya Data Protection Act, 2019. Check whether the project must register
+with the Office of the Data Protection Commissioner, and do it if so.
+Collect only what is needed, and say clearly why it is collected.
+Ask for consent at registration, and let members edit or delete their profile at any time.
+Never show phone numbers or emails to the public, only to logged-in members, and
+only if the member allows it.
+Store data securely, use HTTPS, protect admin accounts with strong passwords, and
+keep backups.
+Publish a short, plain-language Privacy Policy and Terms page.
+9. How events will work
+The event flow is meant to be simple enough that anyone can organise something.
+Mulembe18 Community Website Proposal
+Page 4 of 8
+--- PAGE 5 ---
+1. An organiser proposes an event: title, date, time, venue, description, and expected cost
+if any.
+2. An admin approves it and it appears on the Events page.
+3. Members RSVP (going, maybe, not going). The organiser sees the live headcount.
+4. Reminders are sent a few days before and on the day.
+5. After the event, the organiser adds photos and a short report, and the event moves to
+Past Events.
+10. Technical approach
+I will build the site myself with tools I already work with, keeping it simple and cheap to
+run.
+Front end: a responsive web app (Next.js with Tailwind CSS), designed mobile first,
+because most members will visit on their phones.
+Back end and database: a managed database with built-in login (for example Supabase
+or Firebase), so I do not have to build authentication from scratch.
+Hosting: Vercel or similar, with the custom domain [mulembe18.co.ke or similar, to be
+confirmed].
+Notifications: Africa's Talking for SMS, and an email service for emails.
+Payments (Phase 2): M-Pesa through the Daraja API for event contributions.
+Admin tools: a protected admin area inside the same app.
+Analytics: a simple, privacy-friendly analytics tool to see visits and registrations.
+The home page design is already drafted as a separate design file, and will guide the visual
+style: a deep green and amber palette that feels warm and welcoming.
+11. Roadmap
+Phase 0: Foundations (weeks 1 to 2)
+Confirm the name, the community it serves and the steering group.
+Secure the domain and set up hosting.
+Agree the registration form fields and the privacy approach.
+Phase 1: Build the core (weeks 3 to 8)
+Build the home page, registration, login and the admin approval flow.
+Mulembe18 Community Website Proposal
+Page 5 of 8
+--- PAGE 6 ---
+Build the member directory with privacy controls.
+Build events with RSVP, and the announcements board.
+Write the Privacy Policy, Terms and code of conduct.
+Test with 10 to 15 friendly members and fix problems.
+Phase 2: Soft launch (weeks 9 to 10)
+Invite a first group of members and gather their feedback.
+Hold one small event planned entirely through the site.
+Fix what did not work.
+Phase 3: Public launch (weeks 11 to 12)
+Announce to the whole community through WhatsApp groups, churches, institutions
+and word of mouth.
+Publish the first announcements and a calendar of events.
+Phase 4: Grow and improve (month 4 onward)
+Add SMS reminders, check-in and M-Pesa contributions.
+Add interest groups and the gallery.
+Review the numbers every month and decide what to build next.
+12. Launch and growth plan
+Start with trusted people. Ask a few respected members to register first and invite
+others.
+Go where people already are. Share the registration link in existing WhatsApp groups,
+and put a QR code on posters and at events.
+Make the first event count. A well-organised first gathering, planned through the site,
+is the best advertisement.
+Make registering easy. The form should take under two minutes on a phone.
+Keep it alive. Post something useful every week: an event, a notice or a welcome to
+new members.
+Ask for feedback often, and show members what changed because of it.
+Mulembe18 Community Website Proposal
+Page 6 of 8
+--- PAGE 7 ---
+13. Risks and how to handle them
+Few people register. Use trusted leaders to invite others, hold an in-person launch and
+keep the form short.
+Privacy concerns. Explain clearly how data is used, make visibility optional and never
+expose contacts publicly.
+Fake or unwelcome sign-ups. Admin approval and, if needed, member referrals.
+The site goes quiet. Share the load across a steering group, and schedule regular
+content and events.
+Running costs. Keep the stack simple and low cost, and use voluntary contributions if
+costs grow.
+Too much depends on one person. Document how the site works and train a second
+admin.
+14. Budget and sustainability
+The site can start very cheaply. The figures below are placeholders to fill in once quotes
+are confirmed.
+Domain name (yearly): [KES amount]
+Hosting and database (monthly): [KES amount, may be free at first]
+SMS credit (Phase 2, per month): [KES amount]
+Email service: [KES amount or free tier]
+Printing for posters and launch: [KES amount]
+Launch event: [KES amount]
+How costs are covered: [options to decide: voluntary member contributions, a small
+annual membership fee, event contributions, or a sponsor from a community business].
+Whatever is chosen, it should be reported openly to members.
+15. How we will measure success
+Number of registered and approved members.
+Share of members who log in at least once a month.
+Number of events planned through the site, and average attendance.
+Number of new members who joined after finding the site.
+Feedback from members, collected twice a year.
+Mulembe18 Community Website Proposal
+Page 7 of 8
+--- PAGE 8 ---
+16. Decisions I need to make next
+1. Confirm what "Mulembe18" stands for and who the community is.
+2. Choose the steering group and the first admin.
+3. Decide the joining rules: open, or referral only.
+4. Choose the domain name and register it.
+5. Decide how running costs will be covered.
+6. Set the first-year targets for members and events.
+7. Pick a date for the soft launch event.
+17. Conclusion
+Mulembe18 is a small, focused idea with a clear purpose: to know who we are in Mombasa
+and to gather more often. By starting with registration, a trusted directory and easy event
+planning, and growing only as the community uses it, the project stays simple, affordable
+and useful. The next step is to settle the open decisions in section 16 and begin Phase 0.
+Mulembe18 Community Website Proposal
+Page 8 of 8

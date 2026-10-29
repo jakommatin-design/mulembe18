@@ -62,30 +62,37 @@ export const metadata: Metadata = {
   },
 };
 
+import ElderHelpFloatingBar from "@/components/ElderHelpFloatingBar";
+import MsingiAIAssistant from "@/components/MsingiAIAssistant";
+
 export default function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
   return (
-    <html
-      lang="en"
-      className={`${plusJakartaSans.variable} ${outfit.variable} ${caveat.variable} ${kalam.variable} scroll-smooth`}
+    <ClerkProvider
+      appearance={{
+        variables: {
+          colorPrimary: "#0D6E38",
+        },
+      }}
     >
-      <body
-        style={{ fontFamily: "var(--font-jakarta), sans-serif" }}
-        className="selection:bg-[#0D6E38] selection:text-white"
+      <html
+        lang="en"
+        className={`${plusJakartaSans.variable} ${outfit.variable} ${caveat.variable} ${kalam.variable} scroll-smooth`}
       >
-        <ClerkProvider
-          appearance={{
-            variables: {
-              colorPrimary: "#0D6E38",
-            },
-          }}
+        <body
+          style={{ fontFamily: "var(--font-jakarta), sans-serif" }}
+          className="selection:bg-[#0D6E38] selection:text-white"
         >
           {children}
-        </ClerkProvider>
-      </body>
-    </html>
+          {/* Universal Elder & Accessibility Help Floating Bar */}
+          <ElderHelpFloatingBar />
+          {/* Msingi AI Community Assistant (Kenya) */}
+          <MsingiAIAssistant />
+        </body>
+      </html>
+    </ClerkProvider>
   );
 }

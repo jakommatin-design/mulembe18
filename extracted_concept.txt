@@ -1,0 +1,515 @@
+mulembe18: National Community Platform
+Proposal
+mulembe18 will grow from a Mombasa pilot into a chapter-based national platform that
+registers Luhya community members across Kenya, coordinates community events, and
+supports welfare and contributions in a transparent way.
+1. Executive Summary
+mulembe18 is a web platform that gives Luhya people in Kenya one trusted place to
+register, find each other, plan events and support one another. The first chapter will serve
+Mombasa. The design is then repeated county by county, so each chapter runs its own
+members, events and funds while sharing one national identity and one national
+leadership.
+This document sets out the purpose, structure, features, technical approach, governance,
+risks and rollout needed to take the platform from a single city to the whole country.
+2. Background and Rationale
+Many members of the community live away from their home counties for work and study.
+They often meet through informal WhatsApp groups, church networks and word of
+mouth. These channels work, but they leave gaps:
+There is no reliable record of who lives where, so newcomers struggle to find the
+community.
+Event planning is scattered across chat groups, with no central calendar, headcount or
+task tracking.
+Welfare contributions, such as bereavement and emergency support, are collected
+informally, which makes it hard to account for the money.
+Each city's group works alone, so the wider community cannot organize national
+events or share resources.
+A structured platform addresses these gaps while keeping the personal, community feel
+that people value. Comparable models include county and diaspora associations, alumni
+directories, chama management apps and event platforms.
+mulembe18 – Community Website Concept
+Page 1 of 14
+---PAGE---
+3. Vision, Mission and Objectives
+Vision: a connected, supportive Luhya community across Kenya, where no member is a
+stranger in a new town.
+Mission: to provide a secure, transparent and easy-to-use platform that brings members
+together, organizes community events, and supports welfare and development.
+Objectives
+1. Register and verify members, organized by chapter, home county and sub-community.
+2. Give every chapter tools to plan events and track attendance.
+3. Make welfare and dues collection transparent, with a public record of money received
+and spent.
+4. Provide a national layer for leadership, announcements and community-wide events.
+5. Protect members' personal data and comply with Kenyan law.
+6. Keep the platform accessible to members with low data and basic phones.
+4. Organizational Structure
+The platform is built around chapters. Each member belongs to the chapter where they
+live, and each chapter manages its own affairs under national rules.
+Level Scope Led by Main responsibilities
+National All of Kenya National officials
+and super admin
+Policy, national events,
+national fund, leadership
+elections, platform
+administration
+Chapter A city or county, such as
+Mombasa, Nairobi,
+Nakuru, Kisumu,
+Eldoret, Kakamega,
+Bungoma, Vihiga, Busia
+Chapter chair
+and committee
+Member approval, local
+events, chapter dues and
+welfare, local
+announcements
+Sub-
+community
+group
+One sub-community or
+clan, across chapters
+Group leader Cultural activities, group
+communication, group
+welfare circles
+mulembe18 – Community Website Concept
+Page 2 of 14
+---PAGE---
+Mombasa is the pilot chapter. Its processes become the template that new chapters copy.
+5. Membership and Directory
+Every member has a profile that is verified by a chapter admin before it becomes active.
+Profile fields: full name, phone number, email, sub-community or clan, home county,
+current chapter and area, occupation or skills, and student or professional status.
+Privacy controls: members decide which fields other members can see. Chapter
+admins see what they need to manage the chapter. National officials see aggregate
+data unless a member consents to more.
+Search and filters: by chapter, home county, sub-community, skills and interest group,
+for example "nurses in Nakuru" or "students in Mombasa."
+Verification: admin approval, with optional referral by an existing member to protect
+the community from fake sign-ups.
+Transfers: a member who relocates can move between chapters without losing their
+history.
+Exports: admins can export records for official use, and every export is logged.
+6. Core Features
+6.1 Events and Planning
+A national calendar combined with chapter calendars, plus a "near me" view.
+Event types: cultural days, weddings, funerals and fundraisers, sports days, church and
+youth gatherings, monthly meetups and annual conventions.
+RSVP, headcount and reminders by SMS, email and WhatsApp link.
+Event committees with named roles (chair, treasurer, logistics) and a task checklist for
+each event.
+Level Scope Led by Main responsibilities
+Interest group Youth, women,
+professionals, students
+Group
+coordinator
+Mentorship, networking,
+targeted events
+Diaspora
+chapter (later)
+Members outside Kenya Diaspora
+coordinator
+Fundraising, home-
+community links, virtual
+events
+mulembe18 – Community Website Concept
+Page 3 of 14
+---PAGE---
+Optional ticketing or contributions through M-Pesa.
+6.2 Welfare, Dues and Contributions
+Membership dues tracked per member, with payment reminders.
+Bereavement and emergency appeals with a target, a deadline and a running total.
+A ledger for each chapter and for the national fund showing money in, money out and
+the reason for each payment.
+Separate M-Pesa accounts per chapter, so chapter money never mixes with national
+money.
+Approval rules for payouts, for example two officials must approve any withdrawal.
+6.3 Communication
+Announcements and a news board at national, chapter and group level.
+SMS broadcasts to a chapter or group, so members without smartphones are included.
+A noticeboard for jobs, rentals, businesses and mentorship, which helps newcomers
+settle into a new town.
+6.4 Culture and Identity
+Pages on the Luhya sub-communities, language, food, songs and dances.
+A photo and video gallery from past events.
+A newcomer's guide for each chapter city, written by local members.
+6.5 Leadership and Administration
+Role-based access: super admin, national officials, chapter admins and group leaders.
+Dashboards for member counts, event attendance, dues collected and chapter
+activity.
+Elections module for chapter and national leadership, with secure voting.
+Audit logs that record changes to members, roles and finances.
+7. Platform Pages
+Home, About, Join, Member Directory (login required), Chapters, Events, Contributions
+and Welfare, News, Gallery, Leadership, Newcomer's Guide, Contact and Privacy Policy.
+mulembe18 – Community Website Concept
+Page 4 of 14
+---PAGE---
+8. Requirements
+Priority uses three levels: Must (needed for launch of that phase), Should (important, can
+follow shortly after) and Could (useful, can wait).
+8.1 Functional Requirements
+ID Requirement Priority Phase
+FR-01 A visitor can register with name, phone, email,
+home county, sub-community and current chapter
+Must 1
+FR-02 A chapter admin can approve, reject or suspend a
+registration
+Must 1
+FR-03 A member can edit their profile and choose which
+fields other members see
+Must 1
+FR-04 Members can search the directory by chapter,
+home county, sub-community, skills and interest
+group
+Must 1
+FR-05 A member can request a transfer to another
+chapter, approved by the receiving chapter admin
+Should 2
+FR-06 Chapter admins can create, edit and cancel events
+with date, venue, description and capacity
+Must 1
+FR-07 Members can RSVP to events, and admins can see
+headcount and attendance
+Must 1
+FR-08 Event organizers can assign committee roles and
+track a task checklist per event
+Should 2
+FR-09 Members can pay dues and contributions by M-
+Pesa, and the payment is recorded automatically
+Must 2
+FR-10 Admins can open a welfare appeal with a target
+and deadline, and show the running total
+Must 2
+FR-11 Each chapter and the national fund has its own
+ledger of income and expenses
+Must 2
+FR-12 Payouts need approval from two authorized
+officials
+Must 2
+mulembe18 – Community Website Concept
+Page 5 of 14
+---PAGE---
+8.2 Non-Functional Requirements
+ID Requirement Priority Phase
+FR-13 Admins can send announcements and SMS
+broadcasts to a chapter, group or all members
+Must 2
+FR-14 Members can post and browse notices for jobs,
+rentals, businesses and mentorship
+Could 3
+FR-15 The system supports chapter and national
+elections with one vote per eligible member
+Should 4
+FR-16 Officials can view dashboards for membership,
+attendance, dues and activity
+Should 2
+FR-17 Admins can export member and ledger reports,
+and every export is logged
+Should 2
+FR-18 The interface is available in English and Kiswahili Should 3
+FR-19 Members without smartphones can register and
+receive updates through USSD and SMS
+Could 3
+FR-20 Members abroad can join an international chapter Could 5
+ID Area Requirement
+NFR-01 Performance Pages load in under 3 seconds on a typical 3G or 4G
+mobile connection
+NFR-02 Scalability The system supports growth from hundreds to
+tens of thousands of members without redesign
+NFR-03 Availability The platform is available at least 99% of the time,
+with planned maintenance announced in advance
+NFR-04 Security All traffic uses HTTPS, sign-in is handled by Clerk,
+and officials can use two-factor sign-in
+NFR-05 Privacy Personal data is collected only with consent and
+shown only according to each member's settings
+NFR-06 Data isolation A chapter admin can access only their own
+chapter's private data
+mulembe18 – Community Website Concept
+Page 6 of 14
+---PAGE---
+ID Area Requirement
+NFR-07 Auditability Changes to members, roles and money are logged
+with who, what and when
+NFR-08 Usability The site works well on small screens and can be
+used without training
+NFR-09 Accessibility Text is readable, buttons are large enough to tap,
+and color is not the only way to show meaning
+NFR-10 Reliability Daily backups are kept, and recovery is tested at
+least twice a year
+NFR-11 Compliance The system follows the Kenya Data Protection Act,
+2019
+NFR-12 Maintainability Code and setup are documented so a second
+developer can take over
+mulembe18 – Community Website Concept
+Page 7 of 14
+---PAGE---
+8.3 User Roles and Access
+9. System Architecture
+The platform is one web application with a single database. Chapters are separated by
+data rules, not by separate systems, so adding a new chapter needs configuration rather
+than a new build.
+Role Can do Cannot do
+Visitor View public pages, events and news;
+apply to join
+See the member directory
+Member Manage own profile, search the
+directory, RSVP, pay dues, post
+notices
+Approve members or see chapter
+finances in detail
+Group
+leader
+Manage group communication and
+group events
+Approve members or move money
+Chapter
+admin
+Approve members, run chapter
+events, send broadcasts, manage the
+chapter ledger
+See other chapters' private data or
+approve their own payouts alone
+National
+official
+View national dashboards, run
+national events, co-approve national
+payouts
+Edit chapter members without the
+chapter admin
+Super admin Manage roles, settings and system
+health
+Move money without the required
+approvals
+mulembe18 – Community Website Concept
+Page 8 of 14
+---PAGE---
+Users sign in through Clerk and reach the platform through the web app or through SMS
+and USSD. Both channels call the same application services, which read and write one
+MySQL-compatible database on TiDB. Every query is limited to the signed-in user’s
+chapter. Payments and messages go out through external providers.
+9.1 Design Principles
+Chapter-first data model: every member, event and payment belongs to a chapter, and
+permissions follow that link.
+layered system architecture · 4 layers and external services
+mulembe18 – Community Website Concept
+Page 9 of 14
+---PAGE---
+Start simple, grow later: begin as one modular application and split out services such
+as messaging only when load requires it.
+Mobile-first and light on data: small pages, compressed images and SMS fallbacks for
+weak connections.
+Money kept apart: each chapter and the national fund have separate ledgers and
+separate M-Pesa accounts.
+Everything traceable: sensitive actions are logged so any change can be explained.
+9.2 Main Components
+Component Purpose Technology
+Web app Public pages, member area and
+admin screens, installable on a
+phone
+Next.js progressive web app
+Authentication Sign-in, sessions and two-factor
+checks for members and officials
+Clerk, with chapter roles kept in
+Clerk organizations or in the
+database
+Application
+services
+Business rules for members,
+events, payments, messaging and
+reports
+Next.js server routes or a Node.js
+API
+Database Stores all records, with every
+chapter-owned table carrying a
+chapter ID
+MySQL-compatible database
+hosted on TiDB
+Background jobs Sends SMS and email, processes
+M-Pesa callbacks, builds reports
+A job queue with worker
+processes
+File storage Photos, gallery images and
+documents
+Cloud object storage
+Payments Collects dues and contributions M-Pesa Daraja API
+Messaging Reminders, broadcasts and USSD
+sessions
+SMS provider such as Africa's
+Talking, plus an email service
+Monitoring Error alerts, uptime checks and
+logs
+A hosted monitoring service
+mulembe18 – Community Website Concept
+Page 10 of 14
+---PAGE---
+9.3 Core Data Model
+9.4 Security and Reliability Design
+MySQL and TiDB do not offer PostgreSQL-style row-level security, so chapter isolation
+is enforced in the application: every table that holds chapter data carries a chapter ID,
+and one shared data-access layer filters every query by the signed-in user’s chapter.
+This keeps a coding mistake in one screen from exposing another chapter's data.
+Roles and permissions are checked on the server for every request, never only in the
+interface, and automated tests confirm that one chapter cannot read another’s data.
+Entity Key information
+Chapter Name, county or city, status, leaders, payment
+account details
+Member Clerk user ID, name, phone, email, home county,
+sub-community, privacy settings, status
+Membership Links a member to a chapter with a role and start
+date
+Group Sub-community or interest group, with its leader
+and members
+Event Chapter, title, date, venue, capacity, committee and
+tasks
+RSVP Member, event, response and attendance
+Appeal Chapter, purpose, target amount, deadline and
+status
+Payment Member, chapter, amount, M-Pesa reference,
+purpose and status
+Ledger entry Chapter or national fund, income or expense,
+reason, approvers
+Notification Audience, channel (SMS, email, in app), content
+and delivery status
+Audit log Who did what, to which record, and when
+mulembe18 – Community Website Concept
+Page 11 of 14
+---PAGE---
+M-Pesa callbacks are verified and processed once only, so a repeated callback cannot
+record a payment twice.
+Payouts require two approvals, and both approvers are recorded in the ledger.
+Secrets such as API keys are stored outside the code, and sign-in, sessions and two-
+factor checks are handled by Clerk.
+Daily database backups are kept in a separate location, and a restore is tested
+regularly.
+9.5 Deployment and Scaling
+1. Launch: a managed host for the web app and a TiDB Cloud database, with automatic
+backups and a staging copy for testing.
+2. Growth: add background workers for messaging, a content delivery network for
+images and extra TiDB capacity as data grows.
+3. National scale: separate the messaging and payment services if traffic requires it, and
+add stronger monitoring and a documented recovery plan.
+10. Legal, Governance and Data Protection
+Data protection: the platform will hold personal data of many people. Under the Kenya
+Data Protection Act, 2019, the organization will most likely need to register as a data
+controller with the Office of the Data Protection Commissioner. Members must give
+clear consent at sign-up, and a privacy policy must explain what is collected and why.
+Legal identity: register the organization, for example as a society or community-based
+organization, so it can open bank accounts, hold funds and sign contracts. Confirm the
+right registration route with a lawyer before collecting national funds.
+Constitution: a written constitution that defines membership, how chapters are
+formed, how leaders are elected, how disputes are resolved and how money is
+controlled.
+Financial controls: separate accounts for each chapter and for the national fund, dual
+approval of payouts, and an annual report to members.
+Neutrality: the platform stays non-partisan and does not host political campaigning.
+Inclusivity: every sub-community is represented fairly in leadership and content.
+mulembe18 – Community Website Concept
+Page 12 of 14
+---PAGE---
+11. Implementation Roadmap
+Each phase starts only when the previous phase has met its exit criteria.
+12. Risks and Mitigation
+Phase Scope Key deliverables Exit criteria
+1. Pilot Mombasa
+chapter
+Registration, directory,
+events with RSVP,
+announcements,
+constitution draft
+Members registered and
+at least one event run
+through the platform
+2. Core
+expansion
+Nairobi, Nakuru,
+Kisumu, Eldoret
+Chapter admin tools, per-
+chapter M-Pesa, SMS
+reminders, dues tracking
+Chapters operating
+independently with their
+own admins
+3. Home
+counties
+Kakamega,
+Bungoma, Vihiga,
+Busia
+SMS-first access, USSD
+registration, Kiswahili
+interface
+Active chapters in the
+home counties
+4. National
+layer
+All chapters National events, national
+welfare fund, elections
+module, public ledgers
+First national event and
+first national election
+completed
+5. Diaspora Members outside
+Kenya
+International chapter,
+online events, diaspora
+fundraising
+Diaspora chapter
+operating
+Risk Impact Mitigation
+Misuse or leak of members'
+personal data
+Loss of trust, legal
+exposure
+Consent at sign-up, privacy
+controls, access limited by
+chapter, audit logs, data controller
+registration
+Disputes over money Conflict and loss of
+members
+Per-chapter accounts, dual
+approval of payouts, public
+ledgers, annual report
+mulembe18 – Community Website Concept
+Page 13 of 14
+---PAGE---
+13. Success Measures
+Number of verified members, by chapter.
+Share of chapters with active admins and at least one event per quarter.
+Event attendance compared with RSVPs.
+Dues collected as a share of dues expected.
+Time taken to account for each welfare appeal.
+Share of members reached by SMS or email for announcements.
+Member satisfaction, from a short annual survey.
+14. Next Steps
+1. Confirm the vision and structure with community leaders in Mombasa.
+2. Agree on the founding committee and draft the constitution.
+3. Choose the legal registration route and begin data controller registration.
+4. Design the database around chapters, roles and permissions.
+5. Build the Phase 1 pilot for the Mombasa chapter.
+6. Collect feedback from the pilot and refine before opening new chapters.
+Risk Impact Mitigation
+Low adoption outside
+cities
+Platform used by too
+few members
+SMS and USSD access, chapter
+champions, offline sign-up by
+admins
+Leadership or sub-
+community disputes
+Division in the
+community
+Written constitution, fair
+representation, clear dispute
+process
+Political capture Loss of neutrality Non-partisan rule in the
+constitution, content moderation
+One person holds all
+technical knowledge
+Platform stalls Documentation, a second
+maintainer, regular backups
+Running costs for hosting
+and SMS
+Funding gaps Small annual dues, sponsorships,
+transparent cost reporting
+mulembe18 – Community Website Concept
+Page 14 of 14

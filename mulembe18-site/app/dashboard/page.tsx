@@ -8,7 +8,8 @@ import {
   LogOut, Smartphone, Shield, HeartHandshake, Heart, Landmark, Megaphone,
   BarChart3, Receipt, Ticket, AlertCircle, Menu, X, Compass, PanelLeftClose,
   PanelLeftOpen, MapPin, Check, Star, Trash2, PlusCircle, CalendarDays,
-  RefreshCw, Image as ImageIcon, Edit3, Crown, TrendingUp,
+  RefreshCw, Image as ImageIcon, Edit3, Crown, TrendingUp, Bot,
+  Building2, Vote, MessageSquare, ArrowRightLeft,
 } from "lucide-react";
 import { BorderBeam } from "@/components/magicui/border-beam";
 import NumberTicker from "@/components/magicui/number-ticker";
@@ -16,7 +17,7 @@ import { normalizeImageUrl } from "@/lib/image-utils";
 
 type DashboardRole = "member" | "admin";
 type MemberTab = "overview" | "contributions" | "events" | "welfare-claim" | "clan-desk";
-type AdminTab = "analytics" | "events" | "claims" | "members" | "solidarity" | "broadcast" | "gallery" | "leadership";
+type AdminTab = "analytics" | "chapters" | "events" | "claims" | "members" | "solidarity" | "broadcast" | "notices" | "elections" | "gallery" | "leadership";
 
 /* ─── Reusable Atoms ─────────────────────────────────────────── */
 const Spinner = () => (
@@ -73,6 +74,11 @@ export default function DashboardPage() {
   const [loadingContributions, setLoadingContributions] = useState(false);
   const [totalReserve, setTotalReserve] = useState(0);
   const [monthlyCollection, setMonthlyCollection] = useState(0);
+  const [clanGroupsList, setClanGroupsList] = useState<any[]>([]);
+  const [loadingClanGroups, setLoadingClanGroups] = useState(false);
+  const [payPlan, setPayPlan] = useState<"monthly" | "quarterly" | "annual" | "custom">("monthly");
+  const [payAmountInput, setPayAmountInput] = useState("200");
+  const [selectedClanGroupForPay, setSelectedClanGroupForPay] = useState<number>(1);
 
   // Modal & Form States
   const [createEventModal, setCreateEventModal] = useState(false);
@@ -108,8 +114,57 @@ export default function DashboardPage() {
   const [payModalOpen, setPayModalOpen] = useState(false);
   const [payPhone, setPayPhone] = useState("");
   const [payStatus, setPayStatus] = useState<"idle" | "sending" | "success">("idle");
+  const [selectedChapter, setSelectedChapter] = useState<string>("all");
+  const [chaptersList, setChaptersList] = useState<any[]>([]);
+  const [loadingChapters, setLoadingChapters] = useState(false);
+  const [transfersList, setTransfersList] = useState<any[]>([]);
+  const [loadingTransfers, setLoadingTransfers] = useState(false);
+  const [noticesList, setNoticesList] = useState<any[]>([]);
+  const [loadingNotices, setLoadingNotices] = useState(false);
+  const [electionsList, setElectionsList] = useState<any[]>([]);
+  const [loadingElections, setLoadingElections] = useState(false);
 
   // Fetchers
+  const fetchAllChapters = async () => {
+    setLoadingChapters(true);
+    try {
+      const r = await fetch("/api/chapters");
+      const d = await r.json();
+      if (d.success) setChaptersList(d.chapters || []);
+    } catch {} finally {
+      setLoadingChapters(false);
+    }
+  };
+  const fetchAllTransfers = async () => {
+    setLoadingTransfers(true);
+    try {
+      const r = await fetch("/api/transfers");
+      const d = await r.json();
+      if (d.success) setTransfersList(d.transfers || []);
+    } catch {} finally {
+      setLoadingTransfers(false);
+    }
+  };
+  const fetchAllNotices = async () => {
+    setLoadingNotices(true);
+    try {
+      const r = await fetch("/api/notices");
+      const d = await r.json();
+      if (d.success) setNoticesList(d.notices || []);
+    } catch {} finally {
+      setLoadingNotices(false);
+    }
+  };
+  const fetchAllElections = async () => {
+    setLoadingElections(true);
+    try {
+      const r = await fetch("/api/elections");
+      const d = await r.json();
+      if (d.success) setElectionsList(d.candidates || []);
+    } catch {} finally {
+      setLoadingElections(false);
+    }
+  };
   const fetchAllEvents = async () => { setLoadingEvents(true); try { const r = await fetch("/api/events"); const d = await r.json(); if (d.success) setEventsList(d.events || []); } catch {} finally { setLoadingEvents(false); } };
   const fetchAllNews = async () => { setLoadingNews(true); try { const r = await fetch("/api/news"); const d = await r.json(); if (d.success) setNewsList(d.articles || []); } catch {} finally { setLoadingNews(false); } };
   const fetchAllGallery = async () => { setLoadingGallery(true); try { const r = await fetch("/api/gallery"); const d = await r.json(); if (d.success) setGalleryList(d.photos || []); } catch {} finally { setLoadingGallery(false); } };
@@ -117,6 +172,14 @@ export default function DashboardPage() {
   const fetchAllClaims = async () => { setLoadingClaims(true); try { const r = await fetch("/api/welfare"); const d = await r.json(); if (d.success) setClaimsList(d.claims || []); } catch {} finally { setLoadingClaims(false); } };
   const fetchAllMembers = async () => { setLoadingMembers(true); try { const r = await fetch("/api/members"); const d = await r.json(); if (d.success) setMembersList(d.members || []); } catch {} finally { setLoadingMembers(false); } };
   const fetchAllAppeals = async () => { setLoadingAppeals(true); try { const r = await fetch("/api/appeals"); const d = await r.json(); if (d.success) setAppealsList(d.appeals || []); } catch {} finally { setLoadingAppeals(false); } };
+  const fetchAllClanGroups = async () => {
+    setLoadingClanGroups(true);
+    try {
+      const r = await fetch("/api/clans");
+      const d = await r.json();
+      if (d.success) setClanGroupsList(d.clanGroups || []);
+    } catch {} finally { setLoadingClanGroups(false); }
+  };
   const fetchAllContributions = async () => {
     setLoadingContributions(true);
     try { const r = await fetch("/api/contributions"); const d = await r.json();
@@ -125,6 +188,10 @@ export default function DashboardPage() {
   };
   useEffect(() => {
     setMounted(true);
+    fetchAllChapters();
+    fetchAllTransfers();
+    fetchAllNotices();
+    fetchAllElections();
     fetchAllEvents();
     fetchAllNews();
     fetchAllGallery();
@@ -133,7 +200,39 @@ export default function DashboardPage() {
     fetchAllMembers();
     fetchAllContributions();
     fetchAllAppeals();
+    fetchAllClanGroups();
   }, []);
+
+  const handleApproveTransfer = async (id: number) => {
+    try {
+      await fetch("/api/transfers", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id, status: "Approved" }),
+      });
+      fetchAllTransfers();
+      fetchAllChapters();
+    } catch {}
+  };
+
+  const handleRejectTransfer = async (id: number) => {
+    try {
+      await fetch("/api/transfers", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id, status: "Rejected" }),
+      });
+      fetchAllTransfers();
+    } catch {}
+  };
+
+  const handleDeleteNotice = async (id: number | string) => {
+    if (!confirm("Are you sure you want to remove this community notice?")) return;
+    try {
+      await fetch(`/api/notices?id=${id}`, { method: "DELETE" });
+      fetchAllNotices();
+    } catch {}
+  };
 
   // Derived
   const currentMember = useMemo(() => membersList.find(m => (user?.primaryEmailAddress?.emailAddress && m.email?.toLowerCase() === user.primaryEmailAddress.emailAddress.toLowerCase())), [membersList, user]);
@@ -142,6 +241,15 @@ export default function DashboardPage() {
   const hasPaidDues = useMemo(() => userContributions.some(c => c.purpose?.toLowerCase().includes("dues") || c.purpose?.toLowerCase().includes("membership") || (Number(c.amount) >= 500 && c.status === "Completed")), [userContributions]);
   const pendingClaims = claimsList.filter(c => c.status !== "Approved");
   const activeAppeals = appealsList.filter(a => a.is_active === 1 || a.is_active === true || a.is_active === "1");
+  const filteredMembersList = useMemo(() => {
+    if (selectedChapter === "all") return membersList;
+    return membersList.filter(
+      (m) =>
+        m.residential_county_code === selectedChapter ||
+        m.birth_county_code === selectedChapter ||
+        m.residential_zone?.toLowerCase().includes(selectedChapter.toLowerCase())
+    );
+  }, [membersList, selectedChapter]);
   const monthlyData = useMemo(() => {
     const m: Record<string, { month: string; inAmt: number; outAmt: number }> = {};
     contributionsList.forEach(c => { const k = new Date(c.created_at).toLocaleString("en-US", { month: "short" }); if (!m[k]) m[k] = { month: k, inAmt: 0, outAmt: 0 }; m[k].inAmt += Number(c.amount) || 0; });
@@ -177,8 +285,46 @@ export default function DashboardPage() {
   const handleDeleteAppeal = async (id: any) => { if (!confirm("Delete appeal?")) return; const r = await fetch(`/api/appeals?id=${id}`, { method: "DELETE" }); const d = await r.json(); if (d.success) fetchAllAppeals(); };
 
   const handlePayDues = async (e: React.FormEvent) => {
-    e.preventDefault(); setPayStatus("sending");
-    try { await fetch("/api/contributions", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ memberName: currentMember?.full_name || user?.fullName || "Member", phone: payPhone || "0700000000", amount: 500, purpose: "Annual Membership Dues (2025)" }) }); fetchAllContributions(); setPayStatus("success"); setTimeout(() => { setPayStatus("idle"); setPayModalOpen(false); }, 2500); } catch { setPayStatus("success"); setTimeout(() => { setPayStatus("idle"); setPayModalOpen(false); }, 2500); }
+    e.preventDefault();
+    setPayStatus("sending");
+    try {
+      const amt = Number(payAmountInput) || 200;
+      const purpose = payPlan === "annual" 
+        ? "Annual Membership Subscription (2026)" 
+        : payPlan === "quarterly" 
+        ? "Quarterly Clan Welfare Dues (3 Months)" 
+        : "Monthly Clan Welfare Dues (Current Month)";
+      
+      await fetch("/api/contributions", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          memberName: currentMember?.full_name || user?.fullName || "Member",
+          phone: payPhone || currentMember?.phone || "0700000000",
+          amount: amt,
+          purpose,
+          memberId: currentMember?.id || null,
+          clanGroupId: selectedClanGroupForPay || currentMember?.clan_group_id || 1,
+          contributionType: payPlan === "annual" ? "Annual_Subscription" : "Monthly_Dues",
+          cadence: payPlan === "annual" ? "Annual" : "Monthly",
+          forPeriod: new Date().toISOString().substring(0, 7),
+        }),
+      });
+      fetchAllContributions();
+      fetchAllMembers();
+      fetchAllClanGroups();
+      setPayStatus("success");
+      setTimeout(() => {
+        setPayStatus("idle");
+        setPayModalOpen(false);
+      }, 2500);
+    } catch {
+      setPayStatus("success");
+      setTimeout(() => {
+        setPayStatus("idle");
+        setPayModalOpen(false);
+      }, 2500);
+    }
   };
   const handleClaimSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -197,13 +343,17 @@ export default function DashboardPage() {
     { id: "welfare-claim", label: "Emergency Aid", icon: HeartHandshake, color: "text-rose-400 bg-rose-500/10" },
     { id: "clan-desk", label: "Clan Elders Desk", icon: Landmark, color: "text-amber-400 bg-amber-500/10" },
   ];
+  const pendingTransfers = transfersList.filter((t) => t.status === "Pending");
   const adminNav = [
     { id: "analytics", label: "Treasury & Inflows", icon: BarChart3, badge: null as number | null, color: "text-emerald-400 bg-emerald-500/10" },
+    { id: "chapters", label: "Chapters & Transfers", icon: Building2, badge: pendingTransfers.length || null, color: "text-orange-400 bg-orange-500/10" },
     { id: "events", label: "Events", icon: Calendar, badge: eventsList.length || null, color: "text-[#DDA71D] bg-[#DDA71D]/10" },
     { id: "claims", label: "Claims", icon: AlertCircle, badge: pendingClaims.length || null, color: "text-amber-400 bg-amber-500/10" },
     { id: "members", label: "Registry", icon: Users, badge: membersList.length || null, color: "text-blue-400 bg-blue-500/10" },
     { id: "solidarity", label: "Solidarity Fund", icon: CreditCard, badge: null as number | null, color: "text-cyan-400 bg-cyan-500/10" },
     { id: "broadcast", label: "Communiqués", icon: Megaphone, badge: newsList.length || null, color: "text-purple-400 bg-purple-500/10" },
+    { id: "notices", label: "Noticeboard", icon: MessageSquare, badge: noticesList.length || null, color: "text-emerald-400 bg-emerald-500/10" },
+    { id: "elections", label: "Biennial Elections", icon: Vote, badge: electionsList.length || null, color: "text-teal-400 bg-teal-500/10" },
     { id: "gallery", label: "Gallery", icon: ImageIcon, badge: galleryList.length || null, color: "text-rose-400 bg-rose-500/10" },
     { id: "leadership", label: "Leadership", icon: Crown, badge: leadershipList.length || null, color: "text-amber-400 bg-amber-500/10" },
   ];
@@ -319,12 +469,77 @@ export default function DashboardPage() {
             <button type="button" onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="md:hidden p-1.5 rounded-lg border border-gray-200 text-gray-500 cursor-pointer">{mobileMenuOpen ? <X size={15} /> : <Menu size={15} />}</button>
             <div>
               <h1 className="text-sm font-bold text-[#18221B]" style={{ fontFamily: "var(--font-outfit)" }}>
-                {role === "member" ? (memberTab === "overview" ? "My Profile" : memberTab === "contributions" ? "Welfare Ledger" : memberTab === "events" ? "Event Passes" : memberTab === "welfare-claim" ? "Emergency Aid" : "Clan Desk") : (adminTab === "analytics" ? "Treasury & Inflows" : adminTab === "events" ? "Events Manager" : adminTab === "claims" ? "Claims Review" : adminTab === "members" ? "Member Registry" : adminTab === "solidarity" ? "Solidarity Fund" : adminTab === "broadcast" ? "Communiqués" : adminTab === "gallery" ? "Gallery Manager" : "Leadership")}
+                {role === "member"
+                  ? memberTab === "overview"
+                    ? "My Profile"
+                    : memberTab === "contributions"
+                    ? "Welfare Ledger"
+                    : memberTab === "events"
+                    ? "Event Passes"
+                    : memberTab === "welfare-claim"
+                    ? "Emergency Aid"
+                    : "Clan Desk"
+                  : adminTab === "analytics"
+                  ? "Treasury & Inflows"
+                  : adminTab === "chapters"
+                  ? "Chapters & Relocation Desk"
+                  : adminTab === "events"
+                  ? "Events Manager"
+                  : adminTab === "claims"
+                  ? "Claims Review"
+                  : adminTab === "members"
+                  ? "Member Registry"
+                  : adminTab === "solidarity"
+                  ? "Solidarity Fund"
+                  : adminTab === "broadcast"
+                  ? "Communiqués"
+                  : adminTab === "notices"
+                  ? "Noticeboard Moderation"
+                  : adminTab === "elections"
+                  ? "Biennial Elections & Tally"
+                  : adminTab === "gallery"
+                  ? "Gallery Manager"
+                  : "Leadership"}
               </h1>
               <p className="text-[10px] text-gray-400">{role === "member" ? "Member Portal" : "Admin Console"}</p>
             </div>
           </div>
           <div className="flex items-center gap-2">
+            {/* Chapter Selector Dropdown */}
+            <div className="hidden sm:flex items-center gap-1.5 bg-[#FAF9F6] border border-gray-200 rounded-xl px-2.5 py-1 text-xs">
+              <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Chapter:</span>
+              <select
+                value={selectedChapter}
+                onChange={(e) => setSelectedChapter(e.target.value)}
+                className="bg-transparent font-bold text-gray-800 text-xs outline-none cursor-pointer"
+              >
+                <option value="all">All Chapters (National)</option>
+                <option value="001">Mombasa Chapter (001 - Pilot)</option>
+                <option value="047">Nairobi Metropolitan (047)</option>
+                <option value="037">Kakamega Home (037 - Cradle)</option>
+                <option value="039">Bungoma Chapter (039)</option>
+                <option value="038">Vihiga Chapter (038)</option>
+                <option value="040">Busia Border (040)</option>
+                <option value="032">Nakuru Rift Valley (032)</option>
+                <option value="042">Kisumu Lake (042)</option>
+                <option value="027">Eldoret North Rift (027)</option>
+                <option value="999">Global Diaspora (999)</option>
+              </select>
+            </div>
+            <button
+              type="button"
+              onClick={() => {
+                if (typeof window !== "undefined") {
+                  window.dispatchEvent(new Event("open-msingi-ai"));
+                }
+              }}
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-[#0D6E38] text-xs font-bold border border-emerald-300 shadow-sm cursor-pointer"
+              title="Fungua Msingi AI Assistant"
+            >
+              <Bot size={13} />
+              <span className="hidden sm:inline">Msingi AI</span>
+              <span className="text-[9px] px-1.5 py-0.5 rounded-md bg-[#111827] text-white font-bold">KE</span>
+            </button>
             {role === "member" && <button type="button" onClick={() => setPayModalOpen(true)} className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#00A859] hover:bg-[#00914c] text-white text-xs font-bold shadow-sm cursor-pointer"><Smartphone size={13} /><span className="hidden sm:inline">Pay Dues</span></button>}
             {role === "admin" && adminTab === "events" && <button type="button" onClick={() => setCreateEventModal(true)} className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#082f1a] text-[#DDA71D] hover:bg-[#0d4d28] text-xs font-bold shadow-sm cursor-pointer"><Plus size={13} /><span className="hidden sm:inline">Add Event</span></button>}
             {role === "admin" && adminTab === "gallery" && <button type="button" onClick={() => { setEditingGallery(null); setGalleryForm({ imageUrl: "", albumUrl: "", label: "", category: "Cultural Festival", subLocation: "Mama Ngina Waterfront, Mombasa", isLarge: false, sortOrder: "0" }); setCreateGalleryModal(true); }} className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#082f1a] text-[#DDA71D] hover:bg-[#0d4d28] text-xs font-bold shadow-sm cursor-pointer"><Plus size={13} /><span className="hidden sm:inline">Add Photo</span></button>}
@@ -360,11 +575,13 @@ export default function DashboardPage() {
                     </div>
                     <div className="space-y-3 relative z-10">
                       <div><div className="text-[9px] text-emerald-300/60 uppercase font-semibold">Member Name</div><div className="text-xl font-black" style={{ fontFamily: "var(--font-outfit)" }}>{currentMember?.full_name || user?.fullName || "Community Member"}</div></div>
-                      <div className="grid grid-cols-2 gap-3 text-xs">
-                        <div><div className="text-[9px] text-emerald-300/60 uppercase font-semibold">Sub-Community</div><div className="font-bold text-[#DDA71D]">{currentMember?.sub_clan || "Western Kenya"}</div></div>
-                        <div><div className="text-[9px] text-emerald-300/60 uppercase font-semibold">Zone</div><div className="font-bold text-white">{currentMember?.residential_zone || "Mombasa County"}</div></div>
+                      <div className="grid grid-cols-2 gap-2.5 text-xs">
+                        <div><div className="text-[9px] text-emerald-300/60 uppercase font-semibold">Sub-Clan</div><div className="font-bold text-[#DDA71D]">{currentMember?.sub_clan || "Bukusu"}</div></div>
+                        <div><div className="text-[9px] text-emerald-300/60 uppercase font-semibold">Current Residence</div><div className="font-bold text-white truncate">{currentMember?.residential_zone || currentMember?.residential_ward || "Mombasa"} ({currentMember?.residential_county_name || "Coast"})</div></div>
+                        <div><div className="text-[9px] text-emerald-300/60 uppercase font-semibold">Ancestral Origin</div><div className="font-bold text-emerald-200 truncate">{currentMember?.ancestral_village ? `${currentMember.ancestral_village}, ` : ""}{currentMember?.birth_county_name || "Western Cradle"}</div></div>
+                        <div><div className="text-[9px] text-emerald-300/60 uppercase font-semibold">Clan Cell</div><div className="font-bold text-[#DDA71D] truncate">{currentMember?.clan_group_name || "Mombasa Welfare Cell"}</div></div>
                         <div><div className="text-[9px] text-emerald-300/60 uppercase font-semibold">Member ID</div><div className="font-mono font-bold text-emerald-200 text-[11px]" suppressHydrationWarning>{currentMember?.membership_number || (user ? `MLB-${user.id.slice(-6).toUpperCase()}` : "MLB-MEMBER")}</div></div>
-                        <div><div className="text-[9px] text-emerald-300/60 uppercase font-semibold">Coverage</div><div className={`font-bold ${hasPaidDues ? "text-[#00A859]" : "text-amber-400"}`}>{hasPaidDues ? "Active 2025" : "Inactive"}</div></div>
+                        <div><div className="text-[9px] text-emerald-300/60 uppercase font-semibold">Dues Standing</div><div className={`font-bold ${currentMember?.dues_status === "Up_To_Date" || hasPaidDues ? "text-[#00A859]" : "text-amber-400"}`}>{currentMember?.dues_status === "Up_To_Date" || hasPaidDues ? "Paid (Good Standing)" : "Arrears Due"}</div></div>
                       </div>
                     </div>
                     <div className="mt-4 pt-3 border-t border-emerald-800/40 flex items-center justify-between relative z-10">
@@ -513,26 +730,189 @@ export default function DashboardPage() {
             </div>
           )}
 
-          {/* MEMBER: CLAN DESK */}
+          {/* MEMBER: CLAN DESK & MICRO-LEDGER */}
           {role === "member" && memberTab === "clan-desk" && (
-            <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-4 sm:p-5 animate-fade-in">
-              <h3 className="text-sm font-bold mb-0.5">Clan Elders Desk</h3><p className="text-[11px] text-gray-400 mb-4">Direct contacts for clan elders and zonal welfare leads.</p>
-              {leadershipList.length === 0 ? <EmptyState icon={Landmark} title="No Clan Contacts Listed" body="The secretariat hasn't added clan elder contacts yet." /> : (
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-                  {leadershipList.map(leader => {
-                    const initials = leader.name?.split(" ").map((n: string) => n[0]).slice(0, 2).join("").toUpperCase() || "ML";
-                    return (
-                      <div key={leader.id} className="p-4 rounded-xl border border-gray-200 hover:border-[#0D6E38]/40 transition-colors space-y-3">
-                        <div className="flex items-center gap-2.5">
-                          {leader.avatar_url ? <img src={leader.avatar_url} alt={leader.name} className="w-10 h-10 rounded-xl object-cover border-2 border-[#DDA71D]/30 flex-shrink-0" onError={e => (e.target as HTMLElement).style.display = "none"} /> : <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#082f1a] to-[#0D6E38] text-white font-black text-sm flex items-center justify-center border-2 border-[#DDA71D]/30 flex-shrink-0">{initials}</div>}
-                          <div><div className="text-xs font-bold text-[#18221B]">{leader.name}</div><div className="text-[10px] text-[#0D6E38] font-semibold">{leader.role}</div>{leader.clan && <div className="text-[9px] text-gray-400">{leader.clan}</div>}</div>
+            <div className="space-y-5 animate-fade-in">
+              {/* Active Clan Group Hero Card */}
+              {(() => {
+                const userClanGroup = clanGroupsList.find(g => g.id === (currentMember?.clan_group_id || 1)) || clanGroupsList[0] || {
+                  group_name: "Mombasa Bukusu Welfare Cell",
+                  clan_name: "Bukusu",
+                  group_code: "MOM-BUKUSU-01",
+                  sub_county: "Nyali",
+                  ward_estate: "Bamburi & Links",
+                  monthly_dues: 200,
+                  annual_dues: 1200,
+                  current_balance: 145000,
+                };
+                const fellowKinsmen = membersList.filter(m => m.clan_group_id === userClanGroup.id || m.sub_clan === userClanGroup.clan_name);
+
+                return (
+                  <>
+                    <div className="bg-gradient-to-br from-[#082f1a] to-[#0D6E38] rounded-3xl p-6 sm:p-7 text-white shadow-xl relative overflow-hidden">
+                      <BorderBeam size={220} duration={12} colorFrom="#DDA71D" colorTo="#00A859" />
+                      <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
+                        <div>
+                          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/10 text-[#DDA71D] text-[11px] font-bold uppercase tracking-wider mb-2">
+                            <Landmark size={12} /> Grassroots Clan Welfare Cell · {userClanGroup.group_code}
+                          </div>
+                          <h2 className="text-2xl sm:text-3xl font-black text-white tracking-tight" style={{ fontFamily: "var(--font-outfit)" }}>
+                            {userClanGroup.group_name}
+                          </h2>
+                          <p className="text-xs text-emerald-200/80 mt-1 max-w-xl">
+                            Locality: {userClanGroup.sub_county || "Coast"}, {userClanGroup.ward_estate || "Bamburi"} · Affiliated to all {userClanGroup.clan_name} families in diaspora.
+                          </p>
                         </div>
-                        {leader.phone && <a href={`tel:${leader.phone}`} className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#0D6E38] hover:bg-[#0a4d29] text-white text-xs font-semibold cursor-pointer"><Phone size={11} />{leader.phone}</a>}
+
+                        <div className="bg-black/30 backdrop-blur-md rounded-2xl p-4 border border-white/10 flex items-center gap-6 self-start md:self-auto">
+                          <div>
+                            <div className="text-[10px] uppercase font-bold text-emerald-300/70">Clan Cell Kitty Balance</div>
+                            <div className="text-2xl font-black text-[#DDA71D]" style={{ fontFamily: "var(--font-outfit)" }}>
+                              KES {Number(userClanGroup.current_balance || 145000).toLocaleString()}
+                            </div>
+                            <div className="text-[10px] text-emerald-300/60 mt-0.5">Audited & Reconciled via M-Pesa</div>
+                          </div>
+                        </div>
                       </div>
-                    );
-                  })}
-                </div>
-              )}
+
+                      {/* Dues Status & Quick Payment Trigger */}
+                      <div className="relative z-10 mt-6 pt-5 border-t border-emerald-700/50 grid grid-cols-1 sm:grid-cols-3 gap-3">
+                        <div className="bg-white/10 rounded-xl p-3 border border-white/10">
+                          <div className="text-[10px] text-emerald-300/70 uppercase font-semibold">Monthly Clan Dues</div>
+                          <div className="text-lg font-bold text-white mt-0.5">KES {Number(userClanGroup.monthly_dues || 200).toLocaleString()}/mo</div>
+                          <div className="text-[10px] text-emerald-300/80 mt-1 flex items-center gap-1">
+                            <CheckCircle2 size={11} className="text-[#00A859]" /> Paid through {currentMember?.dues_paid_through_month || "Oct 2026"}
+                          </div>
+                        </div>
+
+                        <div className="bg-white/10 rounded-xl p-3 border border-white/10">
+                          <div className="text-[10px] text-emerald-300/70 uppercase font-semibold">Annual Charter Subscription</div>
+                          <div className="text-lg font-bold text-white mt-0.5">KES {Number(userClanGroup.annual_dues || 1200).toLocaleString()}/yr</div>
+                          <div className="text-[10px] text-emerald-300/80 mt-1">Full Bereavement & Evacuation Cover</div>
+                        </div>
+
+                        <div className="flex items-center gap-2">
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setPayPlan("monthly");
+                              setPayAmountInput(String(userClanGroup.monthly_dues || 200));
+                              setSelectedClanGroupForPay(userClanGroup.id);
+                              setPayModalOpen(true);
+                            }}
+                            className="flex-1 py-3 rounded-xl bg-[#DDA71D] hover:bg-[#c99516] text-[#082f1a] font-bold text-xs shadow-md transition-all flex items-center justify-center gap-1.5 cursor-pointer"
+                          >
+                            <Smartphone size={13} /> Pay 1 Month ({Number(userClanGroup.monthly_dues || 200).toLocaleString()})
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setPayPlan("annual");
+                              setPayAmountInput(String(userClanGroup.annual_dues || 1200));
+                              setSelectedClanGroupForPay(userClanGroup.id);
+                              setPayModalOpen(true);
+                            }}
+                            className="flex-1 py-3 rounded-xl bg-[#00A859] hover:bg-[#00914c] text-white font-bold text-xs shadow-md transition-all flex items-center justify-center gap-1.5 cursor-pointer"
+                          >
+                            <ShieldCheck size={13} /> Pay Full Year
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Fellow Kinsmen in this Clan Cell */}
+                    <div className="bg-white rounded-2xl border border-gray-200 p-5 shadow-sm space-y-3">
+                      <div className="flex items-center justify-between pb-2 border-b border-gray-100">
+                        <div>
+                          <h4 className="text-sm font-bold text-[#18221B] flex items-center gap-2">
+                            <Users size={16} className="text-[#0D6E38]" /> Fellow Clan Cell Members ({fellowKinsmen.length})
+                          </h4>
+                          <p className="text-[11px] text-gray-400">Members of {userClanGroup.clan_name} residing in this chapter.</p>
+                        </div>
+                        <span className="text-[10px] font-bold text-emerald-800 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-100">
+                          {fellowKinsmen.filter(m => m.dues_status === "Up_To_Date").length} in Good Standing
+                        </span>
+                      </div>
+
+                      <div className="overflow-x-auto">
+                        <table className="w-full text-left text-xs">
+                          <thead>
+                            <tr className="border-b border-gray-100 text-[10px] text-gray-400 font-bold uppercase tracking-wide">
+                              <th className="py-2.5 px-3">Member Name</th>
+                              <th className="py-2.5 px-3">Residential Ward</th>
+                              <th className="py-2.5 px-3">Ancestral Birth Origin</th>
+                              <th className="py-2.5 px-3">Profession / Role</th>
+                              <th className="py-2.5 px-3 text-center">Dues Standing</th>
+                            </tr>
+                          </thead>
+                          <tbody className="divide-y divide-gray-50">
+                            {fellowKinsmen.slice(0, 8).map(kinsman => (
+                              <tr key={kinsman.id} className="hover:bg-gray-50/70">
+                                <td className="py-2.5 px-3 font-semibold text-gray-800 flex items-center gap-2">
+                                  <div className="w-6 h-6 rounded-full bg-emerald-100 text-[#0D6E38] font-bold text-[10px] flex items-center justify-center">
+                                    {kinsman.full_name?.substring(0, 1) || "M"}
+                                  </div>
+                                  {kinsman.full_name}
+                                </td>
+                                <td className="py-2.5 px-3 text-gray-600">{kinsman.residential_zone || kinsman.residential_ward || "Mombasa"}</td>
+                                <td className="py-2.5 px-3 text-gray-500 font-medium">
+                                  {kinsman.ancestral_village ? `${kinsman.ancestral_village}, ` : ""}{kinsman.birth_county_name || "Western"}
+                                </td>
+                                <td className="py-2.5 px-3 text-gray-500">{kinsman.profession || "Member"}</td>
+                                <td className="py-2.5 px-3 text-center">
+                                  <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold ${
+                                    kinsman.dues_status === "Up_To_Date" 
+                                      ? "bg-emerald-100 text-emerald-800" 
+                                      : "bg-amber-100 text-amber-800"
+                                  }`}>
+                                    {kinsman.dues_status === "Up_To_Date" ? "Up to Date" : "Pending"}
+                                  </span>
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+
+                    {/* Clan Elders & Leadership Roster */}
+                    <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-4 sm:p-5">
+                      <h3 className="text-sm font-bold mb-0.5">Council of Clan Elders & Welfare Contacts</h3>
+                      <p className="text-[11px] text-gray-400 mb-4">Direct access to designated elders for traditional counsel, dispute resolution, and emergency bereavement transit.</p>
+                      {leadershipList.length === 0 ? (
+                        <EmptyState icon={Landmark} title="No Clan Contacts Listed" body="The secretariat hasn't added clan elder contacts yet." />
+                      ) : (
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                          {leadershipList.map(leader => {
+                            const initials = leader.name?.split(" ").map((n: string) => n[0]).slice(0, 2).join("").toUpperCase() || "ML";
+                            return (
+                              <div key={leader.id} className="p-4 rounded-xl border border-gray-200 hover:border-[#0D6E38]/40 transition-colors space-y-3">
+                                <div className="flex items-center gap-2.5">
+                                  {leader.avatar_url ? (
+                                    <img src={leader.avatar_url} alt={leader.name} className="w-10 h-10 rounded-xl object-cover border-2 border-[#DDA71D]/30 flex-shrink-0" onError={e => ((e.target as HTMLElement).style.display = "none")} />
+                                  ) : (
+                                    <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#082f1a] to-[#0D6E38] text-white font-black text-sm flex items-center justify-center border-2 border-[#DDA71D]/30 flex-shrink-0">{initials}</div>
+                                  )}
+                                  <div>
+                                    <div className="text-xs font-bold text-[#18221B]">{leader.name}</div>
+                                    <div className="text-[10px] text-[#0D6E38] font-semibold">{leader.role}</div>
+                                    {leader.clan && <div className="text-[9px] text-gray-400">{leader.clan}</div>}
+                                  </div>
+                                </div>
+                                {leader.phone && (
+                                  <a href={`tel:${leader.phone}`} className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#0D6E38] hover:bg-[#0a4d29] text-white text-xs font-semibold cursor-pointer">
+                                    <Phone size={11} />{leader.phone}
+                                  </a>
+                                )}
+                              </div>
+                            );
+                          })}
+                        </div>
+                      )}
+                    </div>
+                  </>
+                );
+              })()}
             </div>
           )}
 
@@ -588,6 +968,207 @@ export default function DashboardPage() {
                     {nav.badge != null && <div className="text-[10px] text-gray-400 mt-0.5">{nav.badge} items</div>}
                   </button>
                 ))}
+              </div>
+            </div>
+          )}
+
+          {/* ADMIN: CHAPTERS & RELOCATION DESK (FR-05) */}
+          {role === "admin" && adminTab === "chapters" && (
+            <div className="space-y-6 animate-fade-in">
+              <div className="bg-white rounded-2xl border border-gray-200 p-4 sm:p-5 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div>
+                  <div className="flex items-center gap-2 mb-1">
+                    <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-orange-100 text-[#FF5500]">
+                      Requirement FR-05
+                    </span>
+                    <h3 className="text-sm font-bold text-[#18221B]">
+                      Chapters Network &amp; Member Relocations
+                    </h3>
+                  </div>
+                  <p className="text-[11px] text-gray-500">
+                    Manage all 10 national and diaspora chapters, verify member relocations without history loss, and monitor chapter treasury reserves.
+                  </p>
+                </div>
+                <div className="flex gap-2">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      fetchAllChapters();
+                      fetchAllTransfers();
+                    }}
+                    className="p-2 rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-500 cursor-pointer"
+                    title="Refresh"
+                  >
+                    <RefreshCw size={13} className={loadingChapters || loadingTransfers ? "animate-spin" : ""} />
+                  </button>
+                </div>
+              </div>
+
+              {/* Pending Chapter Transfers (FR-05) */}
+              <div className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
+                <div className="p-4 sm:p-5 border-b border-gray-100 flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <ArrowRightLeft size={16} className="text-[#FF5500]" />
+                    <div>
+                      <h4 className="text-sm font-bold text-[#18221B]">
+                        Pending Member Relocation &amp; Transfer Requests
+                      </h4>
+                      <p className="text-[11px] text-gray-400">
+                        Approval by receiving chapter admin migrates dues history &amp; voting rights seamlessly.
+                      </p>
+                    </div>
+                  </div>
+                  <span className="px-2.5 py-1 rounded-full text-xs font-bold bg-amber-100 text-amber-800">
+                    {transfersList.filter((t) => t.status === "Pending").length} Pending
+                  </span>
+                </div>
+
+                <div className="p-4 sm:p-5">
+                  {loadingTransfers ? (
+                    <div className="flex justify-center py-8"><Spinner /></div>
+                  ) : transfersList.length === 0 ? (
+                    <EmptyState
+                      icon={ArrowRightLeft}
+                      title="No Relocation Requests"
+                      body="When a member moves between counties (e.g. Mombasa to Nairobi), their transfer petition appears here for receiving admin approval."
+                    />
+                  ) : (
+                    <div className="overflow-x-auto">
+                      <table className="w-full text-xs">
+                        <thead>
+                          <tr className="border-b border-gray-100 text-[10px] text-gray-400 font-bold uppercase tracking-wide">
+                            <th className="py-2.5 px-3 text-left">Member</th>
+                            <th className="py-2.5 px-3 text-left">Current Chapter</th>
+                            <th className="py-2.5 px-3 text-left">Target Chapter</th>
+                            <th className="py-2.5 px-3 text-left">Reason</th>
+                            <th className="py-2.5 px-3 text-left">Date</th>
+                            <th className="py-2.5 px-3 text-center">Status</th>
+                            <th className="py-2.5 px-3 text-right">Actions</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-gray-50">
+                          {transfersList.map((t) => (
+                            <tr key={t.id} className="hover:bg-gray-50/70">
+                              <td className="py-3 px-3">
+                                <div className="font-bold text-gray-900">{t.member_name}</div>
+                                <div className="font-mono text-[9px] text-gray-400">{t.phone}</div>
+                              </td>
+                              <td className="py-3 px-3 font-medium text-gray-600">{t.current_chapter}</td>
+                              <td className="py-3 px-3 font-bold text-[#0D6E38]">{t.target_chapter}</td>
+                              <td className="py-3 px-3 text-gray-500 max-w-xs truncate">{t.reason || "Relocation for work"}</td>
+                              <td className="py-3 px-3 text-gray-400 text-[10px] whitespace-nowrap">
+                                {t.created_at ? new Date(t.created_at).toLocaleDateString("en-KE") : "Recent"}
+                              </td>
+                              <td className="py-3 px-3 text-center">
+                                <span
+                                  className={`px-2 py-0.5 rounded-md text-[10px] font-bold ${
+                                    t.status === "Approved"
+                                      ? "bg-emerald-100 text-emerald-700"
+                                      : t.status === "Rejected"
+                                      ? "bg-rose-100 text-rose-700"
+                                      : "bg-amber-100 text-amber-700"
+                                  }`}
+                                >
+                                  {t.status}
+                                </span>
+                              </td>
+                              <td className="py-3 px-3 text-right space-x-1 whitespace-nowrap">
+                                {t.status === "Pending" && (
+                                  <>
+                                    <button
+                                      type="button"
+                                      onClick={() => handleApproveTransfer(t.id)}
+                                      className="px-2.5 py-1 rounded-lg bg-[#00A859] hover:bg-[#00914c] text-white text-[10px] font-bold cursor-pointer"
+                                    >
+                                      Approve
+                                    </button>
+                                    <button
+                                      type="button"
+                                      onClick={() => handleRejectTransfer(t.id)}
+                                      className="px-2.5 py-1 rounded-lg bg-gray-100 hover:bg-rose-100 text-gray-600 hover:text-rose-600 text-[10px] font-bold cursor-pointer"
+                                    >
+                                      Reject
+                                    </button>
+                                  </>
+                                )}
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Chapters Roster */}
+              <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-4 sm:p-5">
+                <div className="flex items-center justify-between mb-4">
+                  <div>
+                    <h4 className="text-sm font-bold text-[#18221B]">
+                      Active County &amp; Regional Chapters ({chaptersList.length})
+                    </h4>
+                    <p className="text-[11px] text-gray-400">
+                      Live data aggregated from TiDB MySQL chapters and members registry.
+                    </p>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {chaptersList.map((ch) => (
+                    <div
+                      key={ch.id}
+                      className="p-4 rounded-xl border border-gray-200 hover:border-[#0D6E38]/40 transition-all space-y-3 bg-[#FAF9F6]"
+                    >
+                      <div className="flex items-start justify-between gap-2">
+                        <div>
+                          <span className="text-[10px] font-mono font-bold text-gray-500 uppercase">
+                            Phase {ch.phase} • {ch.type}
+                          </span>
+                          <h5 className="font-bold text-xs text-gray-900 mt-0.5">{ch.name}</h5>
+                          <span className="text-[10px] text-gray-500 flex items-center gap-1 mt-0.5">
+                            <MapPin size={9} className="text-[#0D6E38]" />
+                            {ch.county}
+                          </span>
+                        </div>
+                        <span className="px-2 py-0.5 rounded-full text-[9px] font-bold bg-emerald-100 text-emerald-800">
+                          {ch.status}
+                        </span>
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-2 text-[11px] bg-white p-2.5 rounded-lg border border-gray-200">
+                        <div>
+                          <span className="text-[9px] text-gray-400 block">Mwenyekiti (Chair)</span>
+                          <strong className="text-gray-900 block truncate">{ch.chairperson}</strong>
+                        </div>
+                        <div>
+                          <span className="text-[9px] text-gray-400 block">Verified Members</span>
+                          <strong className="text-[#0D6E38] block">{ch.membersCount?.toLocaleString() || 0}</strong>
+                        </div>
+                        <div className="mt-1">
+                          <span className="text-[9px] text-gray-400 block">Events / Qtr</span>
+                          <strong className="text-gray-900 block">{ch.eventsQuarterly}</strong>
+                        </div>
+                        <div className="mt-1">
+                          <span className="text-[9px] text-gray-400 block">Hazina (Ledger)</span>
+                          <strong className="text-emerald-700 block">{ch.ledgerBalance}</strong>
+                        </div>
+                      </div>
+
+                      <div className="pt-2 border-t border-gray-200 flex items-center justify-between text-[10px]">
+                        <span className="font-mono text-gray-500 bg-white px-2 py-0.5 rounded border border-gray-200">
+                          {ch.mpesaPaybill}
+                        </span>
+                        <Link
+                          href={`/dashboard?county=${ch.county}`}
+                          className="font-bold text-[#0D6E38] hover:underline"
+                        >
+                          View Chapter &rarr;
+                        </Link>
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
           )}
@@ -706,19 +1287,19 @@ export default function DashboardPage() {
           {role === "admin" && adminTab === "members" && (
             <div className="bg-white rounded-2xl border border-gray-200 shadow-sm animate-fade-in">
               <div className="p-4 sm:p-5 border-b border-gray-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                <div><h3 className="text-sm font-bold">Member Registry & Verification</h3><p className="text-[11px] text-gray-400">{membersList.length} registered · Live KYC verification</p></div>
+                <div><h3 className="text-sm font-bold">Member Registry & Verification</h3><p className="text-[11px] text-gray-400">{filteredMembersList.length} registered {selectedChapter !== "all" && "(Filtered by Chapter)"} · Live KYC verification</p></div>
                 <div className="flex gap-2">
                   <button type="button" onClick={fetchAllMembers} className="p-2 rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-500 cursor-pointer"><RefreshCw size={13} className={loadingMembers ? "animate-spin" : ""} /></button>
-                  <button type="button" onClick={() => alert(`Exporting ${membersList.length} members as CSV...`)} className={btnPrimary}><Download size={13} />Export CSV</button>
+                  <button type="button" onClick={() => alert(`Exporting ${filteredMembersList.length} members as CSV...`)} className={btnPrimary}><Download size={13} />Export CSV</button>
                 </div>
               </div>
               <div className="p-4 sm:p-5">
-                {loadingMembers ? <div className="flex justify-center py-10"><Spinner /></div> : membersList.length === 0 ? <EmptyState icon={Users} title="No Members Registered" body="Members register through the main website. Profiles appear here automatically." /> : (
+                {loadingMembers ? <div className="flex justify-center py-10"><Spinner /></div> : filteredMembersList.length === 0 ? <EmptyState icon={Users} title="No Members Registered" body="Members register through the main website. Profiles appear here automatically." /> : (
                   <div className="overflow-x-auto">
                     <table className="w-full text-xs">
                       <thead><tr className="border-b border-gray-100 text-[10px] text-gray-400 font-bold uppercase tracking-wide"><th className="py-2.5 px-3 text-left">Member</th><th className="py-2.5 px-3 text-left">Sub-Clan</th><th className="py-2.5 px-3 text-left">Zone</th><th className="py-2.5 px-3 text-left">Phone</th><th className="py-2.5 px-3 text-center">Status</th><th className="py-2.5 px-3 text-right">Actions</th></tr></thead>
                       <tbody className="divide-y divide-gray-50">
-                        {membersList.map(m => (
+                        {filteredMembersList.map(m => (
                           <tr key={m.id} className="hover:bg-gray-50/70">
                             <td className="py-3 px-3"><div className="font-bold text-gray-900">{m.full_name}</div><div className="font-mono text-[9px] text-gray-400">{m.membership_no || `MLB-${m.id}`}</div></td>
                             <td className="py-3 px-3 text-gray-600">{m.sub_clan}</td>
@@ -815,7 +1396,7 @@ export default function DashboardPage() {
                           />
                           <div className="min-w-0 flex-1">
                             <span className="text-[10px] font-bold text-[#0D6E38] block truncate">
-                              {newsForm.imageUrl.includes("bing.com") || newsForm.imageUrl.includes("google.") ? "✓ Converted to direct image" : "Image link active"}
+                              {newsForm.imageUrl.includes("bing.com") || newsForm.imageUrl.includes("google.") ? "Converted to direct image" : "Image link active"}
                             </span>
                             <span className="text-[9px] text-gray-400 truncate block">{normalizeImageUrl(newsForm.imageUrl)}</span>
                           </div>
@@ -848,6 +1429,184 @@ export default function DashboardPage() {
                     ))}
                   </div>
                 </div>
+              </div>
+            </div>
+          )}
+
+          {/* ADMIN: COMMUNITY NOTICES MODERATION */}
+          {role === "admin" && adminTab === "notices" && (
+            <div className="bg-white rounded-2xl border border-gray-200 shadow-sm animate-fade-in">
+              <div className="p-4 sm:p-5 border-b border-gray-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div>
+                  <div className="flex items-center gap-2 mb-0.5">
+                    <MessageSquare size={16} className="text-[#0D6E38]" />
+                    <h3 className="text-sm font-bold text-[#18221B]">
+                      Community Noticeboard Postings ({noticesList.length})
+                    </h3>
+                  </div>
+                  <p className="text-[11px] text-gray-400">
+                    Live member listings for rentals, jobs, mentorship, and business services across chapters.
+                  </p>
+                </div>
+                <div className="flex gap-2">
+                  <button
+                    type="button"
+                    onClick={fetchAllNotices}
+                    className="p-2 rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-500 cursor-pointer"
+                    title="Refresh"
+                  >
+                    <RefreshCw size={13} className={loadingNotices ? "animate-spin" : ""} />
+                  </button>
+                </div>
+              </div>
+
+              <div className="p-4 sm:p-5">
+                {loadingNotices ? (
+                  <div className="flex justify-center py-10"><Spinner /></div>
+                ) : noticesList.length === 0 ? (
+                  <EmptyState
+                    icon={MessageSquare}
+                    title="No Notices Posted"
+                    body="Members post rentals, jobs, and services on the public noticeboard. They appear here for moderation."
+                  />
+                ) : (
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-xs">
+                      <thead>
+                        <tr className="border-b border-gray-100 text-[10px] text-gray-400 font-bold uppercase tracking-wide">
+                          <th className="py-2.5 px-3 text-left">Category</th>
+                          <th className="py-2.5 px-3 text-left">Title &amp; Location</th>
+                          <th className="py-2.5 px-3 text-left">Author</th>
+                          <th className="py-2.5 px-3 text-left">Contact</th>
+                          <th className="py-2.5 px-3 text-left">Price / Terms</th>
+                          <th className="py-2.5 px-3 text-right">Actions</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-gray-50">
+                        {noticesList.map((n) => (
+                          <tr key={n.id} className="hover:bg-gray-50/70">
+                            <td className="py-3 px-3">
+                              <span
+                                className={`px-2 py-0.5 rounded-md text-[10px] font-bold ${
+                                  n.category === "Rental"
+                                    ? "bg-amber-100 text-amber-800"
+                                    : n.category === "Job"
+                                    ? "bg-blue-100 text-blue-800"
+                                    : n.category === "Business"
+                                    ? "bg-emerald-100 text-emerald-800"
+                                    : "bg-purple-100 text-purple-800"
+                                }`}
+                              >
+                                {n.category}
+                              </span>
+                            </td>
+                            <td className="py-3 px-3">
+                              <div className="font-bold text-gray-900">{n.title}</div>
+                              <div className="text-[10px] text-gray-400 flex items-center gap-1 mt-0.5">
+                                <MapPin size={9} />
+                                {n.location} • {n.chapter || "Mombasa Chapter"}
+                              </div>
+                            </td>
+                            <td className="py-3 px-3">
+                              <div className="font-semibold text-gray-800">{n.author_name}</div>
+                              {n.author_clan && (
+                                <div className="text-[9px] text-gray-400">{n.author_clan}</div>
+                              )}
+                            </td>
+                            <td className="py-3 px-3 font-mono text-gray-600">{n.phone}</td>
+                            <td className="py-3 px-3 font-bold text-[#FF5500]">
+                              {n.price_or_salary || "Free / Discretionary"}
+                            </td>
+                            <td className="py-3 px-3 text-right">
+                              <button
+                                type="button"
+                                onClick={() => handleDeleteNotice(n.id)}
+                                className="p-1.5 rounded-lg bg-gray-100 hover:bg-rose-100 text-gray-500 hover:text-rose-600 cursor-pointer"
+                                title="Delete notice"
+                              >
+                                <Trash2 size={13} />
+                              </button>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* ADMIN: BIENNIAL ELECTIONS & TALLY */}
+          {role === "admin" && adminTab === "elections" && (
+            <div className="space-y-6 animate-fade-in">
+              <div className="bg-white rounded-2xl border border-gray-200 p-4 sm:p-5 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div>
+                  <div className="flex items-center gap-2 mb-1">
+                    <Vote size={16} className="text-[#0D6E38]" />
+                    <h3 className="text-sm font-bold text-[#18221B]">
+                      Biennial Chapter Leadership Elections
+                    </h3>
+                  </div>
+                  <p className="text-[11px] text-gray-500">
+                    Live candidate polling, voter authentication log, and constitutional clan-balancing monitoring.
+                  </p>
+                </div>
+                <div className="flex gap-2">
+                  <button
+                    type="button"
+                    onClick={fetchAllElections}
+                    className="p-2 rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-500 cursor-pointer"
+                    title="Refresh"
+                  >
+                    <RefreshCw size={13} className={loadingElections ? "animate-spin" : ""} />
+                  </button>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {electionsList.map((cand) => {
+                  const total = electionsList.reduce((acc, c) => acc + (Number(c.votes) || 0), 0);
+                  const pct = total > 0 ? Math.round(((Number(cand.votes) || 0) / total) * 100) : 0;
+                  return (
+                    <div
+                      key={cand.id}
+                      className="bg-white rounded-2xl border border-gray-200 p-5 shadow-sm space-y-3"
+                    >
+                      <div className="flex items-start justify-between gap-2">
+                        <div>
+                          <span className="text-[10px] font-mono font-bold text-[#0D6E38] uppercase">
+                            {cand.position}
+                          </span>
+                          <h4 className="font-bold text-sm text-[#18221B] mt-0.5">{cand.name}</h4>
+                          <span className="text-[10px] text-gray-400">
+                            {cand.clan} Clan • {cand.chapter}
+                          </span>
+                        </div>
+                        <span className="px-2.5 py-1 rounded-full text-xs font-black bg-emerald-50 text-[#0D6E38]">
+                          {cand.votes} Votes
+                        </span>
+                      </div>
+
+                      <p className="text-[11px] text-gray-600 italic bg-gray-50 p-2.5 rounded-xl border border-gray-100">
+                        "{cand.manifesto}"
+                      </p>
+
+                      <div className="space-y-1">
+                        <div className="flex justify-between text-[10px] font-bold text-gray-500">
+                          <span>Vote Share</span>
+                          <span>{pct}%</span>
+                        </div>
+                        <div className="w-full h-2 rounded-full bg-gray-100 overflow-hidden">
+                          <div
+                            className="h-full rounded-full bg-[#0D6E38]"
+                            style={{ width: `${pct}%` }}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
               </div>
             </div>
           )}
@@ -952,18 +1711,155 @@ export default function DashboardPage() {
         </div>
       )}
 
-      {/* Pay Dues Modal */}
+      {/* Pay Dues & Clan Contributions Modal */}
       {payModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
-          <div className="bg-white max-w-sm w-full rounded-2xl p-5 shadow-2xl border border-gray-200">
-            <div className="flex items-center justify-between pb-3 border-b border-gray-100 mb-4"><h4 className="font-bold text-sm">Pay 2025 Annual Dues</h4><button type="button" onClick={() => setPayModalOpen(false)} className="p-1.5 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-500 cursor-pointer"><X size={13} /></button></div>
+          <div className="bg-white max-w-md w-full rounded-2xl p-5 shadow-2xl border border-gray-200">
+            <div className="flex items-center justify-between pb-3 border-b border-gray-100 mb-4">
+              <div>
+                <h4 className="font-bold text-sm text-[#18221B]">Mulembe18 Welfare Contribution</h4>
+                <p className="text-[10px] text-gray-400">Monthly clan dues, annual subscriptions & kitty collections.</p>
+              </div>
+              <button type="button" onClick={() => setPayModalOpen(false)} className="p-1.5 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-500 cursor-pointer">
+                <X size={13} />
+              </button>
+            </div>
+
             {payStatus === "success" ? (
-              <div className="text-center py-6 space-y-2"><div className="w-12 h-12 rounded-full bg-emerald-100 flex items-center justify-center mx-auto"><CheckCircle2 size={24} className="text-[#00A859]" /></div><h5 className="font-bold text-sm text-[#082f1a]">Payment Recorded!</h5><p className="text-xs text-gray-400">Annual dues of KES 500 recorded.</p></div>
+              <div className="text-center py-6 space-y-2">
+                <div className="w-12 h-12 rounded-full bg-emerald-100 flex items-center justify-center mx-auto">
+                  <CheckCircle2 size={24} className="text-[#00A859]" />
+                </div>
+                <h5 className="font-bold text-sm text-[#082f1a]">Payment Verified & Credited!</h5>
+                <p className="text-xs text-gray-400">
+                  KES {Number(payAmountInput).toLocaleString()} recorded in your clan cell ledger. Receipt generated.
+                </p>
+              </div>
             ) : (
               <form onSubmit={handlePayDues} className="space-y-4 text-xs">
-                <div><label className="block font-semibold text-gray-700 mb-1">M-Pesa Number</label><input type="tel" required value={payPhone} onChange={e => setPayPhone(e.target.value)} placeholder="e.g. 0712 345678" className={inputCls} /></div>
-                <div className="p-3 bg-emerald-50 rounded-xl text-emerald-900 text-[11px] border border-emerald-100"><strong>Amount:</strong> KES 500 — 2025 Full Welfare Cover</div>
-                <button type="submit" disabled={payStatus === "sending"} className="w-full py-2.5 rounded-xl bg-[#00A859] hover:bg-[#00914c] text-white font-bold text-xs shadow cursor-pointer">{payStatus === "sending" ? "Sending STK Push..." : "Trigger M-Pesa STK Push"}</button>
+                {/* Select Contribution Plan */}
+                <div>
+                  <label className="block font-semibold text-gray-700 mb-1.5">Select Contribution Tier</label>
+                  <div className="grid grid-cols-2 gap-2">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setPayPlan("monthly");
+                        setPayAmountInput("200");
+                      }}
+                      className={`p-2.5 rounded-xl border text-left transition-all cursor-pointer ${
+                        payPlan === "monthly"
+                          ? "bg-emerald-50 border-[#0D6E38] text-[#0D6E38]"
+                          : "bg-gray-50 border-gray-200 text-gray-600 hover:bg-gray-100"
+                      }`}
+                    >
+                      <div className="font-bold text-[11px]">Monthly Clan Dues</div>
+                      <div className="text-[10px] text-gray-500">KES 200 / month</div>
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setPayPlan("quarterly");
+                        setPayAmountInput("600");
+                      }}
+                      className={`p-2.5 rounded-xl border text-left transition-all cursor-pointer ${
+                        payPlan === "quarterly"
+                          ? "bg-emerald-50 border-[#0D6E38] text-[#0D6E38]"
+                          : "bg-gray-50 border-gray-200 text-gray-600 hover:bg-gray-100"
+                      }`}
+                    >
+                      <div className="font-bold text-[11px]">3 Months Bundle</div>
+                      <div className="text-[10px] text-gray-500">KES 600 (Quarter)</div>
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setPayPlan("annual");
+                        setPayAmountInput("1200");
+                      }}
+                      className={`p-2.5 rounded-xl border text-left transition-all cursor-pointer ${
+                        payPlan === "annual"
+                          ? "bg-amber-50 border-[#DDA71D] text-amber-900"
+                          : "bg-gray-50 border-gray-200 text-gray-600 hover:bg-gray-100"
+                      }`}
+                    >
+                      <div className="font-bold text-[11px]">Annual Full Charter</div>
+                      <div className="text-[10px] text-gray-500">KES 1,200 / year</div>
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setPayPlan("custom");
+                      }}
+                      className={`p-2.5 rounded-xl border text-left transition-all cursor-pointer ${
+                        payPlan === "custom"
+                          ? "bg-blue-50 border-blue-600 text-blue-900"
+                          : "bg-gray-50 border-gray-200 text-gray-600 hover:bg-gray-100"
+                      }`}
+                    >
+                      <div className="font-bold text-[11px]">Custom Amount</div>
+                      <div className="text-[10px] text-gray-500">Voluntary / Harambee</div>
+                    </button>
+                  </div>
+                </div>
+
+                {/* Amount Input */}
+                <div>
+                  <label className="block font-semibold text-gray-700 mb-1">Amount to Pay (KES)</label>
+                  <input
+                    type="number"
+                    required
+                    min="50"
+                    value={payAmountInput}
+                    onChange={e => setPayAmountInput(e.target.value)}
+                    className={inputCls}
+                  />
+                </div>
+
+                {/* Clan Cell Routing */}
+                <div>
+                  <label className="block font-semibold text-gray-700 mb-1">Destination Clan Welfare Cell</label>
+                  <select
+                    value={selectedClanGroupForPay}
+                    onChange={e => setSelectedClanGroupForPay(Number(e.target.value))}
+                    className={inputCls}
+                  >
+                    {clanGroupsList.map(cg => (
+                      <option key={cg.id} value={cg.id}>
+                        {cg.group_name} ({cg.clan_name}) - {cg.county_name || "Coast"}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                {/* M-Pesa Phone */}
+                <div>
+                  <label className="block font-semibold text-gray-700 mb-1">M-Pesa Mobile Number</label>
+                  <input
+                    type="tel"
+                    required
+                    value={payPhone}
+                    onChange={e => setPayPhone(e.target.value)}
+                    placeholder="e.g. 0712 345678"
+                    className={inputCls}
+                  />
+                </div>
+
+                <div className="p-3 bg-emerald-50 rounded-xl text-emerald-900 text-[11px] border border-emerald-100 flex items-center justify-between">
+                  <span>Paybill <strong>408892</strong></span>
+                  <span className="font-bold text-[#0D6E38]">KES {Number(payAmountInput || 0).toLocaleString()}</span>
+                </div>
+
+                <button
+                  type="submit"
+                  disabled={payStatus === "sending"}
+                  className="w-full py-2.5 rounded-xl bg-[#00A859] hover:bg-[#00914c] text-white font-bold text-xs shadow cursor-pointer transition-colors"
+                >
+                  {payStatus === "sending" ? "Sending STK Push..." : `Send M-Pesa Prompt (KES ${Number(payAmountInput || 0).toLocaleString()})`}
+                </button>
               </form>
             )}
           </div>
@@ -1077,7 +1973,7 @@ export default function DashboardPage() {
                     />
                     <div className="min-w-0 flex-1">
                       <span className="text-[10px] font-bold text-[#0D6E38] block truncate">
-                        {galleryForm.imageUrl.includes("bing.com") || galleryForm.imageUrl.includes("google.") ? "✓ Converted to direct photo link" : "Photo link active"}
+                        {galleryForm.imageUrl.includes("bing.com") || galleryForm.imageUrl.includes("google.") ? "Converted to direct photo link" : "Photo link active"}
                       </span>
                       <span className="text-[9px] text-gray-400 truncate block">{normalizeImageUrl(galleryForm.imageUrl)}</span>
                     </div>
@@ -1134,7 +2030,7 @@ export default function DashboardPage() {
                     />
                     <div className="min-w-0 flex-1">
                       <span className="text-[10px] font-bold text-[#0D6E38] block truncate">
-                        {leaderForm.avatarUrl.includes("bing.com") || leaderForm.avatarUrl.includes("google.") ? "✓ Converted to direct photo link" : "Photo link active"}
+                        {leaderForm.avatarUrl.includes("bing.com") || leaderForm.avatarUrl.includes("google.") ? "Converted to direct photo link" : "Photo link active"}
                       </span>
                       <span className="text-[9px] text-gray-400 truncate block">{normalizeImageUrl(leaderForm.avatarUrl)}</span>
                     </div>

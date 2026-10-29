@@ -73,11 +73,11 @@ export default function NewsSection() {
               style={{ fontFamily: "var(--font-kalam), var(--font-caveat), cursive" }}
             >
               <span>News, </span>
-              <span className="relative inline-block mx-1 px-3.5 py-0.5 rounded-2xl bg-[#F6A623] text-[#1E252B] -rotate-1 font-extrabold shadow-xs" style={{ borderRadius: "255px 25px 225px 25px/25px 225px 25px 255px" }}>
+              <span className="relative inline-block mx-1 px-3.5 py-0.5 rounded-2xl bg-[#DDA71D] text-[#1E252B] -rotate-1 font-extrabold shadow-xs">
                 Bulletins
               </span>
               <span className="relative inline-block">
-                <span>&amp; Communication</span>
+                <span>&amp; Communiqués</span>
                 {/* Cyan doodle underline */}
                 <svg
                   className="absolute -bottom-2 left-0 w-full overflow-visible pointer-events-none"
@@ -94,8 +94,9 @@ export default function NewsSection() {
                 </svg>
               </span>
             </h2>
-            <p className="text-sm text-gray-600 mt-1">
-              Official announcements, cultural updates, welfare circulars, and member milestones across Mombasa.
+            <p className="text-sm text-gray-600 mt-1 max-w-xl">
+              Official announcements, cultural updates, welfare circulars, member
+              milestones, and governance notices across all chapters in Kenya.
             </p>
           </div>
 

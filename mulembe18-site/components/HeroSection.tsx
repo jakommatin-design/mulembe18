@@ -1,225 +1,191 @@
 "use client";
-import { ArrowRight, Sparkles } from "lucide-react";
+import React from "react";
+import Link from "next/link";
+import { ArrowRight, Sparkles, ShieldCheck, MapPin, Users, HeartHandshake, PhoneCall, Coins, Music, Globe } from "lucide-react";
 import Marquee from "@/components/magicui/marquee";
 
 const clans = [
-  { name: "Bukusu", region: "Bungoma" },
-  { name: "Maragoli", region: "Vihiga" },
-  { name: "Samia", region: "Busia" },
-  { name: "Wanga", region: "Mumias" },
-  { name: "Tiriki", region: "Hamisi" },
-  { name: "Idakho", region: "Ikolomani" },
-  { name: "Isukha", region: "Shinyalu" },
-  { name: "Marama", region: "Butere" },
-  { name: "Banyore", region: "Emuhaya" },
-  { name: "Kabras", region: "Malava" },
-  { name: "Batsotso", region: "Lurambi" },
-  { name: "Tachoni", region: "Webuye" },
-  { name: "Kisa", region: "Khwisero" },
-  { name: "Marachi", region: "Butula" },
-  { name: "Khayo", region: "Nambale" },
-  { name: "Nyore", region: "Luanda" },
-  { name: "Gisu", region: "Mt. Elgon" },
-  { name: "Nandi-Luhya", region: "Borderlands" },
+  { name: "Bukusu", region: "Bungoma County" },
+  { name: "Maragoli (AvaLogoli)", region: "Vihiga County" },
+  { name: "Samia", region: "Busia County" },
+  { name: "Wanga", region: "Mumias / Kakamega" },
+  { name: "Tiriki", region: "Hamisi / Vihiga" },
+  { name: "Idakho", region: "Ikolomani / Kakamega" },
+  { name: "Isukha", region: "Shinyalu / Kakamega" },
+  { name: "Marama", region: "Butere / Kakamega" },
+  { name: "Banyore (Abanyole)", region: "Emuhaya / Vihiga" },
+  { name: "Kabras", region: "Malava / Kakamega" },
+  { name: "Batsotso", region: "Lurambi / Kakamega" },
+  { name: "Tachoni", region: "Webuye / Bungoma" },
+  { name: "Kisa", region: "Khwisero / Kakamega" },
+  { name: "Marachi", region: "Butula / Busia" },
+  { name: "Khayo", region: "Nambale / Busia" },
+  { name: "Abanyala", region: "Budalangi / Busia" },
+  { name: "Nyore", region: "Luanda / Vihiga" },
+  { name: "Batura", region: "Western Diaspora" },
 ];
 
 export default function HeroSection() {
   return (
     <section
       id="home"
-      className="relative bg-white text-[#1E252B] pt-14 sm:pt-20 lg:pt-24 pb-20 sm:pb-28 overflow-hidden"
+      className="relative bg-[#FAF9F6] text-[#121714] overflow-hidden pt-12 sm:pt-20 lg:pt-28 pb-16 sm:pb-24 border-b border-[#EAE7DF]"
     >
       {/* ==============================================================
-          LAYER 1 (BACKWARD): DIAGONAL "MULEMBE NI NGUVU" WATERMARK
+          CONCENTRIC CIRCULAR SVG ORBITS & CONNECTING LINES (AGNOS STYLE)
           ============================================================== */}
-      <div
-        aria-hidden="true"
-        className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none select-none overflow-hidden z-[1] scale-110 transform -rotate-[14deg]"
-      >
-        {/* Upper diagonal banner */}
-        <div
-          className="text-[#DDA71D] opacity-[0.35] font-black whitespace-nowrap text-[10vw] sm:text-[12vw] tracking-wider leading-none select-none"
-          style={{ fontFamily: "var(--font-caveat), var(--font-kalam), cursive" }}
+      <div className="absolute inset-0 flex items-center justify-center pointer-events-none select-none overflow-hidden opacity-60">
+        <svg
+          className="w-[1200px] h-[1200px] text-[#E4DFD5]"
+          viewBox="0 0 1000 1000"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
         >
-          Mulembe Ni Nguvu • Unity is Strength
-        </div>
+          {/* Subtle concentric circles */}
+          <circle cx="500" cy="500" r="220" stroke="currentColor" strokeWidth="1" strokeDasharray="3 3" />
+          <circle cx="500" cy="500" r="360" stroke="currentColor" strokeWidth="1" />
+          <circle cx="500" cy="500" r="490" stroke="currentColor" strokeWidth="1" />
 
-        {/* Center massive diagonal watermark */}
-        <div
-          className="text-[#0D6E38] opacity-[0.25] font-black uppercase whitespace-nowrap text-[12vw] sm:text-[14vw] tracking-[0.25em] leading-none my-1 select-none"
-          style={{ fontFamily: "var(--font-outfit), sans-serif" }}
-        >
-          Mulembe 18
-        </div>
+          {/* Curved connecting line to top-left floating card */}
+          <path d="M 500 280 C 400 280 290 220 250 160" stroke="currentColor" strokeWidth="1.2" />
 
-        {/* Lower diagonal banner */}
-        <div
-          className="text-[#DDA71D] opacity-[0.30] font-black whitespace-nowrap text-[9vw] sm:text-[11vw] tracking-widest leading-none select-none"
-          style={{ fontFamily: "var(--font-caveat), var(--font-kalam), cursive" }}
-        >
-          Unity Is Strength • Mulembe Ni Nguvu
+          {/* Curved connecting line to top-right floating card */}
+          <path d="M 500 280 C 600 280 710 220 750 160" stroke="currentColor" strokeWidth="1.2" />
+
+          {/* Curved connecting line to bottom-left floating card */}
+          <path d="M 500 640 C 420 640 310 700 260 760" stroke="currentColor" strokeWidth="1.2" />
+
+          {/* Curved connecting line to bottom-right floating card */}
+          <path d="M 500 640 C 580 640 690 700 740 760" stroke="currentColor" strokeWidth="1.2" />
+        </svg>
+      </div>
+
+      {/* ==============================================================
+          FLOATING CULTURAL & COMMUNITY TILES (AGNOS HERO CARDS)
+          ============================================================== */}
+      {/* Top Left Floating Tile: Traditional Heritage & Shield */}
+      <div className="hidden lg:flex absolute top-16 left-[12%] z-10 items-center justify-center w-16 h-16 rounded-2xl bg-white shadow-[0_8px_30px_rgb(0,0,0,0.06)] border border-[#E8E4DA] rotate-[-6deg] hover:rotate-0 transition-transform duration-300">
+        <div className="w-10 h-10 rounded-xl bg-emerald-50 text-[#0D6E38] flex items-center justify-center shadow-2xs">
+          <ShieldCheck size={20} />
+        </div>
+      </div>
+
+      {/* Top Right Floating Tile: M-Pesa KES 200 Solidarity */}
+      <div className="hidden lg:flex absolute top-16 right-[12%] z-10 items-center justify-center w-16 h-16 rounded-2xl bg-white shadow-[0_8px_30px_rgb(0,0,0,0.06)] border border-[#E8E4DA] rotate-[8deg] hover:rotate-0 transition-transform duration-300">
+        <div className="w-10 h-10 rounded-xl bg-orange-50 text-[#FF5500] flex items-center justify-center shadow-2xs">
+          <Coins size={20} />
+        </div>
+      </div>
+
+      {/* Bottom Left Floating Tile: Isukuti Cultural Music */}
+      <div className="hidden lg:flex absolute bottom-24 left-[14%] z-10 items-center justify-center w-16 h-16 rounded-2xl bg-white shadow-[0_8px_30px_rgb(0,0,0,0.06)] border border-[#E8E4DA] rotate-[10deg] hover:rotate-0 transition-transform duration-300">
+        <div className="w-10 h-10 rounded-xl bg-amber-50 text-[#DDA71D] flex items-center justify-center shadow-2xs">
+          <Music size={20} />
+        </div>
+      </div>
+
+      {/* Bottom Right Floating Tile: 18 Clans Community Card */}
+      <div className="hidden lg:flex absolute bottom-24 right-[14%] z-10 items-center justify-center w-16 h-16 rounded-2xl bg-white shadow-[0_8px_30px_rgb(0,0,0,0.06)] border border-[#E8E4DA] rotate-[-8deg] hover:rotate-0 transition-transform duration-300">
+        <div className="w-10 h-10 rounded-xl bg-blue-50 text-[#0077B6] flex items-center justify-center shadow-2xs">
+          <Users size={20} />
         </div>
       </div>
 
       {/* ==============================================================
-          LAYER 2 (FORWARD): VIVID ISUKUTI CULTURAL CELEBRATION PHOTO
+          MAIN HERO CONTENT (AGNOS ULTRA-CLEAN TYPOGRAPHY)
           ============================================================== */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none z-[2]">
-        <img
-          src="https://aipate.com/wp-content/uploads/2017/10/isukuti1.jpg"
-          onError={(e) => {
-            e.currentTarget.src = "/images/isukuti.jpg";
-          }}
-          alt="Luhya Isukuti Traditional Cultural Drums & Dance"
-          className="w-full h-full object-cover scale-105 filter blur-[3px] sm:blur-[4px] opacity-80 brightness-[1.03] contrast-[1.05]"
-        />
-        {/* Gentle translucent tint: keeps the photo clearly visible while giving headline text maximum contrast */}
-        <div className="absolute inset-0 bg-white/40" />
-        <div className="absolute inset-0 bg-gradient-to-b from-white/60 via-transparent to-[#FBF8F2]/80" />
-      </div>
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 relative z-20 text-center">
+        
+        {/* Category Pill Badge (Agnos Style: > CATEGORY <) */}
+        <div className="inline-flex items-center justify-center gap-1.5 px-3.5 py-1 rounded-full bg-white border border-[#E4DFD5] text-[#6B7280] text-[11px] font-mono uppercase tracking-[0.2em] shadow-2xs mb-6 sm:mb-8">
+          <span>&gt;</span>
+          <span className="font-bold text-[#374151]">MULEMBE18 PLATFORM</span>
+          <span>&lt;</span>
+        </div>
 
-      {/* ==============================================================
-          LAYER 3: AMBIENT COLOR ACCENTS
-          ============================================================== */}
-      <div
-        className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-96 pointer-events-none opacity-40 blur-3xl z-[3]"
-        style={{
-          background:
-            "radial-gradient(ellipse 60% 40% at 50% 10%, rgba(246,166,35,0.35) 0%, rgba(13,110,56,0.20) 50%, transparent 80%)",
-        }}
-      />
-
-      {/* ==============================================================
-          MAIN HERO CONTENT — ODOO INSPIRED PLAYFUL & BOLD TYPOGRAPHY
-          ============================================================== */}
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
-
-        {/* Grand Headline: Odoo-style expressive handwriting with highlighter marker */}
+        {/* Grand Headline: High impact with vibrant accent word */}
         <h1
-          className="text-4xl sm:text-6xl md:text-7xl lg:text-[84px] font-bold text-[#1E252B] tracking-tight leading-[1.12] sm:leading-[1.15] max-w-5xl mx-auto select-none"
-          style={{ fontFamily: "var(--font-kalam), var(--font-caveat), cursive" }}
+          className="text-4xl sm:text-6xl md:text-7xl lg:text-[76px] font-black text-[#111827] tracking-tight leading-[1.08] max-w-4xl mx-auto"
+          style={{ fontFamily: "var(--font-outfit), var(--font-heading), sans-serif" }}
         >
-          <span>One community on </span>
-          <span className="relative inline-block mx-1 sm:mx-2 px-3 sm:px-5 py-0.5 sm:py-1 transform -rotate-1 group">
-            {/* Odoo Warm Amber Highlighter Brush Background */}
-            <span
-              className="absolute inset-0 bg-[#F6A623] shadow-sm transform -rotate-1 rounded-2xl sm:rounded-3xl pointer-events-none"
-              style={{
-                borderRadius: "255px 25px 225px 25px/25px 225px 25px 255px",
-              }}
-            />
-            <span className="relative z-10 text-[#1E252B] font-extrabold whitespace-nowrap">
-              one platform.
-            </span>
-          </span>
-          <br className="hidden sm:inline" />
-          <span className="block mt-2 sm:mt-4">
-            <span>Many Roots, </span>
-            <span className="relative inline-block whitespace-nowrap">
-              <span className="text-[#0D6E38]">Stronger Together!</span>
-              {/* Odoo Hand-drawn Cyan / Blue Marker Doodle Underline */}
-              <svg
-                className="absolute -bottom-2 sm:-bottom-4 left-0 w-full overflow-visible pointer-events-none"
-                viewBox="0 0 240 18"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M 6 11 Q 65 17 125 10 Q 185 4 234 13"
-                  stroke="#00AEEF"
-                  strokeWidth="6"
-                  strokeLinecap="round"
-                />
-                <path
-                  d="M 16 13 Q 75 7 135 12 Q 195 16 228 10"
-                  stroke="#38BDF8"
-                  strokeWidth="4"
-                  strokeLinecap="round"
-                  opacity="0.85"
-                />
-              </svg>
-            </span>
+          <span>We unite 18 roots that move </span>
+          <span className="text-[#FF5500] inline-block font-black">
+            people
           </span>
         </h1>
 
-        {/* Script Accent: Mulembe Ni Nguvu Badge with whimsical hand-drawn feel */}
-        <div className="mt-6 sm:mt-8 flex items-center justify-center gap-3">
-          <div className="h-0.5 w-10 sm:w-16 bg-gradient-to-r from-transparent to-[#DDA71D]" />
-          <span
-            className="text-2xl sm:text-3xl text-[#DDA71D] font-bold tracking-wide"
-            style={{ fontFamily: "var(--font-kalam), var(--font-caveat), cursive" }}
-          >
-            Mulembe Ni Nguvu — Unity is Strength
-          </span>
-          <div className="h-0.5 w-10 sm:w-16 bg-gradient-to-l from-transparent to-[#DDA71D]" />
-        </div>
-
-        {/* Mission Description */}
-        <p className="text-base sm:text-lg md:text-xl text-gray-600 max-w-3xl mx-auto mt-4 sm:mt-5 leading-relaxed font-normal">
-          Uniting Luhya professionals, business leaders, families, students, and elders residing across
-          Mombasa County through cultural preservation, transparent mutual welfare assistance,
-          and coastal socio-economic solidarity.
+        {/* Subtitle Paragraph */}
+        <p className="text-base sm:text-lg md:text-xl text-[#4B5563] max-w-2xl mx-auto mt-5 sm:mt-6 leading-relaxed font-normal">
+          We combine cultural heritage, transparent mutual welfare, and modern technology to help
+          the 18 Luhya sub-communities stand out &amp; create meaningful solidarity across Kenya and nationwide.
         </p>
 
-        {/* CTAs in Odoo Minimalist Pill Style */}
-        <div className="flex flex-wrap items-center justify-center gap-4 pt-7 sm:pt-9 relative">
-          <a
-            href="#register"
-            className="group relative inline-flex items-center gap-2.5 px-8 py-3.5 sm:px-9 sm:py-4 rounded-full bg-[#0D6E38] hover:bg-[#09522a] text-white font-extrabold text-sm sm:text-base shadow-lg hover:shadow-xl transition-all transform hover:-translate-y-0.5"
-          >
-            <span>Join Our Community</span>
-            <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
-          </a>
-
-
-
-          {/* Hand-drawn whimsical arrow pointing toward CTA */}
-          <div className="hidden lg:block absolute -right-2 top-2 pointer-events-none select-none text-gray-400">
-            <svg width="65" height="50" viewBox="0 0 65 50" fill="none" xmlns="http://www.w3.org/2000/svg">
+        {/* Dual CTA Buttons & Hand-drawn Script Accent */}
+        <div className="mt-8 sm:mt-10 flex flex-col sm:flex-row items-center justify-center gap-4 relative">
+          
+          {/* Hand-drawn whimsical annotation pointing to Primary CTA (Agnos Style) */}
+          <div className="hidden sm:flex absolute -left-4 md:left-6 lg:left-14 -bottom-10 items-center gap-1 select-none pointer-events-none">
+            <span
+              className="text-sm font-bold text-[#FF5500] -rotate-6"
+              style={{ fontFamily: "var(--font-caveat), var(--font-kalam), cursive" }}
+            >
+              Jiunge na wanachama 1,420+ sasa
+            </span>
+            <svg
+              className="w-10 h-8 text-[#FF5500] transform rotate-12 -mt-2"
+              viewBox="0 0 40 30"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
               <path
-                d="M 5 5 C 25 2 55 10 45 35 M 45 35 L 36 28 M 45 35 L 53 26"
-                stroke="#6B7280"
+                d="M 5 22 Q 22 24 28 8 M 28 8 L 22 10 M 28 8 L 29 16"
+                stroke="currentColor"
                 strokeWidth="2"
                 strokeLinecap="round"
                 strokeLinejoin="round"
               />
             </svg>
-            <span
-              className="text-xs text-gray-500 font-bold -ml-3"
-              style={{ fontFamily: "var(--font-kalam), cursive" }}
-            >
-              Get started!
-            </span>
           </div>
+
+          {/* Primary CTA (Vibrant Terracotta Orange - Agnos Pill) */}
+          <a
+            href="#register"
+            className="w-full sm:w-auto px-8 py-3.5 sm:py-4 rounded-xl bg-[#FF5500] hover:bg-[#E04B00] text-white font-bold text-sm sm:text-base shadow-[0_4px_14px_rgba(255,85,0,0.35)] hover:shadow-[0_6px_20px_rgba(255,85,0,0.45)] transition-all transform hover:-translate-y-0.5"
+          >
+            Join our community
+          </a>
+
+          {/* Secondary CTA (Deep Black - Agnos Pill) */}
+          <Link
+            href="/directory"
+            className="w-full sm:w-auto px-7 py-3.5 sm:py-4 rounded-xl bg-[#111827] hover:bg-[#1F2937] text-white font-bold text-sm sm:text-base shadow-sm hover:shadow-md transition-all transform hover:-translate-y-0.5"
+          >
+            Member directory
+          </Link>
         </div>
 
         {/* Marquee Banner of all 18 Sub-Communities */}
-        <div className="mt-14 sm:mt-16 pt-7 border-t border-gray-200">
-          <div className="text-center mb-3.5">
-            <span className="text-[11px] font-bold uppercase tracking-widest text-gray-500">
-              The 18 Luhya Sub-Communities United at the Coast
+        <div className="mt-16 sm:mt-20 pt-8 border-t border-[#EAE7DF]">
+          <div className="text-center mb-4">
+            <span className="text-[11px] font-mono font-bold uppercase tracking-[0.25em] text-[#9CA3AF]">
+              TRUSTED BY 18 LUHYA SUB-COMMUNITIES • COAST &amp; NATIONWIDE
             </span>
           </div>
-          <Marquee pauseOnHover className="[--duration:32s] py-1.5">
+
+          <Marquee pauseOnHover className="[--duration:36s] py-1.5">
             {clans.map((c) => (
               <div
                 key={c.name}
-                className="flex items-center gap-2 px-4 py-1.5 rounded-full bg-gray-50 border border-gray-200 text-xs font-bold text-gray-700 hover:border-[#0D6E38] hover:text-[#0D6E38] hover:bg-emerald-50/60 transition-colors cursor-default whitespace-nowrap shadow-xs"
+                className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white border border-[#E8E4DA] text-xs font-bold text-[#374151] hover:border-[#FF5500] hover:text-[#FF5500] transition-colors cursor-default whitespace-nowrap shadow-2xs mx-1.5"
               >
-                <span className="w-1.5 h-1.5 rounded-full bg-[#F6A623]" />
+                <span className="w-1.5 h-1.5 rounded-full bg-[#FF5500]" />
                 <span>{c.name}</span>
-                <span className="text-[10px] text-gray-400 font-normal">({c.region})</span>
+                <span className="text-[10px] text-[#9CA3AF] font-normal">({c.region})</span>
               </div>
             ))}
           </Marquee>
         </div>
-      </div>
 
-      {/* Coastal Ocean Wave Divider transitioning gracefully to About Section */}
-      <div className="hero-wave mt-10">
-        <svg viewBox="0 0 1440 120" fill="none" preserveAspectRatio="none" className="block w-full h-12 sm:h-16">
-          <path d="M0,30 C320,90 480,15 800,60 C1120,105 1320,40 1440,55 L1440,120 L0,120 Z" fill="#FBF8F2" />
-        </svg>
       </div>
     </section>
   );
