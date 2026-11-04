@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { auth } from "@clerk/nextjs/server";
 import { query, initDatabaseSchema } from "@/lib/db";
 
 export async function GET(req: Request) {
@@ -66,6 +67,9 @@ export async function GET(req: Request) {
 
 export async function POST(req: Request) {
   try {
+    const { userId } = await auth();
+    if (!userId) return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
+
     const body = await req.json();
     const {
       category,
@@ -127,6 +131,11 @@ export async function POST(req: Request) {
 
 export async function DELETE(req: Request) {
   try {
+    const { userId } = await auth();
+    if (!userId) return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
+    const adminCheck = await query("SELECT role FROM members WHERE clerk_id = ? LIMIT 1", [userId]);
+    if (!adminCheck[0] || (adminCheck[0] as any).role !== "admin") return NextResponse.json({ success: false, message: "Forbidden — Admin only" }, { status: 403 });
+
     const { searchParams } = new URL(req.url);
     const id = searchParams.get("id");
 

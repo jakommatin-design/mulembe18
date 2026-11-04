@@ -17,6 +17,7 @@ import {
   Filter,
   Check,
   RefreshCw,
+  X,
 } from "lucide-react";
 
 export interface Chapter {
@@ -199,7 +200,7 @@ export const chaptersData: Chapter[] = [
 ];
 
 export default function ChaptersSection() {
-  const [chapters, setChapters] = useState<Chapter[]>(chaptersData);
+  const [chapters, setChapters] = useState<Chapter[]>([]);
   const [loading, setLoading] = useState(false);
   const [selectedType, setSelectedType] = useState<string>("All");
   const [transferModal, setTransferModal] = useState(false);
@@ -487,7 +488,7 @@ export default function ChaptersSection() {
                 Registration, directory, events with RSVP, announcements, constitution draft.
               </p>
               <span className="mt-2 inline-block text-[10px] font-bold text-amber-700 bg-amber-100 px-2 py-0.5 rounded-full">
-                Active &amp; Validated ✓
+                Active &amp; Validated <CheckCircle2 size={10} className="inline ml-0.5" />
               </span>
             </div>
 
@@ -554,7 +555,7 @@ export default function ChaptersSection() {
               onClick={() => setTransferModal(false)}
               className="absolute top-5 right-5 w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center text-gray-500"
             >
-              ✕
+              <X size={16} />
             </button>
 
             {transferSuccess ? (
@@ -570,7 +571,7 @@ export default function ChaptersSection() {
                   <strong>{transferForm.targetChapter}</strong> has been transmitted to the receiving chapter administrator. You will retain all your past dues and participation history.
                 </p>
                 <div className="p-2.5 bg-emerald-50 text-[11px] font-semibold text-[#0D6E38] rounded-xl border border-emerald-200">
-                  Kenya Data Protection Act &amp; Audit Log Verified ✓
+                  Kenya Data Protection Act &amp; Audit Log Verified <CheckCircle2 size={10} className="inline ml-0.5" />
                 </div>
               </div>
             ) : (

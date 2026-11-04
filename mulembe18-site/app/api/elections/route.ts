@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { auth } from "@clerk/nextjs/server";
 import { query, initDatabaseSchema } from "@/lib/db";
 
 export async function GET() {
@@ -28,6 +29,11 @@ export async function GET() {
 
 export async function POST(req: Request) {
   try {
+    const { userId } = await auth();
+    if (!userId) {
+      return NextResponse.json({ success: false, message: "Unauthorized — please sign in to vote" }, { status: 401 });
+    }
+
     const body = await req.json();
     const { candidateId } = body;
 

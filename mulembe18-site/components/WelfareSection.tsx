@@ -178,8 +178,8 @@ const initialTransactions = [
 ];
 
 export default function WelfareSection() {
-  const [appeals, setAppeals] = useState<WelfareAppeal[]>(activeAppealsData);
-  const [transactions, setTransactions] = useState<any[]>(initialTransactions);
+  const [appeals, setAppeals] = useState<WelfareAppeal[]>([]);
+  const [transactions, setTransactions] = useState<any[]>([]);
   const [loadingLedger, setLoadingLedger] = useState(false);
   const [activeAmount, setActiveAmount] = useState(500);
   const [selectedCategory, setSelectedCategory] = useState("Monthly_Dues");
@@ -205,8 +205,8 @@ export default function WelfareSection() {
           destinationCounty: a.location || "Western Kenya",
           targetAmount: Number(a.goal_amount) || 100000,
           raisedAmount: Number(a.raised_amount) || 0,
-          deadlineDate: "30 Nov 2026",
-          daysRemaining: 12,
+          deadlineDate: a.deadline_date || "TBD",
+          daysRemaining: Number(a.days_remaining) || 0,
           description: a.description || "Community welfare and distress support fund.",
           status: a.is_active ? "Active Appeal" : "Fully Funded",
           dualApprovers: ["Mzee Johnstone Mukaisi (Chair)", "Grace Kavehere (Treasurer)"],
@@ -235,9 +235,8 @@ export default function WelfareSection() {
           approvedBy: ["Auto-Reconciled Daraja"],
           status: c.status || "Completed",
         }));
-        // Merge with expense withdrawals
-        const expenseTxs = initialTransactions.filter((tx) => tx.amount < 0);
-        setTransactions([...mapped, ...expenseTxs]);
+        // Only use real contributions from DB — no hardcoded expense rows
+        setTransactions(mapped);
       }
     } catch (err) {
       console.error("Error fetching contributions ledger:", err);
@@ -275,22 +274,21 @@ export default function WelfareSection() {
         }),
       });
       const data = await res.json();
-      setReceiptCode(
-        data.mpesaCode || `MLMB${Math.floor(100000 + Math.random() * 900000)}`
-      );
-      setStkStatus("success");
-      fetchLedger();
-      setTimeout(() => {
+      if (data.success) {
+        setReceiptCode(data.mpesaCode || data.receipt_no || "Recorded");
+        setStkStatus("success");
+        fetchLedger();
+        setTimeout(() => {
+          setStkStatus("idle");
+          setReceiptCode("");
+        }, 7000);
+      } else {
         setStkStatus("idle");
-        setReceiptCode("");
-      }, 7000);
+        alert(data.message || "Failed to record contribution. Please try again.");
+      }
     } catch {
-      setStkStatus("success");
-      setReceiptCode(`MLMB${Math.floor(100000 + Math.random() * 900000)}`);
-      setTimeout(() => {
-        setStkStatus("idle");
-        setReceiptCode("");
-      }, 6000);
+      setStkStatus("idle");
+      alert("Network error. Please check your connection and try again.");
     }
   };
 
@@ -320,7 +318,7 @@ export default function WelfareSection() {
           </h2>
 
           <p className="text-[#4B5563] text-sm sm:text-base mt-4 max-w-2xl mx-auto leading-relaxed">
-            Transparent mutual welfare assistance via automated M-Pesa STK push. Every shilling accounted for in a public ledger with mandatory dual sign-off.
+            Transparent mutual welfare assistance via M-Pesa Paybill 522522. Every shilling accounted for in a public ledger with mandatory dual sign-off.
           </p>
         </div>
 
@@ -336,15 +334,15 @@ export default function WelfareSection() {
                 </div>
                 <div>
                   <h3 className="text-base font-bold text-[#111827]">
-                    M-Pesa Express Contribution Desk
+                    M-Pesa Contribution Record Desk
                   </h3>
                   <p className="text-xs text-[#6B7280]">
-                    Direct STK push to mobile phone • Instant receipt
+                    Pay via Paybill 522522 → Acc: MULEMBE18 • then record below
                   </p>
                 </div>
               </div>
-              <span className="px-2.5 py-1 rounded-full bg-emerald-50 text-[#0D6E38] text-[10px] font-mono font-bold tracking-wider">
-                LIVE STK
+              <span className="px-2.5 py-1 rounded-full bg-blue-50 text-[#0077B6] text-[10px] font-mono font-bold tracking-wider">
+                MANUAL PAY
               </span>
             </div>
 
@@ -354,11 +352,12 @@ export default function WelfareSection() {
                   <CheckCircle2 size={28} />
                 </div>
                 <h4 className="font-bold text-base text-[#111827]">
-                  Prompt Sent to Your Handset
+                  Contribution Recorded
                 </h4>
                 <p className="text-xs text-[#4B5563]">
-                  Please enter your M-Pesa PIN on your phone to authorize payment of{" "}
-                  <strong className="text-[#111827]">KES {finalAmount.toLocaleString()}</strong>.
+                  Your M-Pesa contribution of{" "}
+                  <strong className="text-[#111827]">KES {finalAmount.toLocaleString()}</strong>{" "}
+                  has been recorded. Ensure you have paid via Paybill 522522 → Acc: MULEMBE18.
                 </p>
                 <div className="text-[11px] font-mono text-emerald-800 bg-white px-3 py-1.5 rounded-lg border border-emerald-200 inline-block">
                   Reference Code: {receiptCode}
@@ -378,8 +377,8 @@ export default function WelfareSection() {
                         type="button"
                         onClick={() => setSelectedCategory(c.id)}
                         className={`px-3 py-2 rounded-xl text-[11px] font-bold border transition-all truncate text-left ${selectedCategory === c.id
-                            ? "bg-[#FF5500] border-[#FF5500] text-white shadow-xs"
-                            : "bg-[#FAF9F6] border-[#E8E4DA] text-[#374151] hover:border-[#111827]"
+                          ? "bg-[#FF5500] border-[#FF5500] text-white shadow-xs"
+                          : "bg-[#FAF9F6] border-[#E8E4DA] text-[#374151] hover:border-[#111827]"
                           }`}
                       >
                         {c.short}
@@ -403,8 +402,8 @@ export default function WelfareSection() {
                           setCustomAmount("");
                         }}
                         className={`py-2 rounded-xl text-xs font-bold border transition-all ${activeAmount === amt
-                            ? "bg-[#111827] border-[#111827] text-white shadow-xs"
-                            : "bg-[#FAF9F6] border-[#E8E4DA] text-[#374151] hover:border-[#FF5500]"
+                          ? "bg-[#111827] border-[#111827] text-white shadow-xs"
+                          : "bg-[#FAF9F6] border-[#E8E4DA] text-[#374151] hover:border-[#FF5500]"
                           }`}
                       >
                         {amt.toLocaleString()}

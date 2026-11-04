@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { auth } from "@clerk/nextjs/server";
 import { query, initDatabaseSchema } from "@/lib/db";
 
 export async function GET() {
@@ -14,6 +15,9 @@ export async function GET() {
 
 export async function POST(req: Request) {
   try {
+    const { userId } = await auth();
+    if (!userId) return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
+
     const body = await req.json();
     const { fullName, phone, currentChapter, targetChapter, reason } = body;
 
@@ -44,6 +48,11 @@ export async function POST(req: Request) {
 
 export async function PUT(req: Request) {
   try {
+    const { userId } = await auth();
+    if (!userId) return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
+    const adminCheck = await query("SELECT role FROM members WHERE clerk_id = ? LIMIT 1", [userId]);
+    if (!adminCheck[0] || (adminCheck[0] as any).role !== "admin") return NextResponse.json({ success: false, message: "Forbidden — Admin only" }, { status: 403 });
+
     const body = await req.json();
     const { id, status, approvedBy } = body;
 

@@ -112,7 +112,7 @@ export default function LeadershipSection() {
   const [leaders, setLeaders] = useState<Leader[]>(defaultCouncilLeaders);
   const [loading, setLoading] = useState(false);
   const [votedCandidateId, setVotedCandidateId] = useState<string | null>(null);
-  const [candidates, setCandidates] = useState<ElectionCandidate[]>(mockCandidates);
+  const [candidates, setCandidates] = useState<ElectionCandidate[]>([]);
 
   useEffect(() => {
     fetch("/api/leadership")

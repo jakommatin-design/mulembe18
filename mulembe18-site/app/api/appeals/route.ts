@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { auth } from "@clerk/nextjs/server";
 import { query, initDatabaseSchema } from "@/lib/db";
 
 // GET — fetch all appeals (active ones first)
@@ -33,6 +34,11 @@ export async function GET() {
 // POST — admin creates a new appeal
 export async function POST(req: Request) {
   try {
+    const { userId } = await auth();
+    if (!userId) return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
+    const adminCheck = await query("SELECT role FROM members WHERE clerk_id = ? LIMIT 1", [userId]);
+    if (!adminCheck[0] || (adminCheck[0] as any).role !== "admin") return NextResponse.json({ success: false, message: "Forbidden — Admin only" }, { status: 403 });
+
     const body = await req.json();
     const { title, description, goalAmount, raisedAmount, familyName, location } = body;
 
@@ -60,6 +66,9 @@ export async function POST(req: Request) {
 // PUT — update appeal (raised amount, status, close it)
 export async function PUT(req: Request) {
   try {
+    const { userId } = await auth();
+    if (!userId) return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
+
     const body = await req.json();
     const { id, raisedAmount, status, isActive } = body;
 
@@ -89,6 +98,11 @@ export async function PUT(req: Request) {
 // DELETE — remove an appeal
 export async function DELETE(req: Request) {
   try {
+    const { userId } = await auth();
+    if (!userId) return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
+    const adminCheck = await query("SELECT role FROM members WHERE clerk_id = ? LIMIT 1", [userId]);
+    if (!adminCheck[0] || (adminCheck[0] as any).role !== "admin") return NextResponse.json({ success: false, message: "Forbidden — Admin only" }, { status: 403 });
+
     const { searchParams } = new URL(req.url);
     const id = searchParams.get("id");
 

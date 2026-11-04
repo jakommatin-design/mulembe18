@@ -129,7 +129,7 @@ const initialNotices: NoticeItem[] = [
 ];
 
 export default function NoticeboardSection() {
-  const [notices, setNotices] = useState<NoticeItem[]>(initialNotices);
+  const [notices, setNotices] = useState<NoticeItem[]>([]);
   const [loading, setLoading] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [activeCategory, setActiveCategory] = useState<string>("All");

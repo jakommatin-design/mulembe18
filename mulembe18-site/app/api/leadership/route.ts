@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { auth } from "@clerk/nextjs/server";
 import { query, initDatabaseSchema } from "@/lib/db";
 import { normalizeImageUrl } from "@/lib/image-utils";
 
@@ -20,6 +21,11 @@ export async function GET() {
 
 export async function POST(req: Request) {
   try {
+    const { userId } = await auth();
+    if (!userId) return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
+    const adminCheck = await query("SELECT role FROM members WHERE clerk_id = ? LIMIT 1", [userId]);
+    if (!adminCheck[0] || (adminCheck[0] as any).role !== "admin") return NextResponse.json({ success: false, message: "Forbidden — Admin only" }, { status: 403 });
+
     const body = await req.json();
     const { name, role, clan, phone, email, bio, avatarUrl, sortOrder } = body;
 
@@ -66,6 +72,11 @@ export async function POST(req: Request) {
 
 export async function PUT(req: Request) {
   try {
+    const { userId } = await auth();
+    if (!userId) return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
+    const adminCheck = await query("SELECT role FROM members WHERE clerk_id = ? LIMIT 1", [userId]);
+    if (!adminCheck[0] || (adminCheck[0] as any).role !== "admin") return NextResponse.json({ success: false, message: "Forbidden — Admin only" }, { status: 403 });
+
     const body = await req.json();
     const { id, name, role, clan, phone, email, bio, avatarUrl, sortOrder, status } = body;
 
@@ -115,6 +126,11 @@ export async function PUT(req: Request) {
 
 export async function DELETE(req: Request) {
   try {
+    const { userId } = await auth();
+    if (!userId) return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
+    const adminCheck = await query("SELECT role FROM members WHERE clerk_id = ? LIMIT 1", [userId]);
+    if (!adminCheck[0] || (adminCheck[0] as any).role !== "admin") return NextResponse.json({ success: false, message: "Forbidden — Admin only" }, { status: 403 });
+
     const { searchParams } = new URL(req.url);
     const id = searchParams.get("id");
 

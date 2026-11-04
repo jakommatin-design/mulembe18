@@ -236,6 +236,14 @@ export default function DashboardPage() {
 
   // Derived
   const currentMember = useMemo(() => membersList.find(m => (user?.primaryEmailAddress?.emailAddress && m.email?.toLowerCase() === user.primaryEmailAddress.emailAddress.toLowerCase())), [membersList, user]);
+  const isAdmin = currentMember?.role === "admin";
+
+  // Auto-set role based on DB — do not allow client-side escalation
+  useEffect(() => {
+    if (currentMember) {
+      setRole(currentMember.role === "admin" ? "admin" : "member");
+    }
+  }, [currentMember]);
   const userContributions = useMemo(() => contributionsList.filter(c => currentMember && (c.member_name?.toLowerCase().includes(currentMember.full_name?.toLowerCase().split(" ")[0]) || (currentMember.phone && c.phone === currentMember.phone))), [contributionsList, currentMember]);
   const userTotalContributed = useMemo(() => userContributions.reduce((s, c) => s + (Number(c.amount) || 0), 0), [userContributions]);
   const hasPaidDues = useMemo(() => userContributions.some(c => c.purpose?.toLowerCase().includes("dues") || c.purpose?.toLowerCase().includes("membership") || (Number(c.amount) >= 500 && c.status === "Completed")), [userContributions]);
@@ -319,16 +327,13 @@ export default function DashboardPage() {
         setPayModalOpen(false);
       }, 2500);
     } catch {
-      setPayStatus("success");
-      setTimeout(() => {
-        setPayStatus("idle");
-        setPayModalOpen(false);
-      }, 2500);
+      setPayStatus("idle");
+      alert("Failed to record payment. Please check your connection and try again.");
     }
   };
   const handleClaimSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    try { await fetch("/api/welfare", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ claimantName: user?.fullName || "Member", subClan: currentMember?.sub_clan || "Luhya", residentialZone: currentMember?.residential_zone || "Mombasa", claimType, amount: claimAmount, description: claimDesc }) }); setClaimSuccess(true); fetchAllClaims(); setTimeout(() => { setClaimSuccess(false); setClaimModalOpen(false); setClaimDesc(""); }, 2500); } catch { setClaimSuccess(true); setTimeout(() => { setClaimSuccess(false); setClaimModalOpen(false); setClaimDesc(""); }, 2500); }
+    try { await fetch("/api/welfare", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ claimantName: user?.fullName || "Member", subClan: currentMember?.sub_clan || "Luhya", residentialZone: currentMember?.residential_zone || "Mombasa", claimType, amount: claimAmount, description: claimDesc }) }); setClaimSuccess(true); fetchAllClaims(); setTimeout(() => { setClaimSuccess(false); setClaimModalOpen(false); setClaimDesc(""); }, 2500); } catch { alert("Failed to submit claim. Please check your connection and try again."); }
   };
   const handleDonateToAppeal = async (e: React.FormEvent) => {
     e.preventDefault(); if (!appealDonateModal || !appealDonatePhone) return; setAppealDonateStatus("sending");
@@ -417,7 +422,7 @@ export default function DashboardPage() {
                 <button type="button" onClick={() => setIsCollapsed(true)} className="hidden md:flex p-1.5 rounded-lg bg-white/5 hover:bg-white/15 text-emerald-300 cursor-pointer"><PanelLeftClose size={13} /></button>
               </div>
               <div className="p-0.5 rounded-xl bg-black/30 border border-emerald-900/70 grid grid-cols-2 gap-0.5">
-                {(["member", "admin"] as DashboardRole[]).map(r => (
+                {(["member", "admin"] as DashboardRole[]).filter(r => r === "member" || isAdmin).map(r => (
                   <button type="button" key={r} onClick={() => { setRole(r); setMobileMenuOpen(false); }} className={`py-1.5 rounded-lg text-[11px] font-bold transition-all flex items-center justify-center gap-1 cursor-pointer ${role === r ? (r === "admin" ? "bg-[#0D6E38] text-white" : "bg-[#DDA71D] text-[#082f1a]") : "text-emerald-300/60 hover:text-white"}`}>
                     {r === "member" ? <><Users size={10} />Member</> : <><Shield size={10} />Admin</>}
                   </button>
@@ -430,7 +435,7 @@ export default function DashboardPage() {
               <button type="button" onClick={() => setIsCollapsed(false)} className="w-8 h-8 rounded-lg bg-white/5 hover:bg-white/15 text-emerald-300 flex items-center justify-center cursor-pointer"><PanelLeftOpen size={13} /></button>
               <div className="w-full flex flex-col items-center gap-1 pt-1 border-t border-emerald-900/60">
                 <button type="button" onClick={() => setRole("member")} className={`w-8 h-8 rounded-lg flex items-center justify-center cursor-pointer ${role === "member" ? "bg-[#DDA71D] text-[#082f1a]" : "text-emerald-300 hover:bg-white/5"}`}><Users size={13} /></button>
-                <button type="button" onClick={() => setRole("admin")} className={`w-8 h-8 rounded-lg flex items-center justify-center cursor-pointer ${role === "admin" ? "bg-[#0D6E38] text-white" : "text-emerald-300 hover:bg-white/5"}`}><Shield size={13} /></button>
+                {isAdmin && <button type="button" onClick={() => setRole("admin")} className={`w-8 h-8 rounded-lg flex items-center justify-center cursor-pointer ${role === "admin" ? "bg-[#0D6E38] text-white" : "text-emerald-300 hover:bg-white/5"}`}><Shield size={13} /></button>}
               </div>
             </div>
           )}
@@ -514,16 +519,24 @@ export default function DashboardPage() {
                 className="bg-transparent font-bold text-gray-800 text-xs outline-none cursor-pointer"
               >
                 <option value="all">All Chapters (National)</option>
-                <option value="001">Mombasa Chapter (001 - Pilot)</option>
-                <option value="047">Nairobi Metropolitan (047)</option>
-                <option value="037">Kakamega Home (037 - Cradle)</option>
-                <option value="039">Bungoma Chapter (039)</option>
-                <option value="038">Vihiga Chapter (038)</option>
-                <option value="040">Busia Border (040)</option>
-                <option value="032">Nakuru Rift Valley (032)</option>
-                <option value="042">Kisumu Lake (042)</option>
-                <option value="027">Eldoret North Rift (027)</option>
-                <option value="999">Global Diaspora (999)</option>
+                {chaptersList.length > 0 ? chaptersList.map((ch: any) => (
+                  <option key={ch.county_code} value={ch.county_code}>
+                    {ch.chapter_name}
+                  </option>
+                )) : (
+                  <>
+                    <option value="001">Mombasa Chapter (001 - Pilot)</option>
+                    <option value="047">Nairobi Metropolitan (047)</option>
+                    <option value="037">Kakamega Home (037 - Cradle)</option>
+                    <option value="039">Bungoma Chapter (039)</option>
+                    <option value="038">Vihiga Chapter (038)</option>
+                    <option value="040">Busia Border (040)</option>
+                    <option value="032">Nakuru Rift Valley (032)</option>
+                    <option value="042">Kisumu Lake (042)</option>
+                    <option value="027">Eldoret North Rift (027)</option>
+                    <option value="999">Global Diaspora (999)</option>
+                  </>
+                )}
               </select>
             </div>
             <button

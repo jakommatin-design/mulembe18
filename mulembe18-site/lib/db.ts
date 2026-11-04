@@ -1,14 +1,15 @@
 import mysql from "mysql2/promise";
 
 let pool: mysql.Pool | null = null;
+let _schemaInitialized = false;
 
 export function getDbPool(): mysql.Pool {
   if (!pool) {
     pool = mysql.createPool({
       host: process.env.TIDB_HOST || "gateway01.ap-northeast-1.prod.aws.tidbcloud.com",
       port: Number(process.env.TIDB_PORT) || 4000,
-      user: process.env.TIDB_USER || "4Cqp3QYorpBTz6H.root",
-      password: process.env.TIDB_PASSWORD || "OkOeQnMkcKs4hj6R",
+      user: process.env.TIDB_USER,
+      password: process.env.TIDB_PASSWORD,
       database: process.env.TIDB_DATABASE || "mulembe18",
       ssl: {
         rejectUnauthorized: true,
@@ -45,6 +46,7 @@ export async function query<T = any>(sql: string, params: any[] = []): Promise<T
  * - Multi-Cadence (Monthly / Annual) Contributions Ledger
  */
 export async function initDatabaseSchema() {
+  if (_schemaInitialized) return { success: true };
   try {
     const db = getDbPool();
 
@@ -617,6 +619,7 @@ export async function initDatabaseSchema() {
     }
 
     console.log("[TiDB / MySQL] Countrywide Schema with 47 Counties, Clan Groups, Notices & Elections initialized successfully.");
+    _schemaInitialized = true;
     return { success: true };
   } catch (err: any) {
     console.warn("[TiDB / MySQL] Schema initialization warning:", err?.message || err);

@@ -148,12 +148,12 @@ export default function HeroSection() {
           </div>
 
           {/* Primary CTA (Vibrant Terracotta Orange - Agnos Pill) */}
-          <a
-            href="#register"
+          <Link
+            href="/dashboard"
             className="w-full sm:w-auto px-8 py-3.5 sm:py-4 rounded-xl bg-[#FF5500] hover:bg-[#E04B00] text-white font-bold text-sm sm:text-base shadow-[0_4px_14px_rgba(255,85,0,0.35)] hover:shadow-[0_6px_20px_rgba(255,85,0,0.45)] transition-all transform hover:-translate-y-0.5"
           >
             Join our community
-          </a>
+          </Link>
 
           {/* Secondary CTA (Deep Black - Agnos Pill) */}
           <Link
