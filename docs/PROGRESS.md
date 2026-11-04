@@ -38,7 +38,15 @@ Status Legend:
   - Layered directory structure established (`src/server/{controllers,services,repositories}`, `src/lib/{schemas,db,auth}`).
   - Security headers, `.env.example`, Vitest config, and `README.md` configured.
 
-- [ ] **Prompt 3: Database, migrations, and seed data**
+- [x] **Prompt 3: Database, migrations, and seed data**
+  - Drizzle ORM schema created (`src/lib/db/schema.ts`) covering all 10 core tables: `counties`, `sub_counties`, `wards`, `users`, `chapters`, `memberships`, `events`, `rsvps`, `announcements`, `audit_logs` with proper indexes.
+  - Dedicated `mulembe_national` database isolated on TiDB Cloud Serverless to prevent collisions with the legacy schema.
+  - Drizzle migration generated and applied cleanly.
+  - Idempotent seed script (`scripts/seed.ts`) seeded all 47 official Kenyan counties, sample sub-counties, wards, and 4 foundational chapters.
+  - Repository layer created (`geography.repository.ts`, `chapter.repository.ts`, `member.repository.ts`).
+  - Unit tests added in `tests/repositories.test.ts` (7 tests passing).
+  - Typecheck, ESLint, and Next.js build all passing cleanly.
+
 - [ ] **Prompt 4: Authentication and authorisation**
 - [ ] **Prompt 5: Core API modules**
 - [ ] **Prompt 6: Frontend foundation and design system**
@@ -48,3 +56,4 @@ Status Legend:
 - [ ] **Prompt 10: Notifications and communication**
 - [ ] **Prompt 11: Migration from mulembe18**
 - [ ] **Prompt 12: Hardening, performance, and launch**
+
