@@ -47,7 +47,17 @@ Status Legend:
   - Unit tests added in `tests/repositories.test.ts` (7 tests passing).
   - Typecheck, ESLint, and Next.js build all passing cleanly.
 
-- [ ] **Prompt 4: Authentication and authorisation**
+- [x] **Prompt 4: Authentication and authorisation**
+  - Integrated Clerk (`@clerk/nextjs` + `svix`) with root `<ClerkProvider>` and custom glassmorphic sign-in (`/sign-in`) & sign-up (`/sign-up`) flows.
+  - Implemented Clerk middleware (`src/middleware.ts`) enforcing authentication for protected routes and granting public access to marketing and geo endpoints.
+  - Built scope-aware Role-Based and Attribute-Based Access Control (`src/lib/auth/roles.ts`) based on the 7-role permissions matrix in `docs/02-user-roles-and-permissions.md` (`guest`, `member`, `chapter_secretary`, `chapter_chair`, `county_coordinator`, `national_admin`, `super_admin`).
+  - Created server auth session helper (`src/lib/auth/session.ts`) with automated DB sync and first-login fallback.
+  - Created Clerk webhook endpoint (`src/app/api/webhooks/clerk/route.ts`) with Svix signature verification handling `user.created`, `user.updated`, and `user.deleted`.
+  - Created Audit Log repository (`src/server/repositories/audit.repository.ts`) and wired audit logging into role assignments and user syncs.
+  - Created protected `/profile` page demonstrating authenticated session status, membership verification, and KDPA compliance notice.
+  - Added 14 comprehensive unit tests in `tests/auth-rbac.test.ts` (all 21 total tests passing).
+  - Production build (`next build --webpack`), typecheck, and lint pass with 0 errors.
+
 - [ ] **Prompt 5: Core API modules**
 - [ ] **Prompt 6: Frontend foundation and design system**
 - [ ] **Prompt 7: Public pages**
