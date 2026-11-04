@@ -157,10 +157,10 @@ export default function HeroSection() {
 
           {/* Secondary CTA (Deep Black - Agnos Pill) */}
           <Link
-            href="/directory"
+            href="/chapters"
             className="w-full sm:w-auto px-7 py-3.5 sm:py-4 rounded-xl bg-[#111827] hover:bg-[#1F2937] text-white font-bold text-sm sm:text-base shadow-sm hover:shadow-md transition-all transform hover:-translate-y-0.5"
           >
-            Member directory
+            Explore chapters
           </Link>
         </div>
 

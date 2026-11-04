@@ -6,17 +6,16 @@ import { Menu, X, Phone, HeartHandshake, Users, Calendar, Building2, FileText, A
 import { SignInButton, SignUpButton, UserButton, useAuth } from "@clerk/nextjs";
 
 const navLinks = [
-  { href: "/#home", label: "Home" },
-  { href: "/#about", label: "About" },
+  { href: "/", label: "Home" },
+  { href: "/about", label: "About" },
   { href: "/chapters", label: "Chapters" },
-  { href: "/directory", label: "Directory" },
-  { href: "/#events", label: "Events" },
-  { href: "/#contributions", label: "Welfare" },
+  { href: "/events", label: "Events" },
+  { href: "/welfare", label: "Welfare" },
   { href: "/noticeboard", label: "Noticeboard" },
-  { href: "/#news", label: "News" },
-  { href: "/#gallery", label: "Gallery" },
-  { href: "/#leadership", label: "Leadership" },
-  { href: "/#contact", label: "Contact" },
+  { href: "/news", label: "News" },
+  { href: "/gallery", label: "Gallery" },
+  { href: "/leadership", label: "Leadership" },
+  { href: "/contact", label: "Contact" },
 ];
 
 export default function Header() {

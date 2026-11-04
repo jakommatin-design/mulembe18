@@ -4,13 +4,16 @@ import Link from "next/link";
 import { MapPin, Phone, Mail, Clock, CheckCircle2, ShieldCheck, ArrowRight } from "lucide-react";
 
 const quickLinks = [
-  { href: "/#home", label: "Home" },
-  { href: "/#about", label: "About Mulembe18" },
+  { href: "/", label: "Home" },
+  { href: "/about", label: "About Mulembe18" },
   { href: "/chapters", label: "County Chapters" },
-  { href: "/directory", label: "Member Directory" },
-  { href: "/#events", label: "Events & Calendar" },
-  { href: "/#contributions", label: "Welfare & Dues" },
+  { href: "/events", label: "Events & Calendar" },
+  { href: "/welfare", label: "Welfare & Dues" },
   { href: "/noticeboard", label: "Community Noticeboard" },
+  { href: "/news", label: "News & Bulletins" },
+  { href: "/gallery", label: "Photo Gallery" },
+  { href: "/leadership", label: "Council of Elders" },
+  { href: "/contact", label: "Contact & Desks" },
   { href: "/ai", label: "Msingi AI Studio" },
   { href: "/privacy", label: "Privacy Policy (ODPC)" },
 ];

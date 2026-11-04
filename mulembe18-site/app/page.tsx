@@ -4,7 +4,6 @@ import ProcessSection from "@/components/ProcessSection";
 import ComparisonSection from "@/components/ComparisonSection";
 import AboutSection from "@/components/AboutSection";
 import ChaptersSection from "@/components/ChaptersSection";
-import DirectorySection from "@/components/DirectorySection";
 import EventsSection from "@/components/EventsSection";
 import WelfareSection from "@/components/WelfareSection";
 import NoticeboardSection from "@/components/NoticeboardSection";
@@ -36,10 +35,7 @@ export default function Home() {
         {/* 5. Concept Section 4 & 11: Chapter-Based National Network & Transfers (FR-05) */}
         <ChaptersSection />
 
-        {/* 6. Concept Section 5: Member Directory & Verification */}
-        <DirectorySection />
-
-        {/* 7. Concept Section 6.1: Events, Planning, Committees & Task Checklists (FR-06, FR-07, FR-08) */}
+        {/* 6. Concept Section 6.1: Events, Planning, Committees & Task Checklists (FR-06, FR-07, FR-08) */}
         <EventsSection />
 
         {/* 8. Concept Section 6.2: Welfare Dues, Active Appeals & Public Ledgers with Dual Approval (FR-09, FR-10, FR-11, FR-12) */}
