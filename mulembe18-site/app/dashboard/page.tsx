@@ -519,24 +519,29 @@ export default function DashboardPage() {
                 className="bg-transparent font-bold text-gray-800 text-xs outline-none cursor-pointer"
               >
                 <option value="all">All Chapters (National)</option>
-                {chaptersList.length > 0 ? chaptersList.map((ch: any) => (
-                  <option key={ch.county_code} value={ch.county_code}>
-                    {ch.chapter_name}
-                  </option>
-                )) : (
-                  <>
-                    <option value="001">Mombasa Chapter (001 - Pilot)</option>
-                    <option value="047">Nairobi Metropolitan (047)</option>
-                    <option value="037">Kakamega Home (037 - Cradle)</option>
-                    <option value="039">Bungoma Chapter (039)</option>
-                    <option value="038">Vihiga Chapter (038)</option>
-                    <option value="040">Busia Border (040)</option>
-                    <option value="032">Nakuru Rift Valley (032)</option>
-                    <option value="042">Kisumu Lake (042)</option>
-                    <option value="027">Eldoret North Rift (027)</option>
-                    <option value="999">Global Diaspora (999)</option>
-                  </>
-                )}
+                {(chaptersList.length > 0
+                  ? chaptersList
+                  : [
+                      { code: "001", name: "Mombasa Chapter (001 - Pilot)" },
+                      { code: "047", name: "Nairobi Metropolitan (047)" },
+                      { code: "037", name: "Kakamega Home (037 - Cradle)" },
+                      { code: "039", name: "Bungoma Chapter (039)" },
+                      { code: "038", name: "Vihiga Chapter (038)" },
+                      { code: "040", name: "Busia Border (040)" },
+                      { code: "032", name: "Nakuru Rift Valley (032)" },
+                      { code: "042", name: "Kisumu Lake (042)" },
+                      { code: "027", name: "Eldoret North Rift (027)" },
+                      { code: "999", name: "Global Diaspora (999)" },
+                    ]
+                ).map((ch: any, idx: number) => {
+                  const val = ch.countyCode || ch.county_code || ch.code || String(idx);
+                  const label = ch.name || ch.chapter_name || `Chapter ${val}`;
+                  return (
+                    <option key={val} value={val}>
+                      {label}
+                    </option>
+                  );
+                })}
               </select>
             </div>
             <button
@@ -1840,8 +1845,8 @@ export default function DashboardPage() {
                     onChange={e => setSelectedClanGroupForPay(Number(e.target.value))}
                     className={inputCls}
                   >
-                    {clanGroupsList.map(cg => (
-                      <option key={cg.id} value={cg.id}>
+                    {clanGroupsList.map((cg, idx) => (
+                      <option key={cg.id ?? `cg-${idx}`} value={cg.id}>
                         {cg.group_name} ({cg.clan_name}) - {cg.county_name || "Coast"}
                       </option>
                     ))}
