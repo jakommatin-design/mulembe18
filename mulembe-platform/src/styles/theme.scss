@@ -1,0 +1,141 @@
+// Custom Sass theme for Mulembe National Platform
+// Implements luxury glassmorphism tokens, dark/light modes, and custom Bootstrap 5 overrides.
+
+// 1. Color Palette Tokens
+$mulembe-emerald: #08281A;
+$mulembe-emerald-light: #0C3B26;
+$mulembe-gold: #D4AF37;
+$mulembe-gold-hover: #F3C64F;
+$mulembe-ochre: #B8860B;
+$mulembe-dark: #0B1410;
+$mulembe-card-dark: rgba(255, 255, 255, 0.08);
+
+// 2. Bootstrap Variable Overrides
+$primary: $mulembe-emerald;
+$secondary: $mulembe-gold;
+$dark: $mulembe-dark;
+$body-bg: transparent;
+$body-color: #E2E8F0;
+$border-radius: 1rem;
+$border-radius-lg: 1.5rem;
+$border-radius-sm: 0.5rem;
+$font-family-sans-serif: var(--font-sans), system-ui, -apple-system, sans-serif;
+
+// 3. Import full Bootstrap
+@import "bootstrap/scss/bootstrap";
+
+// 4. CSS Custom Properties for Glassmorphic Theming
+:root, [data-theme="dark"] {
+  --mulembe-bg-gradient: radial-gradient(circle at 15% 20%, rgba(12, 59, 38, 0.55), transparent 50%),
+                         radial-gradient(circle at 85% 75%, rgba(212, 175, 55, 0.15), transparent 50%),
+                         #06130D;
+  --glass-bg-base: rgba(255, 255, 255, 0.06);
+  --glass-bg-card: rgba(255, 255, 255, 0.08);
+  --glass-bg-nav: rgba(6, 19, 13, 0.75);
+  --glass-bg-modal: rgba(11, 25, 18, 0.88);
+  --glass-bg-input: rgba(255, 255, 255, 0.07);
+  --glass-bg-badge: rgba(212, 175, 55, 0.15);
+  
+  --glass-border: rgba(255, 255, 255, 0.12);
+  --glass-border-b: rgba(255, 255, 255, 0.10);
+  --glass-border-r: rgba(255, 255, 255, 0.10);
+  
+  --glass-text-primary: #F8FAFC;
+  --glass-text-secondary: #94A3B8;
+  --glass-text-accent: #F3C64F;
+  --glass-shadow: rgba(0, 0, 0, 0.35);
+}
+
+[data-theme="light"] {
+  --mulembe-bg-gradient: radial-gradient(circle at 10% 15%, rgba(12, 59, 38, 0.08), transparent 45%),
+                         radial-gradient(circle at 90% 80%, rgba(212, 175, 55, 0.08), transparent 45%),
+                         #F8FAF8;
+  --glass-bg-base: rgba(255, 255, 255, 0.75);
+  --glass-bg-card: rgba(255, 255, 255, 0.85);
+  --glass-bg-nav: rgba(255, 255, 255, 0.88);
+  --glass-bg-modal: rgba(255, 255, 255, 0.96);
+  --glass-bg-input: rgba(255, 255, 255, 0.90);
+  --glass-bg-badge: rgba(212, 175, 55, 0.20);
+  
+  --glass-border: rgba(0, 0, 0, 0.08);
+  --glass-border-b: rgba(0, 0, 0, 0.08);
+  --glass-border-r: rgba(0, 0, 0, 0.08);
+  
+  --glass-text-primary: #0F172A;
+  --glass-text-secondary: #475569;
+  --glass-text-accent: #B8860B;
+  --glass-shadow: rgba(0, 0, 0, 0.06);
+}
+
+// 5. Glass Primitives
+body {
+  background: var(--mulembe-bg-gradient) no-repeat center center fixed;
+  background-size: cover;
+  color: var(--glass-text-primary);
+  min-height: 100vh;
+  transition: background 0.3s ease, color 0.3s ease;
+}
+
+.glass-panel {
+  background: var(--glass-bg-base);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--glass-border);
+  border-radius: 1.25rem;
+  box-shadow: 0 8px 32px var(--glass-shadow);
+}
+
+.glass-card {
+  background: var(--glass-bg-card);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--glass-border);
+  border-radius: 1.25rem;
+  box-shadow: 0 10px 25px var(--glass-shadow);
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s ease;
+  
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 16px 36px var(--glass-shadow);
+    border-color: rgba(212, 175, 55, 0.35);
+  }
+}
+
+.glass-navbar {
+  background: var(--glass-bg-nav);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border-bottom: 1px solid var(--glass-border-b);
+}
+
+.btn-gold {
+  background: linear-gradient(135deg, #D4AF37 0%, #B8860B 100%);
+  color: #06130D !important;
+  font-weight: 600;
+  border: none;
+  border-radius: 0.75rem;
+  padding: 0.625rem 1.5rem;
+  box-shadow: 0 4px 15px rgba(212, 175, 55, 0.25);
+  transition: all 0.2s ease;
+  
+  &:hover {
+    background: linear-gradient(135deg, #F3C64F 0%, #D4AF37 100%);
+    box-shadow: 0 6px 20px rgba(212, 175, 55, 0.4);
+    transform: translateY(-1px);
+  }
+}
+
+.btn-glass {
+  background: var(--glass-bg-base);
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--glass-border);
+  color: var(--glass-text-primary);
+  border-radius: 0.75rem;
+  padding: 0.625rem 1.25rem;
+  
+  &:hover {
+    background: rgba(255, 255, 255, 0.15);
+    color: var(--glass-text-primary);
+    border-color: var(--glass-border);
+  }
+}
