@@ -1,0 +1,73 @@
+{
+  "timestamp": "2026-11-05T17:15:50.308Z",
+  "dryRun": false,
+  "totalLegacyMembersRead": 8,
+  "validMembersCleaned": 4,
+  "duplicateCount": 2,
+  "skippedCount": 4,
+  "insertedUsers": 0,
+  "updatedUsers": 4,
+  "membershipsCreated": 0,
+  "conflicts": [
+    {
+      "type": "duplicate_email",
+      "legacyId": 105,
+      "identifier": "wycliffe.masika@mulembe.org",
+      "reason": "Email already imported from legacy record 101",
+      "data": {
+        "id": 105,
+        "clerk_id": "user_2test_dup_email",
+        "full_name": "Wycliffe Duplicate Email",
+        "email": "wycliffe.masika@mulembe.org",
+        "phone": "+254799887766",
+        "sub_clan": "Bukusu",
+        "role": "Member",
+        "created_at": "2024-06-01T09:00:00Z"
+      }
+    },
+    {
+      "type": "duplicate_phone",
+      "legacyId": 106,
+      "identifier": "+254711987654",
+      "reason": "Phone already imported from legacy record 102",
+      "data": {
+        "id": 106,
+        "clerk_id": "user_2test_dup_phone",
+        "full_name": "Brenda Duplicate Phone",
+        "email": "another.brenda@gmail.com",
+        "phone": "0711987654",
+        "sub_clan": "Maragoli",
+        "role": "Member",
+        "created_at": "2024-06-02T11:00:00Z"
+      }
+    },
+    {
+      "type": "invalid_phone",
+      "legacyId": 107,
+      "identifier": "12345",
+      "reason": "Invalid Kenyan phone number format: \"12345\" (requires +254 7XX/1XX format)",
+      "data": {
+        "id": 107,
+        "clerk_id": "user_2test_bad_phone",
+        "full_name": "Invalid Phone Member",
+        "email": "bad.phone@example.com",
+        "phone": "12345",
+        "created_at": "2024-06-03T10:00:00Z"
+      }
+    },
+    {
+      "type": "missing_name",
+      "legacyId": 108,
+      "identifier": "108",
+      "reason": "Member record has no valid full name",
+      "data": {
+        "id": 108,
+        "clerk_id": "user_2test_no_name",
+        "full_name": "",
+        "email": "noname@example.com",
+        "phone": "+254712399999",
+        "created_at": "2024-06-04T10:00:00Z"
+      }
+    }
+  ]
+}

@@ -194,5 +194,20 @@ Status Legend:
     - `GET & POST /api/cron/notifications`: Serverless queue worker endpoint.
   - **Testing & Verification**: 8 test suites with 62 passing tests (`tests/notifications.test.ts`), 0 TypeScript strict errors (`tsc --noEmit`), 0 ESLint warnings/errors, and complete Next.js production build (`next build --webpack`) producing 47 clean routes.
 
-- [ ] **Prompt 11: Migration from mulembe18**
+- [x] **Prompt 11: Migration from mulembe18**
+  - **ETL Extraction & Data Sanitization Pipeline** (`scripts/migrate/cleaner.ts`):
+    - Strict Kenyan mobile phone sanitization and normalization converting `07XXXXXXXX`, `01XXXXXXXX`, `254XXXXXXXXX`, and raw space/bracket-delimited variants into canonical E.164 `+254XXXXXXXXX`. Rejects non-Kenyan and malformed numbers.
+    - Case-insensitive email normalization and format validation.
+    - County code mapping resolving 1, 2, and 3-digit identifiers and textual county names (`Kakamega`, `Vihiga`, `Bungoma`, `Busia`, `Nairobi`) to standard 3-digit Kenyan codes (`001` to `047`).
+    - Role hierarchy mapping translating legacy titles (`admin`, `chairperson`, `secretary`, `coordinator`) to modern 7-role RBAC scopes.
+    - Deduplication engine merging records by normalized email and phone, preserving timestamps, and cataloging conflicts (`duplicate_email`, `duplicate_phone`, `invalid_phone`, `missing_name`).
+  - **Migration Engine & CLI** (`scripts/migrate/migrator.ts`, `scripts/migrate/cli.ts`):
+    - Multi-run safe and idempotent database loader generating structured membership IDs (`MLB-<county>-<random5>`), upserting users, and establishing chapter affiliations without primary key or unique index collisions.
+    - Standalone CLI supporting `--dry-run`, custom `--file`, and `--out` paths with formatted terminal telemetry summary table.
+    - Full discrepancy audit logging written to `migration-report.json`.
+    - Added npm scripts: `npm run migrate:dry` and `npm run migrate:run`.
+  - **Realistic Sample Dataset** (`scripts/migrate/sample-legacy-export.json`):
+    - Legacy export covering valid members, edge case phone variations, duplicate phone/email records, invalid phone length, missing name, and legacy community events.
+  - **Testing & Verification**: 9 test suites with 75 passing tests (`tests/migration.test.ts`), 0 TypeScript strict errors (`tsc --noEmit`), 0 ESLint warnings/errors, and complete Next.js production build (`next build --webpack`) producing 47 clean routes.
+
 - [ ] **Prompt 12: Hardening, performance, and launch**

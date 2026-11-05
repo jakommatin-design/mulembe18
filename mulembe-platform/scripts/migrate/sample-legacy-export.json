@@ -1,0 +1,116 @@
+{
+  "members": [
+    {
+      "id": 101,
+      "clerk_id": "user_2test_masika",
+      "full_name": "Wycliffe Masika",
+      "email": "wycliffe.masika@mulembe.org",
+      "phone": "+254722123456",
+      "sub_clan": "Bukusu",
+      "role": "chairperson",
+      "status": "Verified",
+      "residential_county": "Bungoma",
+      "birth_county": "039",
+      "chapter_name": "Bungoma Central Chapter",
+      "created_at": "2024-03-15T10:00:00Z"
+    },
+    {
+      "id": 102,
+      "clerk_id": "user_2test_nafula",
+      "full_name": "Brenda Nafula",
+      "email": "brenda.nafula@gmail.com",
+      "phone": "0711987654",
+      "sub_clan": "Maragoli",
+      "role": "Member",
+      "status": "Active",
+      "residential_county": "Vihiga",
+      "birth_county": "Vihiga",
+      "chapter_name": "Vihiga Hills Chapter",
+      "created_at": "2024-04-10T14:30:00Z"
+    },
+    {
+      "id": 103,
+      "clerk_id": "user_2test_shikuku",
+      "full_name": "Erick Shikuku",
+      "email": "erick.shikuku@yahoo.com",
+      "phone": "254733445566",
+      "sub_clan": "Isukha",
+      "role": "admin",
+      "status": "Verified",
+      "residential_county": "Nairobi",
+      "birth_county": "Kakamega",
+      "chapter_name": "Nairobi CBD Professionals",
+      "created_at": "2024-01-20T08:15:00Z"
+    },
+    {
+      "id": 104,
+      "clerk_id": "user_2test_omondi",
+      "full_name": "Mercy Khavere",
+      "email": "mercy.khavere@outlook.com",
+      "phone": "0110556677",
+      "sub_clan": "Idakho",
+      "role": "Member",
+      "status": "Active",
+      "residential_county": "Kakamega",
+      "birth_county": "037",
+      "created_at": "2024-05-01T12:00:00Z"
+    },
+    {
+      "id": 105,
+      "clerk_id": "user_2test_dup_email",
+      "full_name": "Wycliffe Duplicate Email",
+      "email": "wycliffe.masika@mulembe.org",
+      "phone": "+254799887766",
+      "sub_clan": "Bukusu",
+      "role": "Member",
+      "created_at": "2024-06-01T09:00:00Z"
+    },
+    {
+      "id": 106,
+      "clerk_id": "user_2test_dup_phone",
+      "full_name": "Brenda Duplicate Phone",
+      "email": "another.brenda@gmail.com",
+      "phone": "0711987654",
+      "sub_clan": "Maragoli",
+      "role": "Member",
+      "created_at": "2024-06-02T11:00:00Z"
+    },
+    {
+      "id": 107,
+      "clerk_id": "user_2test_bad_phone",
+      "full_name": "Invalid Phone Member",
+      "email": "bad.phone@example.com",
+      "phone": "12345",
+      "created_at": "2024-06-03T10:00:00Z"
+    },
+    {
+      "id": 108,
+      "clerk_id": "user_2test_no_name",
+      "full_name": "",
+      "email": "noname@example.com",
+      "phone": "+254712399999",
+      "created_at": "2024-06-04T10:00:00Z"
+    }
+  ],
+  "events": [
+    {
+      "id": 501,
+      "title": "Mulembe Cultural Festival 2024",
+      "description": "Annual gathering celebrating Luhya heritage, traditional food, and dance.",
+      "category": "cultural",
+      "date": "2024-12-15T09:00:00Z",
+      "venue_name": "Bukhungu Stadium",
+      "venue_address": "Kakamega Town"
+    },
+    {
+      "id": 502,
+      "title": "Youth Leadership Summit",
+      "description": "Empowering young Luhya professionals across technology and governance.",
+      "category": "youth",
+      "date": "2024-11-20T14:00:00Z",
+      "venue_name": "Ufungamano House",
+      "venue_address": "Nairobi"
+    }
+  ]
+}
+
