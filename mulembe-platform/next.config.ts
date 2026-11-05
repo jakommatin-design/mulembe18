@@ -4,6 +4,10 @@ import path from "path";
 const nextConfig: NextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
+  outputFileTracingRoot: path.resolve(__dirname, ".."),
+  turbopack: {
+    root: path.resolve(__dirname, ".."),
+  },
   sassOptions: {
     includePaths: [path.join(__dirname, "node_modules")],
   },

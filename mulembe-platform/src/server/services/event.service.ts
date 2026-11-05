@@ -30,8 +30,10 @@ export class EventService {
     };
   }
 
-  async getEventBySlug(slug: string) {
-    const event = await eventRepository.getBySlug(slug);
+  async getEventBySlug(identifier: string) {
+    const event =
+      (await eventRepository.getBySlug(identifier)) ||
+      (await eventRepository.getById(identifier));
     if (!event) return null;
     const stats = await eventRepository.getRsvpCounts(event.id);
     return { ...event, stats };
@@ -59,11 +61,14 @@ export class EventService {
   async rsvp(actor: AuthUser, input: Omit<CreateRsvpInput, "userId">) {
     assertScopeAccess(actor, "rsvp_events");
 
-    const event = await eventRepository.getById(input.eventId);
+    const event =
+      (await eventRepository.getById(input.eventId)) ||
+      (await eventRepository.getBySlug(input.eventId));
     if (!event) throw new Error("Event not found");
 
     return await eventRepository.setRsvp({
       ...input,
+      eventId: event.id,
       userId: actor.id,
     });
   }
