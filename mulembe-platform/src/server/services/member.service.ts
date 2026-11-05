@@ -93,6 +93,59 @@ export class MemberService {
 
     return updated;
   }
+
+  async getUserMembership(actor: AuthUser) {
+    return await memberRepository.getUserMembership(actor.id);
+  }
+
+  async joinChapter(actor: AuthUser, chapterId: string) {
+    const membership = await memberRepository.joinChapter(actor.id, chapterId);
+    await auditRepository.log({
+      actorId: actor.id,
+      action: "member.joined_chapter",
+      targetEntity: "membership",
+      targetId: chapterId,
+      payloadAfter: { chapterId },
+    });
+    return membership;
+  }
+
+  async leaveChapter(actor: AuthUser) {
+    await memberRepository.leaveChapter(actor.id);
+    await auditRepository.log({
+      actorId: actor.id,
+      action: "member.left_chapter",
+      targetEntity: "membership",
+      targetId: actor.id,
+    });
+    return true;
+  }
+
+  async getUserRsvps(actor: AuthUser) {
+    return await memberRepository.getUserRsvps(actor.id);
+  }
+
+  async exportUserData(actor: AuthUser) {
+    const dossier = await memberRepository.exportUserData(actor.id);
+    await auditRepository.log({
+      actorId: actor.id,
+      action: "kdpa.data_exported",
+      targetEntity: "user",
+      targetId: actor.id,
+    });
+    return dossier;
+  }
+
+  async deleteUserData(actor: AuthUser) {
+    await memberRepository.deleteUserData(actor.id);
+    await auditRepository.log({
+      actorId: actor.id,
+      action: "kdpa.data_erased",
+      targetEntity: "user",
+      targetId: actor.id,
+    });
+    return true;
+  }
 }
 
 export const memberService = new MemberService();

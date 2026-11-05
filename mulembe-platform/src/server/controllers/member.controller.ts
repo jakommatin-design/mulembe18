@@ -122,6 +122,83 @@ export class MemberController {
       return apiError("BAD_REQUEST", msg, 400);
     }
   }
+
+  async getUserMembership(actor: AuthUser | null) {
+    if (!actor) return apiError("UNAUTHENTICATED", "Authentication required", 401);
+
+    try {
+      const membership = await memberService.getUserMembership(actor);
+      return apiSuccess(membership);
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : "Failed to fetch membership";
+      return apiError("INTERNAL_ERROR", msg, 500);
+    }
+  }
+
+  async joinChapter(actor: AuthUser | null, body: unknown) {
+    if (!actor) return apiError("UNAUTHENTICATED", "Authentication required", 401);
+
+    const chapterId = (body as { chapterId?: string })?.chapterId;
+    if (!chapterId || typeof chapterId !== "string") {
+      return apiError("BAD_REQUEST", "Valid chapterId is required", 400);
+    }
+
+    try {
+      const membership = await memberService.joinChapter(actor, chapterId);
+      return apiSuccess(membership);
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : "Failed to join chapter";
+      return apiError("BAD_REQUEST", msg, 400);
+    }
+  }
+
+  async leaveChapter(actor: AuthUser | null) {
+    if (!actor) return apiError("UNAUTHENTICATED", "Authentication required", 401);
+
+    try {
+      await memberService.leaveChapter(actor);
+      return apiSuccess({ message: "Successfully left chapter" });
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : "Failed to leave chapter";
+      return apiError("BAD_REQUEST", msg, 400);
+    }
+  }
+
+  async getUserRsvps(actor: AuthUser | null) {
+    if (!actor) return apiError("UNAUTHENTICATED", "Authentication required", 401);
+
+    try {
+      const rsvps = await memberService.getUserRsvps(actor);
+      return apiSuccess(rsvps);
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : "Failed to fetch RSVPs";
+      return apiError("INTERNAL_ERROR", msg, 500);
+    }
+  }
+
+  async exportUserData(actor: AuthUser | null) {
+    if (!actor) return apiError("UNAUTHENTICATED", "Authentication required", 401);
+
+    try {
+      const dossier = await memberService.exportUserData(actor);
+      return apiSuccess(dossier);
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : "Failed to export member data";
+      return apiError("INTERNAL_ERROR", msg, 500);
+    }
+  }
+
+  async deleteUserData(actor: AuthUser | null) {
+    if (!actor) return apiError("UNAUTHENTICATED", "Authentication required", 401);
+
+    try {
+      await memberService.deleteUserData(actor);
+      return apiSuccess({ message: "Member account and personal data erased under KDPA." });
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : "Failed to erase member data";
+      return apiError("INTERNAL_ERROR", msg, 500);
+    }
+  }
 }
 
 export const memberController = new MemberController();

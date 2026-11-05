@@ -122,7 +122,31 @@ Status Legend:
   - **SEO & Indexing**: Dynamic `src/app/sitemap.ts` (`/sitemap.xml`) indexing static routes, active chapters, and published events. Dynamic `src/app/robots.ts` (`/robots.txt`) with crawler rules and sitemap reference. Open Graph tags and meta tags across all pages.
   - **Testing & Verification**: 5 test suites with 40 passing tests in Vitest (`tests/public-pages.test.ts`), 0 TypeScript strict errors (`tsc --noEmit`), 0 ESLint warnings/errors, and complete Next.js production build (`next build --webpack`) producing 31 clean routes.
 
-- [ ] **Prompt 8: Member experience**
+- [x] **Prompt 8: Member experience**
+  - **Multi-Step Onboarding Flow (`/onboarding`)**:
+    - Step 1 (Personal details): Legal full name, phone verification (`+254XXXXXXXXX`), optional national ID/passport, gender, and clan mapping.
+    - Step 2 (Location & Heritage): Ancestral county selector (roots prefix) and cascading Current County $\to$ Sub-County $\to$ Ward selectors fetching live from `/api/v1/geo/*`.
+    - Step 3 (Chapter Affiliation): Selection of registered chapters with venue and meeting schedule details.
+    - Step 4 (KDPA Consent & Confirmation): Review summary, mandatory explicit consent checkbox under the Kenya Data Protection Act 2019, and generation of structured Membership ID (`MLB-<county>-<random5>`).
+    - Form recovery: Auto-saves progress to `localStorage` (`mulembe_onboarding_draft`) so drafts survive page refresh or network drops.
+  - **Member Dashboard (`/profile`)**:
+    - **Digital Member Card**: Luxury glassmorphic card with holographic emerald/gold borders, formatted Member ID (`MLB-037-XXXXX`), status pill, and ODPC encrypted QR representation.
+    - **Profile Management**: Profile attribute drawer with modal edit flow updating name, phone, gender, and clan via `PUT /api/v1/members/me`.
+    - **Chapter Affiliation Portal**: Displays active chapter affiliation, meeting venue, member privileges, with self-service "Join Chapter" modal and "Leave Chapter" confirmation.
+    - **My Gatherings & RSVPs**: Lists all events the member has RSVP'd to with dates, venues, attendance status, and direct event links.
+    - **KDPA Data Rights (Self-Service)**:
+      - *Right of Access*: One-click download of personal dossier archive (`.json`) containing profile, chapter records, and RSVPs via `GET /api/v1/members/export`.
+      - *Right to Erasure*: Modal confirmation to permanently anonymize and delete user data via `DELETE /api/v1/members/me`.
+  - **In-App Notifications Page (`/notifications`)**:
+    - Member dispatch stream filtered by priority (*Urgent*, *Important*, *Routine*), county/chapter scope tags, mark-as-read acknowledgement, and dismiss actions.
+  - **API Endpoints**:
+    - `POST /api/v1/members/chapters/join`: Chapter joining
+    - `POST /api/v1/members/chapters/leave`: Chapter departure
+    - `GET /api/v1/members/rsvps`: Member RSVP query
+    - `GET /api/v1/members/export`: KDPA machine-readable JSON dossier export
+    - `DELETE /api/v1/members/me`: KDPA self-service account deletion and anonymization
+  - **Testing & Verification**: 6 test suites with 45 passing tests (`tests/member-experience.test.ts`), 0 TypeScript strict errors (`tsc --noEmit`), 0 ESLint warnings/errors, and complete Next.js production build (`next build --webpack`) producing 36 clean routes.
+
 - [ ] **Prompt 9: Leader and admin dashboards**
 - [ ] **Prompt 10: Notifications and communication**
 - [ ] **Prompt 11: Migration from mulembe18**

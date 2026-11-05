@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { UserButton, useUser, SignInButton } from "@clerk/nextjs";
-import { Menu, X, Sun, Moon } from "lucide-react";
+import { Menu, X, Sun, Moon, Bell } from "lucide-react";
 
 export function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -77,6 +77,13 @@ export function Navbar() {
           {/* Auth State */}
           {isSignedIn ? (
             <div className="d-flex align-items-center gap-2">
+              <Link
+                href="/notifications"
+                className="btn btn-sm btn-glass text-white px-2 py-1 position-relative"
+                aria-label="Notifications"
+              >
+                <Bell size={16} />
+              </Link>
               <Link href="/profile" className="btn btn-sm btn-glass px-3 d-none d-sm-inline">
                 My Profile
               </Link>

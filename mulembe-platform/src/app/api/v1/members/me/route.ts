@@ -12,3 +12,9 @@ export async function PUT(req: Request) {
   return await memberController.updateProfile(user, body);
 }
 
+export async function DELETE() {
+  const user = await getSessionUser();
+  return await memberController.deleteUserData(user);
+}
+
+

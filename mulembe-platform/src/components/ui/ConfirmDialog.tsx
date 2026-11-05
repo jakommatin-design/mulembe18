@@ -12,6 +12,7 @@ export interface ConfirmDialogProps {
   confirmLabel?: string;
   cancelLabel?: string;
   variant?: "danger" | "warning" | "primary";
+  confirmVariant?: "danger" | "warning" | "primary";
   isLoading?: boolean;
 }
 
@@ -24,9 +25,16 @@ export function ConfirmDialog({
   confirmLabel = "Confirm",
   cancelLabel = "Cancel",
   variant = "danger",
+  confirmVariant,
   isLoading = false,
 }: ConfirmDialogProps) {
-  const btnClass = variant === "danger" ? "btn-danger" : variant === "warning" ? "btn-warning text-dark" : "btn-gold";
+  const effectiveVariant = confirmVariant || variant;
+  const btnClass =
+    effectiveVariant === "danger"
+      ? "btn-danger"
+      : effectiveVariant === "warning"
+        ? "btn-warning text-dark"
+        : "btn-gold";
 
   return (
     <GlassModal
@@ -60,3 +68,4 @@ export function ConfirmDialog({
   );
 }
 
+export default ConfirmDialog;
