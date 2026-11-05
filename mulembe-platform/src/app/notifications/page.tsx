@@ -4,7 +4,8 @@ import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { getSessionUser } from "@/lib/auth/session";
 import { announcementRepository } from "@/server/repositories/announcement.repository";
-import NotificationsList from "@/components/member/NotificationsList";
+import { notificationRepository } from "@/server/repositories/notification.repository";
+import NotificationsList, { NotificationItem } from "@/components/member/NotificationsList";
 
 export const metadata: Metadata = {
   title: "Member Notifications & Bulletins | Mulembe National Platform",
@@ -18,21 +19,42 @@ export default async function NotificationsPage() {
     redirect("/sign-in?redirectUrl=/notifications");
   }
 
-  // Fetch announcements for member's county / chapter or national
+  // 1. Fetch member notification preferences
+  const prefs = await notificationRepository.getUserPreferences(sessionUser.id);
+
+  // 2. Fetch member direct in-app notifications
+  const userNotifsResult = await notificationRepository.listByUser(sessionUser.id, {
+    limit: 50,
+  });
+
+  // 3. Fetch announcements for member's county / chapter or national
   const { items: announcements } = await announcementRepository.list({
     countyCode: sessionUser.countyCode,
     chapterId: sessionUser.chapterId,
     limit: 50,
   });
 
-  const formattedNotifications = announcements.map((n) => ({
-    id: n.id,
-    title: n.title,
-    content: n.content,
-    priority: n.priority,
-    countyCode: n.countyCode,
-    createdAt: n.createdAt.toISOString(),
-  }));
+  // Combine direct notifications and announcements
+  const formattedNotifications: NotificationItem[] = [
+    ...userNotifsResult.items.map((n) => ({
+      id: n.id,
+      title: n.title,
+      content: n.message,
+      priority: n.priority,
+      countyCode: null,
+      createdAt: n.createdAt.toISOString(),
+      isRead: n.status === "read",
+    })),
+    ...announcements.map((a) => ({
+      id: a.id,
+      title: a.title,
+      content: a.content,
+      priority: a.priority,
+      countyCode: a.countyCode,
+      createdAt: a.createdAt.toISOString(),
+      isRead: false,
+    })),
+  ].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
 
   return (
     <main className="container py-5">
@@ -57,17 +79,25 @@ export default async function NotificationsPage() {
             Community Notifications & Dispatches
           </h1>
           <p className="lead text-secondary">
-            Stay informed on regional welfare assistance, chapter elections, and emergency alerts.
+            Stay informed on regional welfare assistance, chapter gatherings, and emergency bulletins.
           </p>
         </div>
       </div>
 
       <div className="row justify-content-center">
         <div className="col-12 col-lg-10">
-          <NotificationsList initialNotifications={formattedNotifications} />
+          <NotificationsList
+            initialNotifications={formattedNotifications}
+            initialPreferences={{
+              emailEnabled: prefs.emailEnabled,
+              smsEnabled: prefs.smsEnabled,
+              urgentOnly: prefs.urgentOnly,
+              eventReminders: prefs.eventReminders,
+              announcements: prefs.announcements,
+            }}
+          />
         </div>
       </div>
     </main>
   );
 }
-

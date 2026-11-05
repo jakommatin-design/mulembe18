@@ -168,6 +168,31 @@ Status Legend:
     - `PUT /api/v1/admin/users/:id/role`: Role assignment endpoint guarded by `assign_roles` permission with automated audit logging.
   - **Testing & Verification**: 7 test suites with 50 passing tests (`tests/leader-dashboards.test.ts`), 0 TypeScript strict errors (`tsc --noEmit`), 0 ESLint warnings/errors, and complete Next.js production build (`next build --webpack`) producing 39 clean routes.
 
-- [ ] **Prompt 10: Notifications and communication**
+- [x] **Prompt 10: Notifications and communication**
+  - **Database & Drizzle Schema Migrations**:
+    - `notifications` table (`src/lib/db/schema.ts`): Stores in-app, email, and SMS dispatches with delivery queue status (`pending`, `processing`, `sent`, `failed`, `read`), retry counts, maximum retries (default 3), delivery error logs, target destinations, and priority levels (*Urgent*, *Important*, *Routine*).
+    - `notification_preferences` table (`src/lib/db/schema.ts`): Member self-service communication preferences under Kenya Data Protection Act 2019 (`email_enabled`, `sms_enabled`, `urgent_only`, `event_reminders`, `announcements`).
+    - Drizzle migration generated (`0001_tan_hemingway.sql`) and applied successfully to TiDB Cloud.
+  - **Swappable Provider Architecture**:
+    - Standard provider interfaces defined in `src/server/notifications/provider.ts`: `EmailProvider` and `SmsProvider`.
+    - **Resend Email Provider (`ResendEmailProvider`)**: Integrated with Resend API for official email notices with deterministic fallback/mocking for testing and non-production environments.
+    - **Africa's Talking SMS Provider (`AfricasTalkingSmsProvider`)**: Integrated with Africa's Talking API for Kenyan mobile SMS delivery (`+254XXXXXXXXX`) with sandbox/mock fallback.
+    - In-memory mock providers (`MockEmailProvider`, `MockSmsProvider`) for deterministic test assertions.
+  - **Serverless Queue & Background Worker**:
+    - `NotificationQueueService` (`src/server/services/notification-queue.service.ts`): Priority queueing logic (`enqueue`), member preference suppression checking (skips email/sms if member opted out or if non-urgent when `urgentOnly` is true), and atomic batch processing (`processBatch`) with exponential retry tracking.
+    - Vercel Cron worker route handler (`src/app/api/cron/notifications/route.ts`) executing batch queue processing every 5 minutes (`vercel.json`), secured with `CRON_SECRET` bearer token validation.
+  - **Member Notification Settings & UI**:
+    - `NotificationPreferencesManager` (`src/components/member/NotificationPreferencesManager.tsx`): Luxury glass switch controls allowing members to toggle email, SMS, urgent-only filter, and event reminders.
+    - Enhanced Notifications Center (`src/app/notifications/page.tsx` & `src/components/member/NotificationsList.tsx`): Merges personal in-app member dispatches and county/chapter bulletins, with live mark-as-read/read-all API actions and direct tab navigation to notification channels.
+    - Embedded Notification Preferences tab in Member Dashboard (`src/components/member/ProfileDashboard.tsx`).
+  - **REST API Endpoints**:
+    - `GET /api/v1/notifications`: Paginated in-app member notifications query.
+    - `PUT /api/v1/notifications/:id/read`: Mark individual notification as read.
+    - `PUT /api/v1/notifications/read-all`: Mark all pending notifications as read.
+    - `GET /api/v1/members/preferences`: Query member notification preferences.
+    - `PUT /api/v1/members/preferences`: Save member notification preferences.
+    - `GET & POST /api/cron/notifications`: Serverless queue worker endpoint.
+  - **Testing & Verification**: 8 test suites with 62 passing tests (`tests/notifications.test.ts`), 0 TypeScript strict errors (`tsc --noEmit`), 0 ESLint warnings/errors, and complete Next.js production build (`next build --webpack`) producing 47 clean routes.
+
 - [ ] **Prompt 11: Migration from mulembe18**
 - [ ] **Prompt 12: Hardening, performance, and launch**

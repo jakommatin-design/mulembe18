@@ -14,8 +14,10 @@ import {
   LogOut,
   MapPin,
   Loader2,
+  Bell,
 } from "lucide-react";
 import MemberIdCard from "./MemberIdCard";
+import NotificationPreferencesManager from "./NotificationPreferencesManager";
 import GlassModal from "@/components/ui/GlassModal";
 import ConfirmDialog from "@/components/ui/ConfirmDialog";
 import FormField from "@/components/ui/FormField";
@@ -84,7 +86,9 @@ export default function ProfileDashboard({
   const router = useRouter();
   const { addToast } = useToast();
 
-  const [activeTab, setActiveTab] = useState<"card" | "chapter" | "rsvps" | "privacy">("card");
+  const [activeTab, setActiveTab] = useState<
+    "card" | "chapter" | "rsvps" | "notifications" | "privacy"
+  >("card");
   const [user, setUser] = useState<UserProfile>(initialUser);
   const [membership, setMembership] = useState<ChapterAffiliation | null>(initialMembership);
   const [rsvps] = useState<UserRsvp[]>(initialRsvps);
@@ -237,6 +241,13 @@ export default function ProfileDashboard({
           onClick={() => setActiveTab("rsvps")}
         >
           <Calendar size={16} className="me-1" /> My Gatherings ({rsvps.length})
+        </button>
+        <button
+          type="button"
+          className={`btn btn-sm ${activeTab === "notifications" ? "btn-gold" : "btn-glass"}`}
+          onClick={() => setActiveTab("notifications")}
+        >
+          <Bell size={16} className="me-1" /> Alerts & Preferences
         </button>
         <button
           type="button"
@@ -464,7 +475,14 @@ export default function ProfileDashboard({
         </div>
       )}
 
-      {/* Tab 4: KDPA Data Rights & Privacy */}
+      {/* Tab 4: Notification Preferences */}
+      {activeTab === "notifications" && (
+        <div>
+          <NotificationPreferencesManager />
+        </div>
+      )}
+
+      {/* Tab 5: KDPA Data Rights & Privacy */}
       {activeTab === "privacy" && (
         <div className="glass-panel p-4 p-md-5">
           <div className="d-flex align-items-center gap-3 mb-4">

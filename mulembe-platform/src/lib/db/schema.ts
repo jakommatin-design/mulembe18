@@ -5,6 +5,7 @@ import {
   int,
   datetime,
   json,
+  boolean,
   index,
   uniqueIndex,
 } from "drizzle-orm/mysql-core";
@@ -256,3 +257,68 @@ export const auditLogs = mysqlTable(
     idxTarget: index("idx_audit_target").on(table.targetEntity, table.targetId),
   })
 );
+
+// 11. Notifications (In-App, Email, SMS delivery queue)
+export const notifications = mysqlTable(
+  "notifications",
+  {
+    id: varchar("id", { length: 64 }).primaryKey(),
+    userId: varchar("user_id", { length: 128 }).references(() => users.id, {
+      onDelete: "cascade",
+    }),
+    channel: varchar("channel", { length: 32 }).notNull(), // 'in_app', 'email', 'sms'
+    title: varchar("title", { length: 200 }).notNull(),
+    message: text("message").notNull(),
+    priority: varchar("priority", { length: 32 }).default("routine").notNull(), // 'routine', 'important', 'urgent'
+    status: varchar("status", { length: 32 }).default("pending").notNull(), // 'pending', 'processing', 'sent', 'failed', 'read'
+    targetDestination: varchar("target_destination", { length: 255 }), // email or phone number
+    metadata: json("metadata"),
+    retryCount: int("retry_count").default(0).notNull(),
+    maxRetries: int("max_retries").default(3).notNull(),
+    lastError: text("last_error"),
+    sentAt: datetime("sent_at"),
+    readAt: datetime("read_at"),
+    createdAt: datetime("created_at")
+      .default(sql`CURRENT_TIMESTAMP`)
+      .notNull(),
+    updatedAt: datetime("updated_at")
+      .default(sql`CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP`)
+      .notNull(),
+  },
+  (table) => ({
+    idxUserStatus: index("idx_notifications_user_status").on(table.userId, table.status),
+    idxQueueStatus: index("idx_notifications_queue").on(table.status, table.retryCount),
+    idxCreatedAt: index("idx_notifications_created_at").on(table.createdAt),
+  })
+);
+
+// 12. Notification Preferences
+export const notificationPreferences = mysqlTable(
+  "notification_preferences",
+  {
+    id: varchar("id", { length: 64 }).primaryKey(),
+    userId: varchar("user_id", { length: 128 })
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    emailEnabled: boolean("email_enabled").default(true).notNull(),
+    smsEnabled: boolean("sms_enabled").default(true).notNull(),
+    urgentOnly: boolean("urgent_only").default(false).notNull(),
+    eventReminders: boolean("event_reminders").default(true).notNull(),
+    announcements: boolean("announcements").default(true).notNull(),
+    createdAt: datetime("created_at")
+      .default(sql`CURRENT_TIMESTAMP`)
+      .notNull(),
+    updatedAt: datetime("updated_at")
+      .default(sql`CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP`)
+      .notNull(),
+  },
+  (table) => ({
+    unqUser: uniqueIndex("unq_notif_pref_user").on(table.userId),
+  })
+);
+
+export type Notification = typeof notifications.$inferSelect;
+export type NewNotification = typeof notifications.$inferInsert;
+export type NotificationPreference = typeof notificationPreferences.$inferSelect;
+export type NewNotificationPreference = typeof notificationPreferences.$inferInsert;
+
