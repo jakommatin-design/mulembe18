@@ -16,3 +16,4 @@ export const AnnouncementQuerySchema = z.object({
   chapterId: z.string().optional(),
   countyCode: CountyCodeSchema.optional(),
 });
+

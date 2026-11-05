@@ -91,7 +91,25 @@ Status Legend:
   - Added 14 unit and integration tests in `tests/api-modules.test.ts` (all 35 suite tests passing).
   - Clean Next.js production build (`next build --webpack`), typecheck, and ESLint passing with 0 errors.
 
-- [ ] **Prompt 6: Frontend foundation and design system**
+- [x] **Prompt 6: Frontend foundation and design system**
+  - Fully typed HTTP client (`src/lib/api/client.ts`) with `ApiClientError`, standard envelope unwrapping, and Zod response validation.
+  - Core glassmorphic UI component library built per Prompt 1b specs:
+    - `GlassCard`: Frosted translucent card container with header/body/footer and interactive elevation.
+    - `FormField`: Floating label styled input with validation feedback, error messages, and helper text.
+    - `DataTable`: Responsive glass table with client-side sorting, pagination, and empty state support.
+    - `GlassModal`: Accessible React-Bootstrap modal with frosted glass styling and backdrop blur.
+    - `ConfirmDialog`: Standardized confirmation modal for destructive or critical actions.
+    - `EmptyState`: Contextual zero-data illustration with call-to-action button.
+    - `SkeletonLoader`: Shimmer pulse animation placeholders for cards, text rows, and user avatars.
+    - `ToastProvider`: Global context provider and toast container with auto-dismiss and color variants.
+  - Global application layout and shell:
+    - `Navbar`: Responsive navigation bar with mobile offcanvas drawer, live Clerk auth status, profile links, and glass backdrop blur.
+    - `Footer`: Comprehensive footer with Luhya county coverage badges, quick links, KDPA compliance note, and copyright.
+    - `RootLayout`: Wraps application in `<ClerkProvider>` and `<ToastProvider>` with custom Inter typography and theme Sass.
+    - `error.tsx` & `loading.tsx`: Graceful glassmorphic error boundary and route-level skeleton loader.
+  - All 35 test suite tests passing, TypeScript strict typecheck clean, ESLint clean, and Next.js production build passing with 0 errors.
+
+- [ ] **Prompt 7: Public pages**
 - [ ] **Prompt 7: Public pages**
 - [ ] **Prompt 8: Member experience**
 - [ ] **Prompt 9: Leader and admin dashboards**

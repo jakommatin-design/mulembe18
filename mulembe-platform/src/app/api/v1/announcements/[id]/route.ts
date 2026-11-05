@@ -9,3 +9,4 @@ export async function DELETE(
   const user = await getSessionUser();
   return await announcementController.deleteAnnouncement(user, id);
 }
+

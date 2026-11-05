@@ -7,3 +7,4 @@ export async function GET(
   const { slug } = await props.params;
   return await eventController.getEventBySlug(slug);
 }
+

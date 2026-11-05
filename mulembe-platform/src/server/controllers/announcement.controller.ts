@@ -77,3 +77,4 @@ export class AnnouncementController {
 }
 
 export const announcementController = new AnnouncementController();
+

@@ -11,3 +11,4 @@ export const SendNotificationSchema = z.object({
   message: z.string().min(5).max(1000),
   chapterId: z.string().optional().nullable(),
 });
+
