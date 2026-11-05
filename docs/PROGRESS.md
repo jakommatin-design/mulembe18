@@ -147,7 +147,27 @@ Status Legend:
     - `DELETE /api/v1/members/me`: KDPA self-service account deletion and anonymization
   - **Testing & Verification**: 6 test suites with 45 passing tests (`tests/member-experience.test.ts`), 0 TypeScript strict errors (`tsc --noEmit`), 0 ESLint warnings/errors, and complete Next.js production build (`next build --webpack`) producing 36 clean routes.
 
-- [ ] **Prompt 9: Leader and admin dashboards**
+- [x] **Prompt 9: Leader and admin dashboards**
+  - **Hierarchical Scoped Dashboards**:
+    - Centralized role-based router (`/dashboard`) directing members to their exact scope tier (`/dashboard/national`, `/dashboard/county`, `/dashboard/chapter`, or `/profile` for regular members).
+    - **Chapter Leader Portal (`/dashboard/chapter`)**: Scoped to chapter executive (`chapter_chair`, `chapter_secretary`). View live chapter roster, approve/suspend members, publish chapter events, post chapter bulletins, and export roster to CSV.
+    - **County Coordinator Portal (`/dashboard/county`)**: Scoped to `county_coordinator`. Oversee all chapters and wards within assigned county, cross-chapter member roster, county-wide announcements, and aggregate metrics.
+    - **National Executive Dashboard (`/dashboard/national`)**: Scoped to `national_admin` and `super_admin`. Platform-wide telemetry (total members, pending verifications, chapter charters, national events, active announcements), complete 47-county registry, chapter chartering modal, national announcements modal, role assignment management, and immutable audit log inspection.
+  - **Dashboard Components & Shell**:
+    - `DashboardLayout`: Responsive glass sidebar with role-aware navigational links, active route highlights, breadcrumbs, user badge, and mobile drawer.
+    - `StatCard`: Luxury glass KPI metric card with icons, trending badges, and alert variants.
+    - `MemberRosterTable`: Scoped data table with search, status filters (approved, pending, suspended), member approve/suspend action buttons, and client-side CSV roster export (`member-roster-<date>.csv`).
+    - `EventManagerModal`: Interactive event creation modal with capacity, venue, virtual link, and date fields.
+    - `AnnouncementPublisherModal`: Broadcast modal with priority levels (*Urgent*, *Important*, *Routine*) and county/chapter targeting.
+    - `ChapterManagerModal`: National charter creation modal linking chapters to counties, venues, and schedules.
+    - `AuditLogViewer`: Searchable audit timeline with action filters and full JSON state diff inspection modal.
+  - **Backend Services & API Endpoints**:
+    - `StatsService` (`src/server/services/stats.service.ts`): Aggregates scoped metrics with counts and county distributions.
+    - `GET /api/v1/admin/stats`: Scoped platform metrics endpoint.
+    - `GET /api/v1/admin/audit-logs`: Audit log query guarded by `inspect_audit_logs` action permission.
+    - `PUT /api/v1/admin/users/:id/role`: Role assignment endpoint guarded by `assign_roles` permission with automated audit logging.
+  - **Testing & Verification**: 7 test suites with 50 passing tests (`tests/leader-dashboards.test.ts`), 0 TypeScript strict errors (`tsc --noEmit`), 0 ESLint warnings/errors, and complete Next.js production build (`next build --webpack`) producing 39 clean routes.
+
 - [ ] **Prompt 10: Notifications and communication**
 - [ ] **Prompt 11: Migration from mulembe18**
 - [ ] **Prompt 12: Hardening, performance, and launch**
