@@ -178,3 +178,4 @@ export function assertScopeAccess(
   // 12. Public view
   if (action === "view_public") return;
 }
+

@@ -30,3 +30,4 @@ export async function getSessionUser(): Promise<AuthUser | null> {
     phone,
   });
 }
+

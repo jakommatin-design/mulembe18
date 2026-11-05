@@ -58,7 +58,39 @@ Status Legend:
   - Added 14 comprehensive unit tests in `tests/auth-rbac.test.ts` (all 21 total tests passing).
   - Production build (`next build --webpack`), typecheck, and lint pass with 0 errors.
 
-- [ ] **Prompt 5: Core API modules**
+- [x] **Prompt 5: Core API modules**
+  - Built all 6 modular backend domains following strict layered architecture (Zod Schemas -> Repositories -> Services -> Controllers -> Route Handlers):
+    1. **Geography (`/api/v1/geo`)**:
+       - `GET /api/v1/geo/counties`: Returns all 47 official Kenyan counties.
+       - `GET /api/v1/geo/counties/:code/sub-counties`: Sub-county cascades with 3-digit validation.
+       - `GET /api/v1/geo/sub-counties/:id/wards`: Wards within a sub-county.
+    2. **Chapters (`/api/v1/chapters`)**:
+       - `GET /api/v1/chapters`: Paginated, county-filtered list of active chapters.
+       - `GET /api/v1/chapters/:slug`: Full chapter details by unique slug.
+       - `POST /api/v1/chapters`: Role/scope guarded chapter creation (coordinator/admin) with audit logs.
+       - `PUT /api/v1/chapters/:slug`: Role/scope guarded chapter updates.
+    3. **Members & Onboarding (`/api/v1/members`)**:
+       - `GET /api/v1/members/me`: Authenticated profile fetch.
+       - `POST /api/v1/members/register`: KDPA-consented multi-step registration issuing formatted membership IDs (`MLB-XXX-XXXXX`).
+       - `PUT /api/v1/members/me`: Profile updates.
+       - `GET /api/v1/members`: Scoped member roster query (chapter/county boundary enforcement).
+       - `POST /api/v1/members/:id/verify`: Leader verification/approval of pending members.
+    4. **Events & RSVPs (`/api/v1/events`)**:
+       - `GET /api/v1/events`: List public and chapter-scoped events.
+       - `GET /api/v1/events/:slug`: Event details with attending RSVP counts.
+       - `POST /api/v1/events`: Chapter-scoped event creation.
+       - `POST /api/v1/events/:id/rsvp`: User event RSVP (attending, tentative, declined) with guest count.
+    5. **Announcements (`/api/v1/announcements`)**:
+       - `GET /api/v1/announcements`: Active, unexpired announcements filtered by chapter/county scope.
+       - `POST /api/v1/announcements`: Publish announcement within leader scope.
+       - `DELETE /api/v1/announcements/:id`: Remove announcement.
+    6. **Notifications (`/api/v1/notifications`)**:
+       - `POST /api/v1/notifications/send`: Multi-channel (email/sms) dispatch within leader scope.
+  - Implemented standard response format (`apiSuccess`) and error format (`apiError`) per `docs/05-api-specification.md`.
+  - Added in-memory sliding-window rate limiting on write and search endpoints (`src/lib/api/rate-limit.ts`).
+  - Added 14 unit and integration tests in `tests/api-modules.test.ts` (all 35 suite tests passing).
+  - Clean Next.js production build (`next build --webpack`), typecheck, and ESLint passing with 0 errors.
+
 - [ ] **Prompt 6: Frontend foundation and design system**
 - [ ] **Prompt 7: Public pages**
 - [ ] **Prompt 8: Member experience**
