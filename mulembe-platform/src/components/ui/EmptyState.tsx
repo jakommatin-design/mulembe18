@@ -6,6 +6,8 @@ export interface EmptyStateProps {
   title: string;
   description: string;
   action?: React.ReactNode;
+  actionLabel?: string;
+  onAction?: () => void;
 }
 
 export function EmptyState({
@@ -13,6 +15,8 @@ export function EmptyState({
   title,
   description,
   action,
+  actionLabel,
+  onAction,
 }: EmptyStateProps) {
   return (
     <div className="glass-card text-center p-5 my-4">
@@ -25,8 +29,15 @@ export function EmptyState({
       <p className="text-secondary small mb-4 mx-auto" style={{ maxWidth: 420 }}>
         {description}
       </p>
-      {action && <div>{action}</div>}
+      {action ? (
+        <div>{action}</div>
+      ) : actionLabel && onAction ? (
+        <button type="button" className="btn btn-sm btn-gold" onClick={onAction}>
+          {actionLabel}
+        </button>
+      ) : null}
     </div>
   );
 }
 
+export default EmptyState;

@@ -13,6 +13,7 @@ export interface ToastMessage {
 
 interface ToastContextValue {
   showToast: (title: string, message: string, variant?: ToastMessage["variant"]) => void;
+  addToast: (variant: ToastMessage["variant"], title: string, message: string) => void;
 }
 
 const ToastContext = createContext<ToastContextValue | undefined>(undefined);
@@ -28,12 +29,19 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
     []
   );
 
+  const addToast = useCallback(
+    (variant: ToastMessage["variant"], title: string, message: string) => {
+      showToast(title, message, variant);
+    },
+    [showToast]
+  );
+
   const removeToast = useCallback((id: string) => {
     setToasts((prev) => prev.filter((t) => t.id !== id));
   }, []);
 
   return (
-    <ToastContext.Provider value={{ showToast }}>
+    <ToastContext.Provider value={{ showToast, addToast }}>
       {children}
       <ToastContainer position="top-end" className="p-3 position-fixed" style={{ zIndex: 9999 }}>
         {toasts.map((toast) => (

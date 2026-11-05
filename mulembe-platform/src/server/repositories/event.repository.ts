@@ -74,6 +74,10 @@ export class EventRepository {
     return result[0] || null;
   }
 
+  async findBySlug(slug: string) {
+    return this.getBySlug(slug);
+  }
+
   async create(data: CreateEventInput) {
     const id = `evt_${crypto.randomUUID()}`;
     await db.insert(events).values({
@@ -129,6 +133,10 @@ export class EventRepository {
     return {
       attending: Number(attending?.count || 0),
     };
+  }
+
+  async getRsvpStats(eventId: string) {
+    return this.getRsvpCounts(eventId);
   }
 }
 

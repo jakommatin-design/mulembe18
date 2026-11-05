@@ -9,7 +9,7 @@ export interface GlassModalProps {
   title?: React.ReactNode;
   children: React.ReactNode;
   footer?: React.ReactNode;
-  size?: "sm" | "lg" | "xl";
+  size?: "sm" | "md" | "lg" | "xl";
 }
 
 export function GlassModal({
@@ -20,11 +20,12 @@ export function GlassModal({
   footer,
   size,
 }: GlassModalProps) {
+  const modalSize = size === "md" ? undefined : size;
   return (
     <Modal
       show={show}
       onHide={onHide}
-      size={size}
+      size={modalSize}
       centered
       contentClassName="glass-panel text-white border-white-10"
     >
@@ -40,4 +41,6 @@ export function GlassModal({
     </Modal>
   );
 }
+
+export default GlassModal;
 

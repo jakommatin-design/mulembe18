@@ -3,7 +3,7 @@ dotenv.config({ path: ".env.local" });
 
 import { drizzle } from "drizzle-orm/mysql2";
 import mysql from "mysql2/promise";
-import { counties, subCounties, wards, chapters } from "../src/lib/db/schema";
+import { counties, subCounties, wards, chapters, events, announcements } from "../src/lib/db/schema";
 import countiesData from "./data/counties.json";
 
 async function main() {
@@ -145,6 +145,143 @@ async function main() {
       });
   }
   console.log("✓ Chapters seeded.");
+
+  // 5. Seed Events
+  console.log("➡️ Seeding Foundational Events...");
+  const sampleEvents = [
+    {
+      id: "ev-001-cultural-festival",
+      slug: "mulembe-national-cultural-festival-2026",
+      title: "Mulembe National Cultural Festival & Heritage Expo",
+      description:
+        "The grand annual gathering uniting Luhya sub-tribes across Kenya and the diaspora. Featuring traditional Isukuti drum competitions, oral poetry, indigenous culinary showcases (Ingokho, Tsisaka, Obusuma), elder council storytelling, and youth leadership forums.",
+      category: "cultural",
+      startTime: new Date("2026-12-15T09:00:00Z"),
+      endTime: new Date("2026-12-17T18:00:00Z"),
+      venueName: "Bukhungu Stadium",
+      venueAddress: "Kakamega Town, Kakamega County",
+      onlineUrl: "https://mulembe.org/live/festival",
+      capacity: 5000,
+      chapterId: "ch-037-kakamega",
+      status: "published" as const,
+    },
+    {
+      id: "ev-002-nairobi-gala",
+      slug: "nairobi-luhya-professionals-gala-2026",
+      title: "Nairobi Luhya Professionals & Corporate Leaders Dinner",
+      description:
+        "An exclusive high-level networking banquet connecting top executives, founders, civil servants, and young professionals. Keynote addresses on cooperative economic syndicates, SACCO funding, and diaspora trade corridors.",
+      category: "youth",
+      startTime: new Date("2026-11-28T18:00:00Z"),
+      endTime: new Date("2026-11-28T22:30:00Z"),
+      venueName: "Safari Park Hotel Ballroom",
+      venueAddress: "Thika Superhighway, Nairobi",
+      onlineUrl: null,
+      capacity: 350,
+      chapterId: "ch-047-nairobi",
+      status: "published" as const,
+    },
+    {
+      id: "ev-003-coastal-welfare-agm",
+      slug: "mombasa-chapter-annual-general-assembly",
+      title: "Coast Region Chapters Annual General Assembly & Benevolent Drive",
+      description:
+        "Reviewing the coastal community emergency assistance fund, approving the 2027 regional welfare budget, and electing new chapter sub-committee representatives.",
+      category: "agm",
+      startTime: new Date("2026-12-05T14:00:00Z"),
+      endTime: new Date("2026-12-05T17:30:00Z"),
+      venueName: "Mombasa Cultural Center Auditorium",
+      venueAddress: "Mvita, Mombasa County",
+      onlineUrl: null,
+      capacity: 200,
+      chapterId: "ch-001-mombasa",
+      status: "published" as const,
+    },
+    {
+      id: "ev-004-western-agri-expo",
+      slug: "western-agri-enterprise-summit",
+      title: "Western Kenya Agri-Enterprise & Cooperatives Summit",
+      description:
+        "Empowering smallholder sugarcane, maize, and dairy farmers with modern aggregation models, value addition machinery grants, and cooperative banking options.",
+      category: "welfare",
+      startTime: new Date("2026-12-20T08:30:00Z"),
+      endTime: new Date("2026-12-21T16:00:00Z"),
+      venueName: "Kanduyi Stadium Grounds",
+      venueAddress: "Bungoma Town, Bungoma County",
+      onlineUrl: null,
+      capacity: 1200,
+      chapterId: "ch-039-bungoma",
+      status: "published" as const,
+    },
+  ];
+
+  for (const ev of sampleEvents) {
+    await db
+      .insert(events)
+      .values(ev)
+      .onDuplicateKeyUpdate({
+        set: {
+          title: ev.title,
+          description: ev.description,
+          venueName: ev.venueName,
+          venueAddress: ev.venueAddress,
+          capacity: ev.capacity,
+          startTime: ev.startTime,
+          endTime: ev.endTime,
+        },
+      });
+  }
+  console.log("✓ Events seeded.");
+
+  // 6. Seed Announcements
+  console.log("➡️ Seeding Announcements...");
+  const sampleAnnouncements = [
+    {
+      id: "an-001-constitution",
+      title: "Promulgation of the Mulembe National Community Charter 2026",
+      content:
+        "The National Council of Elders in consultation with all 47 county steering desks has officially ratified the updated Mulembe Community Constitution. The charter establishes decentralized county coordination, transparent welfare pooling, and strict Kenya Data Protection Act compliance across all chapter registries.",
+      priority: "important" as const,
+      chapterId: null,
+      countyCode: null,
+      expiresAt: new Date("2027-01-01T00:00:00Z"),
+    },
+    {
+      id: "an-002-bursary",
+      title: "2027 Higher Education & Vocational Bursary Applications Open",
+      content:
+        "Underprivileged students from Kakamega, Bungoma, Busia, Vihiga, and diaspora branches can now submit verified academic scholarship requests through their respective sub-county chapter secretaries. Application window closes December 31st.",
+      priority: "routine" as const,
+      chapterId: null,
+      countyCode: null,
+      expiresAt: new Date("2026-12-31T23:59:59Z"),
+    },
+    {
+      id: "an-003-flood-relief",
+      title: "Emergency Welfare Alert: Western Region Flood Response",
+      content:
+        "The Disaster Relief Secretariat has mobilized emergency food rations and medical aid kits to affected households along the River Nzoia basin in Budalang'i and lower Mumias. Chapter coordinators are receiving donations through the verified national trust fund.",
+      priority: "urgent" as const,
+      chapterId: null,
+      countyCode: "037",
+      expiresAt: new Date("2026-11-30T23:59:59Z"),
+    },
+  ];
+
+  for (const an of sampleAnnouncements) {
+    await db
+      .insert(announcements)
+      .values(an)
+      .onDuplicateKeyUpdate({
+        set: {
+          title: an.title,
+          content: an.content,
+          priority: an.priority,
+          expiresAt: an.expiresAt,
+        },
+      });
+  }
+  console.log("✓ Announcements seeded.");
 
   console.log("🎉 Database seeding complete!");
   await connection.end();

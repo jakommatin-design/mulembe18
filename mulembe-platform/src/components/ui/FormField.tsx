@@ -2,19 +2,23 @@
 
 import React from "react";
 
-export interface FormFieldProps extends React.InputHTMLAttributes<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement> {
+export interface FormFieldProps
+  extends Omit<React.InputHTMLAttributes<HTMLInputElement>, "as"> {
   label: string;
   error?: string;
   helpText?: string;
+  helperText?: string;
   as?: "input" | "select" | "textarea";
   options?: Array<{ label: string; value: string }>;
   rows?: number;
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
 export function FormField({
   label,
   error,
   helpText,
+  helperText,
   as = "input",
   options,
   id,
@@ -23,6 +27,7 @@ export function FormField({
   ...props
 }: FormFieldProps) {
   const fieldId = id || `field_${label.toLowerCase().replace(/\s+/g, "_")}`;
+  const effectiveHelp = helpText || helperText;
 
   return (
     <div className="mb-3">
@@ -75,8 +80,8 @@ export function FormField({
         />
       )}
 
-      {helpText && !error && (
-        <div className="form-text text-white-50 small mt-1">{helpText}</div>
+      {effectiveHelp && !error && (
+        <div className="form-text text-white-50 small mt-1">{effectiveHelp}</div>
       )}
 
       {error && <div className="invalid-feedback d-block small mt-1">{error}</div>}
@@ -84,3 +89,4 @@ export function FormField({
   );
 }
 
+export default FormField;

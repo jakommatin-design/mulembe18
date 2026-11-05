@@ -84,6 +84,10 @@ export class ChapterRepository {
     return result[0] || null;
   }
 
+  async findBySlug(slug: string) {
+    return this.getBySlug(slug);
+  }
+
   async getByCounty(countyCode: string) {
     return await db
       .select()

@@ -1,6 +1,7 @@
 # PROGRESS TRACKER: Mulembe National Platform Master Build
 
 Status Legend:
+
 - [x] Complete
 - [ ] In Progress / Pending
 
@@ -109,11 +110,20 @@ Status Legend:
     - `error.tsx` & `loading.tsx`: Graceful glassmorphic error boundary and route-level skeleton loader.
   - All 35 test suite tests passing, TypeScript strict typecheck clean, ESLint clean, and Next.js production build passing with 0 errors.
 
-- [ ] **Prompt 7: Public pages**
-- [ ] **Prompt 7: Public pages**
+- [x] **Prompt 7: Public pages**
+  - **Cinematic Home (`/`)**: High-impact editorial hero, live database counters (47 counties, active chapters, upcoming events, KDPA protection), core heritage values, featured regional chapters preview, upcoming gatherings list, official dispatches column, and call to action. Includes Organization JSON-LD structured data.
+  - **About Platform (`/about`)**: Luhya historical origins, all 18 ancestral sub-tribes showcase, 3-tier governance hierarchy (Council of Elders, County Steering Desks, Ward Chapters), constitutional pillars, and Office of the Data Protection Commissioner (ODPC) privacy pledge.
+  - **Chapters Directory (`/chapters`)**: Complete directory with instant client-side search across name, venue, and descriptions, county-level filter (all 47 Kenyan counties), meeting schedule & venue badges, and direct navigation.
+  - **Chapter Profile (`/chapters/[slug]`)**: Dedicated chapter portal detailing meeting logistics, venue address, leadership contact desk, administrative zone, and upcoming chapter-specific events with fallback to not-found.
+  - **Events & Gatherings (`/events`)**: National community calendar with category filtering (Cultural, Youth/Professional, AGM, Welfare, Sports), capacity indicators, date & EAT time formatting, and direct RSVP navigation.
+  - **Event Detail & RSVP (`/events/[slug]`)**: Full event dossier, venue directions, virtual livestream broadcast links, confirmed RSVP count, interactive glass RSVP modal with attendance status selection and guest count picker, and Event JSON-LD schema for search engine event indexing.
+  - **News & Official Bulletins (`/news`)**: Stream of official notices and dispatches categorized by priority (Urgent, Important, Routine) with county scopes and expiry dates.
+  - **Contact & Secretariat Desks (`/contact`)**: National Secretariat headquarters details, regional desk directories (Western, Coast, Diaspora), and interactive glass inquiry form with client validation and toast dispatch notifications.
+  - **SEO & Indexing**: Dynamic `src/app/sitemap.ts` (`/sitemap.xml`) indexing static routes, active chapters, and published events. Dynamic `src/app/robots.ts` (`/robots.txt`) with crawler rules and sitemap reference. Open Graph tags and meta tags across all pages.
+  - **Testing & Verification**: 5 test suites with 40 passing tests in Vitest (`tests/public-pages.test.ts`), 0 TypeScript strict errors (`tsc --noEmit`), 0 ESLint warnings/errors, and complete Next.js production build (`next build --webpack`) producing 31 clean routes.
+
 - [ ] **Prompt 8: Member experience**
 - [ ] **Prompt 9: Leader and admin dashboards**
 - [ ] **Prompt 10: Notifications and communication**
 - [ ] **Prompt 11: Migration from mulembe18**
 - [ ] **Prompt 12: Hardening, performance, and launch**
-
